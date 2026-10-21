@@ -16,6 +16,16 @@ MODEL_TOOLS = {'submit_workflow', 'collect_workflow', 'run_model_workflow', 'che
 
 
 class HostedAPI(AgentAPI):
+    def get_capabilities(self) -> dict:
+        """Discover this worker's installed runtimes, tools and hosted execution limits."""
+        value = super().get_capabilities()
+        value.update(hosted=True, tools=[*TOOLS, *FILE_TOOLS],
+                     comfy_execution='Configured account-isolated model services only; paid cloud execution is disabled in this pilot',
+                     transport='Remote Streamable HTTP MCP; poll get_tool_job for queued operations',
+                     authoring='Upload media in Studio. Use write_project_file and read_project_file; no checkout or CLI needed.')
+        value['guides'].append('hosted')
+        return value
+
     def read_guide(self, topic: Literal['agent','timeline','effects','compatibility','tool-audit','comfy-models','scene3d','composition','release-tools','hdr','animation','webgl','hosted']='agent') -> dict:
         """Read hosted editing instructions and the exact supported contracts before choosing tool arguments."""
         if topic == 'hosted':
@@ -57,7 +67,8 @@ class HostedAPI(AgentAPI):
         p = safe_path(root, path)
         if p.suffix.lower() not in {'.py', '.js', '.html', '.css', '.svg', '.json', '.txt', '.md', '.srt', '.vtt', '.obj', '.mtl', '.gltf'}:
             raise ValueError('Upload binary media through the file upload endpoint')
-        if path in ('project.json', 'timeline.json') or path.startswith('.openkatana/'):
+        relative = p.relative_to(root).as_posix()
+        if relative in ('project.json', 'timeline.json') or relative.startswith('.openkatana/'):
             raise ValueError('Use the project and timeline tools for managed files')
         if len(text.encode()) > 2 * 1024**2:
             raise ValueError('Text file exceeds 2 MiB')

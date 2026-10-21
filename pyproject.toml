@@ -36,7 +36,7 @@ openkatana = ["templates/*.py", "templates/*.js", "web/*.js", "web/*.html", "web
 "share/openkatana/comfy_nodes" = ["comfy_nodes/__init__.py"]
 "share/openkatana/examples/plugins/kinetic" = ["examples/plugins/kinetic/plugin.json", "examples/plugins/kinetic/kinetic.js", "examples/plugins/kinetic/LICENSE.txt"]
 "share/openkatana/examples/scene3d" = ["examples/scene3d/blender_orbit.py"]
-"share/openkatana/docs" = ["docs/AGENT_INTERFACE.md", "docs/animation-validation.json", "docs/ANIMATION.md", "docs/ARCHITECTURE.md", "docs/CAPABILITY-GAPS.md", "docs/CAPABILITY-MATRIX.md", "docs/COMFY_MODELS.md", "docs/COMPATIBILITY.md", "docs/composition-validation.json", "docs/COMPOSITIONS.md", "docs/dependency-inventory.json", "docs/EDITOR_TOOLS.md", "docs/EXPANSION.md", "docs/HDR.md", "docs/LICENSING.md", "docs/model-validation.json", "docs/RELEASE-READINESS.md", "docs/public-release-validation.json", "docs/RELEASE-TOOLS.md", "docs/release-validation.json", "docs/ROADMAP.md", "docs/scene3d-validation.json", "docs/SCENE3D.md", "docs/SETUP.md", "docs/STUDIO.md", "docs/HOSTING.md", "docs/TIMELINE.md", "docs/VALIDATION.md", "docs/webgl-validation.json", "docs/WEBGL.md"]
+"share/openkatana/docs" = ["docs/AGENT_INTERFACE.md", "docs/animation-validation.json", "docs/ANIMATION.md", "docs/ARCHITECTURE.md", "docs/CAPABILITY-GAPS.md", "docs/CAPABILITY-MATRIX.md", "docs/COMFY_MODELS.md", "docs/COMPATIBILITY.md", "docs/composition-validation.json", "docs/COMPOSITIONS.md", "docs/dependency-inventory.json", "docs/EDITOR_TOOLS.md", "docs/EXPANSION.md", "docs/HDR.md", "docs/LICENSING.md", "docs/model-validation.json", "docs/RELEASE-READINESS.md", "docs/public-release-validation.json", "docs/RELEASE-TOOLS.md", "docs/release-validation.json", "docs/ROADMAP.md", "docs/scene3d-validation.json", "docs/SCENE3D.md", "docs/SETUP.md", "docs/STUDIO.md", "docs/HOSTING.md", "docs/HOSTING-COSTS.md", "docs/TIMELINE.md", "docs/VALIDATION.md", "docs/webgl-validation.json", "docs/WEBGL.md"]
 "share/openkatana/docs/assets" = ["docs/assets/capabilities.png"]
 "share/openkatana/workflows" = ["workflows/qwen-reference-edit.parameters.json", "workflows/solid-smoke.api.json", "workflows/image-invert.api.json", "workflows/matte.api.json", "workflows/interpolation.api.json"]
 
@@ -45,7 +45,6 @@ openkatana = ["templates/*.py", "templates/*.js", "web/*.js", "web/*.html", "web
 "share/openkatana/licenses" = ["licenses/OpenKatana-MIT.txt"]
 
 "share/openkatana/deploy" = ["deploy/README.md", "deploy/Dockerfile.worker", "deploy/Caddyfile", "deploy/hosting.example.json", "deploy/openkatana-web.service", "deploy/openkatana-worker.service"]
-"share/openkatana/hosting" = ["docs/HOSTING-COSTS.md"]
 
 [tool.setuptools.packages.find]
 include = ["openkatana*"]
