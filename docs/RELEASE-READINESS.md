@@ -5,6 +5,13 @@
 licensed browser/font/model assets. FFmpeg, Chromium, optional Blender and
 generative weights are separate installations.
 
+An authenticated hosted pilot is prepared separately; see [hosting](HOSTING.md)
+and the [pre-deployment budget](HOSTING-COSTS.md). Its image includes the CPU
+rendering runtimes, and its browser/MCP queue shares the local tool implementations.
+It has not been deployed. Model services, actual OAuth clients, HTTPS, backup
+restore and production load still need deployment-specific validation. Paid
+cloud model execution remains disabled until a spending/credential broker exists.
+
 The public setup uses the GitHub repository and one CLI bootstrap for all
 agents. It preserves existing projects and customized skills and reports
 missing runtime dependencies. Studio follows three numbered editing steps;

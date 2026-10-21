@@ -17,6 +17,11 @@ BASE_NODES = {'EmptyImage', 'LoadImage', 'ImageScale', 'ImageInvert', 'ImageComp
 
 def local_endpoint(url):
     value = urlsplit(url)
+    # Hosting operators may configure exact private Comfy service URLs in a
+    # dedicated model worker. Browser/agent arguments cannot expand this list.
+    private = json.loads(os.environ.get('OPENKATANA_PRIVATE_COMFY_ENDPOINTS', '[]'))
+    if url.rstrip('/') in private and value.scheme == 'http' and value.hostname and not (value.username or value.password or value.query or value.fragment or value.path not in ('', '/')):
+        return url.rstrip('/')
     if value.scheme != 'http' or value.hostname not in ('127.0.0.1', 'localhost', '::1') or value.username or value.password or value.query or value.fragment or value.path not in ('', '/'):
         raise ValueError('This release accepts only a local HTTP Comfy API proxy endpoint')
     return url.rstrip('/')

@@ -23,3 +23,6 @@ recursive-include docs/assets *.png
 
 recursive-include openkatana/templates *.py *.js
 recursive-include skills *.md
+
+include .dockerignore
+recursive-include deploy *.json *.worker *.service *.md Caddyfile

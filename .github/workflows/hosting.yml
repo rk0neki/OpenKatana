@@ -1,0 +1,46 @@
+name: Hosted workflow checks
+on:
+  push:
+    paths: ['openkatana/**', 'deploy/**', 'scripts/test_hosted_live.py', 'tests/test_hosted.py', '.github/workflows/hosting.yml', 'pyproject.toml']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: hosted-checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  isolated-hosting:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install '.[hosted,vision,text]'
+      - name: Install the gVisor sandbox on the disposable runner
+        run: |
+          curl -fsSLO https://storage.googleapis.com/gvisor/releases/release/latest/x86_64/gvisor.tar.bz2
+          curl -fsSLO https://storage.googleapis.com/gvisor/releases/release/latest/x86_64/gvisor.tar.bz2.sha512
+          sha512sum -c gvisor.tar.bz2.sha512
+          sudo tar -xjf gvisor.tar.bz2 -C /usr/local/bin
+          sudo runsc install
+          sudo systemctl restart docker
+      - name: Install test browser
+        run: |
+          python -m playwright install --with-deps chromium
+          python -c "from playwright.sync_api import sync_playwright; import os; p=sync_playwright().start(); open(os.environ['GITHUB_ENV'],'a').write('OPENKATANA_CHROME='+p.chromium.executable_path+'\n'); p.stop()"
+      - name: Build the rendering worker (no model weights)
+        run: docker build -f deploy/Dockerfile.worker -t openkatana-worker:0.1.0rc2 .
+      - name: Exercise real hosted tools, files, render and MCP
+        run: python scripts/test_hosted_live.py --out work/hosted-check --runtime runsc
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hosted-check
+          path: |
+            work/hosted-check/result.json
+            work/hosted-check/server.log
+            work/hosted-check/video.mp4
+            work/hosted-check/*.png
