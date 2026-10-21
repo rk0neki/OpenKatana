@@ -7,8 +7,8 @@ generative weights are separate installations.
 
 The public setup uses the GitHub repository and one CLI bootstrap for all
 agents. It preserves existing projects and customized skills and reports
-missing runtime dependencies. The Studio guide keeps Copy and Close visible
-while its content scrolls.
+missing runtime dependencies. Studio follows three numbered editing steps;
+guide cards open Markdown with fixed Copy, Download and Close controls.
 
 Current checks and artifact hashes are recorded in `public-release-validation.json`.
 These checks cover the release preparation changes, not every optional inference

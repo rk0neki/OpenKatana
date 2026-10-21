@@ -22,11 +22,15 @@ uploads or publishing.
 ## Four focused views
 
 - **Start:** the setup entry point, three-step workflow and eight capability groups.
-- **Studio:** media, the preview/sequence and a contextual inspector. **Direct**
-  holds the creative brief; **Shot**, **Sound** and **Images** expose the relevant
-  controls. Quick first-cut recipes and timeline JSON remain available.
+- **Studio:** three numbered steps: **Brief & media**, **Preview & refine**,
+  and **Render & review**. Describe the film beside its preview, attach media,
+  then copy the brief to your agent. Select a shot or expand **Adjust the edit**
+  for shot controls, soundtrack and image workflows. **Build a first cut**
+  and **Timeline source** are optional disclosures. The step buttons jump to
+  each section; render controls sit in the final step.
 - **Tools:** a searchable, categorized inventory of the actual CLI/MCP catalog.
-  Every operation has its description, signature and relevant bundled guide.
+  Each large tool card opens its Markdown guide with a click or Enter/Space.
+  The separate parameter disclosure and Add to brief action remain independent.
   **Add to brief** requests agent use of a tool; it does not execute that tool.
 - **Review:** recorded render jobs, video playback/download and human verdicts.
 
@@ -54,14 +58,22 @@ whole-clip processing is available in the tool library.
 
 ## Reading guides
 
-The guide body scrolls independently. Its Copy guide and Close controls stay in
-the fixed header on desktop and narrow layouts. Copy guide copies the full guide.
+The guide body scrolls independently. Copy, Download .md and Close remain in
+the fixed header on desktop and narrow layouts. Copy and Download include the
+complete guide, regardless of scroll position. Downloads have portable filenames.
+
+The Start page links to the GitHub repository and has no project resume bar or
+permanent status footer. Action feedback appears in a dismissible notification;
+errors remain visible until dismissed or replaced by the next action.
 
 ## Interface and distribution
 
 Studio uses local HTML, CSS, JavaScript and OpenKatana branding, included in the
 wheel/source bundle. It is a loopback-only, single-user application. Nothing is
 automatically sent to an AI service.
+
+Local MCP setup is available from Agent setup. It does not require a hosted app.
+See [hosting options](HOSTING.md) for the separate requirements of remote access.
 
 ## Verification
 

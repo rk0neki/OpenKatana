@@ -375,6 +375,7 @@ def validate(scene, root):
 
 
 def input_manifest(scene, root):
+    root = Path(root).resolve()
     result = {}
     for o in scene['objects']:
         if o.get('type') == 'model':
