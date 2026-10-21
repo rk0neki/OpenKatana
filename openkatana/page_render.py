@@ -7,7 +7,7 @@ Math.random is seeded per frame. The result is a clip (frames_dir, n, fps, w, h)
 import json
 import threading
 from functools import partial
-from http.server import ThreadingHTTPServer
+from .http_runtime import LocalHTTPServer
 from pathlib import Path
 
 from .contracts import ContractError, local_path, number
@@ -33,7 +33,7 @@ def render_page(root, page, out, frames=None, fps=None, sample=5):
     from .render import playwright
     sync_playwright = playwright()
     out.mkdir(parents=True, exist_ok=False); (out / 'frames').mkdir()
-    server = ThreadingHTTPServer(('127.0.0.1', 0), partial(PageHandler, project=root))
+    server = LocalHTTPServer(('127.0.0.1', 0), partial(PageHandler, project=root))
     thread = threading.Thread(target=server.serve_forever, daemon=True); thread.start()
     rel = src.relative_to(root).as_posix()
     try:
@@ -63,7 +63,7 @@ def render_page(root, page, out, frames=None, fps=None, sample=5):
                 reverse = {f: digest_bytes(shot(f)) for f in reversed(picks)}
                 bad = [f for f in picks if forward[f] != reverse[f]]
                 if bad:
-                    raise ContractError(f'{rel}: not deterministic — frames {bad} differ when rendered in reverse order')
+                    raise ContractError(f'{rel}: not deterministic â€” frames {bad} differ when rendered in reverse order')
                 for f in range(frames):
                     (out / 'frames' / f'{f:05d}.png').write_bytes(shot(f))
                 blocked += page_.evaluate('() => window.__okViolations || []')

@@ -1,7 +1,7 @@
 """Bounded source and timeline previews for agent visual inspection."""
 import base64
 from functools import partial
-from http.server import ThreadingHTTPServer
+from .http_runtime import LocalHTTPServer
 from pathlib import Path
 import threading
 from .contracts import ContractError,validate,number
@@ -25,7 +25,7 @@ def timeline_frames(edit,root,out,frames):
     if not 1<=len(frames)<=12:raise ContractError('Request 1..12 timeline frames per preview')
     for f in frames:number(f,'frame',0,edit['canvas']['frames']-1,integer=True)
     out.mkdir(parents=True,exist_ok=False);write_json(out/'timeline.json',edit)
-    server=ThreadingHTTPServer(('127.0.0.1',0),partial(Handler,project=root));thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start();images=[]
+    server=LocalHTTPServer(('127.0.0.1',0),partial(Handler,project=root));thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start();images=[]
     try:
         with sync_playwright() as pw:
             browser=pw.chromium.launch(executable_path=chrome_path(),headless=True,args=['--disable-gpu'])

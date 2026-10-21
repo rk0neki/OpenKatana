@@ -4,7 +4,7 @@ from __future__ import annotations
 import base64
 import copy
 from functools import partial
-from http.server import ThreadingHTTPServer
+from .http_runtime import LocalHTTPServer
 import json
 import math
 from pathlib import Path
@@ -427,7 +427,7 @@ def render_scene(path, out, samples=None, video=True, start=None, end=None, trus
     if 'camera_path' in scene:
         from .webgl_authoring import camera_schedule
         runtime_scene['_camera_cache'] = camera_schedule(scene['camera_path'], c)
-    server = ThreadingHTTPServer(('127.0.0.1', 0), partial(SceneHandler, project=root))
+    server = LocalHTTPServer(('127.0.0.1', 0), partial(SceneHandler, project=root))
     thread = threading.Thread(target=server.serve_forever, daemon=True); thread.start()
     errors, checks, states = [], {}, []
     try:

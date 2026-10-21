@@ -6,7 +6,7 @@ Only project assets and installed package files are served; no runtime downloads
 from contextlib import contextmanager
 import copy
 from functools import partial
-from http.server import ThreadingHTTPServer
+from .http_runtime import LocalHTTPServer
 import json
 from pathlib import Path
 import re
@@ -254,7 +254,7 @@ def session(root, manifests):
         path = local_path(root, m['manifest']); allowed.add(path)
         allowed.update((path.parent / f).resolve() for f in m['files'])
     plugin_hashes = {str(p.relative_to(root).as_posix()): digest(p) for p in sorted(allowed)}
-    server = ThreadingHTTPServer(('127.0.0.1', 0), partial(CompositionHandler, project=root, allowed=allowed))
+    server = LocalHTTPServer(('127.0.0.1', 0), partial(CompositionHandler, project=root, allowed=allowed))
     thread = threading.Thread(target=server.serve_forever, daemon=True); thread.start()
     try:
         with playwright()() as pw:
