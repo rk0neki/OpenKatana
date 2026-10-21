@@ -1,0 +1,21 @@
+{
+  "data": "/srv/openkatana",
+  "public_url": "https://studio.example.org",
+  "worker_image": "openkatana-worker:0.1.0rc2",
+  "runtime": "runsc",
+  "workspace_bytes": 2147483648,
+  "upload_bytes": 268435456,
+  "max_users": 10,
+  "max_pending": 8,
+  "job_seconds": 1800,
+  "worker_memory": "6g",
+  "worker_cpus": 4,
+  "issuer": "",
+  "jwks_url": "",
+  "client_id": "",
+  "authorize_url": "",
+  "token_url": "",
+  "comfy_proxy": "",
+  "comfy_native": "",
+  "model_network": ""
+}

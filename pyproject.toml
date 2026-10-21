@@ -20,10 +20,12 @@ text = ["uharfbuzz>=0.56,<0.57", "fonttools>=4.67,<5"]
 vision = ["opencv-python-headless>=4.10,<5"]
 local-comfy = ["comfy-api-proxy"]
 mcp = ["mcp>=1.30,<2"]
+hosted = ["mcp>=1.30,<2", "starlette>=1.0,<2", "uvicorn>=0.54,<1", "PyJWT[crypto]>=2.15,<3"]
 transcribe = ["faster-whisper>=1.1,<2"]
 
 [project.scripts]
 openkatana = "openkatana.cli:main"
+openkatana-hosted = "openkatana.hosted.cli:main"
 
 [tool.setuptools.package-data]
 openkatana = ["templates/*.py", "templates/*.js", "web/*.js", "web/*.html", "web/*.css", "web/*.jpg", "web/vendor3d/**/*", "web/vendor3d/manifest.json", "fonts/*.ttf", "fonts/manifest.json", "fonts/licenses/*.txt", "models/*.onnx", "models/*.txt"]

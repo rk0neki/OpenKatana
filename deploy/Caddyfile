@@ -1,0 +1,7 @@
+studio.example.org {
+    encode zstd gzip
+    request_body {
+        max_size 256MB
+    }
+    reverse_proxy 127.0.0.1:8090
+}

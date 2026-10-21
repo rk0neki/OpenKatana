@@ -1,0 +1,12 @@
+.git
+.venv
+work
+build
+dist
+**/__pycache__
+**/*.egg-info
+.env
+.mcp.json
+projects
+docs/SESSION_HANDOFF.md
+docs/NEXT_SESSION_CONTEXT.md
