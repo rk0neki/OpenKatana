@@ -50,7 +50,9 @@ installation, system dependencies and existing projects.
 
 Studio keeps these capabilities discoverable through Start, Studio, Tools and
 Review. Agent saves appear in the editor without overwriting unsaved human edits.
-The guide toolbar keeps **Copy guide** and **Close** visible while reading.
+Studio follows **Brief & media → Preview & refine → Render & review**.
+Tool cards open their Markdown guides; **Copy**, **Download .md** and **Close**
+stay visible while reading.
 
 ## Try local 3D
 
@@ -72,7 +74,7 @@ require review and `--trusted-script`. No generation model is needed for this ex
 - [3D scenes](docs/SCENE3D.md) · [WebGL](docs/WEBGL.md) · [Blender production](docs/ANIMATION.md)
 - [Compositions/plugins](docs/COMPOSITIONS.md) · [HDR](docs/HDR.md) · [Comfy models](docs/COMFY_MODELS.md)
 - [Capabilities](docs/CAPABILITY-MATRIX.md) · [Limits](docs/CAPABILITY-GAPS.md) · [Validation](docs/VALIDATION.md)
-- [Contributing](CONTRIBUTING.md) · [Agent skill](skills/openkatana-video/SKILL.md)
+- [Contributing](CONTRIBUTING.md) · [Agent skill](skills/openkatana-video/SKILL.md) · [Hosting and local MCP](docs/HOSTING.md)
 
 Windows is the locally tested platform. CI is configured for Windows and Linux;
 check the results for your release commit. Chrome/Chromium, FFmpeg, optional

@@ -22,8 +22,10 @@ def main():
         address=json.loads(proc.stdout.readline())['studio'];errors=[]
         with sync_playwright() as pw:
             browser=pw.chromium.launch(executable_path=chrome_path(),headless=True,args=['--disable-gpu']);page=browser.new_page(viewport={'width':1440,'height':1000},permissions=['clipboard-read','clipboard-write']);page.on('pageerror',lambda e:errors.append(str(e)));page.goto(address)
-            page.wait_for_selector('#homeProject:has-text("Studio integration test")')
+            page.wait_for_selector('#projectName:has-text("Studio integration test")',state='attached')
             assert page.locator('#view-start').is_visible()
+            assert not page.locator('.resume-bar, footer.statusbar').count()
+            assert page.get_by_role('link',name='Give us a star on GitHub').get_attribute('href')=='https://github.com/rk0neki/OpenKatana'
             page.screenshot(path=str(root/'desktop-start.png'),full_page=True)
             page.locator('[data-connect]').first.click()
             setup=page.locator('#setupPrompt').input_value()
@@ -35,13 +37,16 @@ def main():
             wait(page,"document.getElementById('copyFeedback').textContent.startsWith('Copied')")
             assert page.evaluate('navigator.clipboard.readText()').replace('\r\n','\n')==setup
             page.locator('#connectDialog').screenshot(path=str(root/'onboarding.png'))
-            page.keyboard.press('Escape');assert not page.locator('#connectDialog').is_visible()
+            page.locator('.mcp-setup>summary').click();page.locator('#openMcpGuide').click()
+            assert not page.locator('#connectDialog').is_visible()
+            wait(page,"document.getElementById('guideText').textContent.includes('Optional MCP setup')")
+            page.keyboard.press('Escape');assert not page.locator('#guideDialog').is_visible()
             page.locator('.main-nav [data-view="tools"]').click()
             page.wait_for_selector('.tool-card')
             assert page.locator('.tool-card').count()==len(TOOLS)
             page.locator('#toolSearch').fill('morph_images')
             assert page.locator('.tool-card').count()==1
-            page.locator('.tool-card').get_by_role('button',name='Read guide').click()
+            page.locator('.tool-open').focus();page.keyboard.press('Enter')
             wait(page,"document.getElementById('guideText').textContent.includes('Comfy')")
             header=page.locator('#guideDialog .dialog-heading').bounding_box()
             page.locator('#guideText').evaluate('(el)=>el.scrollTop=el.scrollHeight')
@@ -50,20 +55,32 @@ def main():
             page.locator('#copyGuide').click()
             wait(page,"document.getElementById('copyGuide').textContent==='Copied'")
             assert page.evaluate('navigator.clipboard.readText()').replace('\r\n','\n')==page.locator('#guideText').text_content().replace('\r\n','\n')
+            with page.expect_download() as downloading:
+                page.locator('#downloadGuide').click()
+            download=downloading.value
+            assert download.suggested_filename=='openkatana-comfy-models.md'
+            guide_file=root/download.suggested_filename;download.save_as(str(guide_file))
+            assert guide_file.read_text(encoding='utf-8')==page.locator('#guideText').text_content().replace('\r\n','\n')
             page.locator('#guideDialog').screenshot(path=str(root/'guide-scrolled.png'))
             page.get_by_role('button',name='Close guide').click()
             assert not page.locator('#guideDialog').is_visible()
             page.locator('.tool-card').get_by_role('button',name='Add to brief').click()
             assert 'morph_images' in page.locator('#creativeBrief').input_value()
             assert page.locator('#view-studio').is_visible()
+            assert page.locator('.studio-steps button').count()==3
+            assert not page.locator('#refinePanel').get_attribute('open')
+            page.locator('#refinePanel>summary').click()
             page.locator('.inspector-tabs [data-inspector="comfy"]').click()
             page.locator('#workflowKind').select_option('qwen-generation')
             assert page.locator('#qwenComponents').is_visible()
             page.locator('#checkWorkflow').click();wait(page,"document.getElementById('status').textContent.includes('text encoder')")
+            assert page.locator('#notification').is_visible()
+            page.locator('#dismissStatus').click();assert not page.locator('#notification').is_visible()
             page.locator('#workflowKind').select_option('matte')
             assert not page.locator('#qwenComponents').is_visible()
             page.get_by_text('Media permissions',exact=True).click()
             page.locator('#rights').select_option('own');page.locator('#files').set_input_files(str(source));wait(page,"document.querySelectorAll('[data-asset]').length===1")
+            page.locator('.quick-edit>summary').click()
             page.get_by_text('Opening lettering',exact=True).click()
             page.locator('#seconds').fill('1');page.locator('#caption').fill('OPEN KATANA');page.locator('#plan').click();wait(page,"document.getElementById('status').textContent.startsWith('Edit prepared')")
             page.locator('.inspector-tabs [data-inspector="shot"]').click()
@@ -85,6 +102,9 @@ def main():
             page.once('dialog',lambda dialog:dialog.accept());page.locator('#reloadProject').click()
             wait(page,"document.getElementById('status').textContent==='Loaded the saved project.'")
             assert page.locator('#zoom').input_value()=='1.3'
+            page.locator('#refinePanel>summary').click()
+            page.locator('.quick-edit>summary').click()
+            page.locator('.main-nav [data-view="studio"]').click()
             page.screenshot(path=str(root/'studio.png'),full_page=True)
             page.locator('#render').click();wait(page,"document.querySelector('#jobs video')!==null",timeout=60000)
             page.locator('#jobs video').evaluate('(v)=>v.load()');wait(page,"document.querySelector('#jobs video').readyState>=1")
@@ -103,18 +123,20 @@ def main():
                 page.screenshot(path=str(root/('mobile-'+view+'.png')),full_page=True)
             page.locator('.main-nav [data-view="tools"]').click()
             page.locator('#toolSearch').fill('render_scene3d')
-            page.locator('.tool-card').get_by_role('button',name='Read guide').click()
+            page.locator('.tool-open').click()
             wait(page,"document.getElementById('guideText').textContent.includes('3D')")
             header=page.locator('#guideDialog .dialog-heading').bounding_box()
             page.locator('#guideText').evaluate('(el)=>el.scrollTop=el.scrollHeight')
             assert page.locator('#guideDialog .dialog-heading').bounding_box()==header
             assert page.get_by_role('button',name='Close guide').is_visible()
             assert page.locator('#copyGuide').is_visible()
+            assert page.locator('#downloadGuide').is_visible()
+            assert page.locator('#guideDialog').evaluate('(el)=>el.scrollWidth<=el.clientWidth')
             page.locator('#guideDialog').screenshot(path=str(root/'mobile-guide-scrolled.png'))
             page.get_by_role('button',name='Close guide').click()
             browser.close();assert not errors,errors
         job=json.loads(next((root/'.openkatana/jobs').glob('*/job.json')).read_text());receipt=json.loads((root/'.openkatana/jobs'/job['id']/'render/receipt.json').read_text());assert receipt['ok']
-        write_json(root/'result.json',{'passed':True,'browser_errors':errors,'import_plan_edit_save_render':True,'onboarding_and_tool_discovery':True,'setup_clipboard':True,'fixed_guide_toolbar_and_clipboard':True,'tool_count':len(TOOLS),'external_agent_sync':True,'unsaved_human_edit_protected':True,'mobile_views_without_overflow':True,'stale_save_rejected':True,'cross_origin_write_rejected':True,'render_frames':receipt['frames'],'human_visual_approval':False})
+        write_json(root/'result.json',{'passed':True,'browser_errors':errors,'import_plan_edit_save_render':True,'onboarding_and_tool_discovery':True,'setup_clipboard':True,'fixed_guide_toolbar_and_clipboard':True,'guide_download_content_and_filename':True,'keyboard_tool_cards':True,'guided_studio':True,'local_mcp_setup_guide':True,'dismissible_notifications':True,'tool_count':len(TOOLS),'external_agent_sync':True,'unsaved_human_edit_protected':True,'mobile_views_without_overflow':True,'stale_save_rejected':True,'cross_origin_write_rejected':True,'render_frames':receipt['frames'],'human_visual_approval':False})
         print((root/'result.json').read_text())
     finally:
         proc.terminate()

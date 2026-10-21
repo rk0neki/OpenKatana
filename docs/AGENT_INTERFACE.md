@@ -4,7 +4,7 @@ Your agent makes the creative decisions. OpenKatana supplies the local tools,
 and Studio supports human direction, adjustment and review.
 
 Start with [SETUP.md](SETUP.md) and `python scripts/setup.py`. The same prompt
-and CLI workflow apply to every agent. Studio’s Direct panel exports briefs
+and CLI workflow apply to every agent. Studio’s Brief & media step exports briefs
 with project context; Tools exposes the operation catalog and guides. External
 saves refresh when the human has no unsaved edits. Read the latest revision
 before saving. See [Studio](STUDIO.md).

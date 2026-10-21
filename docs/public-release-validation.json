@@ -1,16 +1,13 @@
 {
   "date": "2026-10-21",
   "version": "0.1.0rc2",
-  "platform": "Windows, Python 3.11",
+  "scope": "Guided Studio, portable path handling and HDR decoder cleanup",
+  "platform": "Local Windows, Python 3.11; remote CI matrix tracked separately",
   "unit_tests": {
-    "run": 243,
-    "passed": 242,
+    "run": 244,
+    "passed": 243,
     "skipped": 1,
-    "staged_source_prior_to_optional_mcp_reporting_fix": {
-      "run": 242,
-      "passed": 241,
-      "skipped": 1
-    }
+    "skip_reason": "Optional Torch dependency not installed"
   },
   "studio": {
     "passed": true,
@@ -19,6 +16,11 @@
     "onboarding_and_tool_discovery": true,
     "setup_clipboard": true,
     "fixed_guide_toolbar_and_clipboard": true,
+    "guide_download_content_and_filename": true,
+    "keyboard_tool_cards": true,
+    "guided_studio": true,
+    "local_mcp_setup_guide": true,
+    "dismissible_notifications": true,
     "tool_count": 72,
     "external_agent_sync": true,
     "unsaved_human_edit_protected": true,
@@ -28,67 +30,81 @@
     "render_frames": 30,
     "human_visual_approval": false
   },
-  "installed_wheel": {
-    "passed": true,
-    "installed_package_isolated": true,
-    "all_guide_topics": 12,
-    "skill_installed": true,
-    "apache_license_and_notices_present": true,
-    "font_files_and_licenses_verified": 26,
-    "browser_dependency_hashes_verified": 24,
-    "face_model_hash_verified": true,
-    "new_and_legacy_page_interfaces_rendered": true,
-    "dependency_environment": "Existing Windows runtime; no new dependencies or models downloaded"
+  "ci": {
+    "workflow": ".github/workflows/ci.yml",
+    "matrix": [
+      "ubuntu-latest / Python 3.11",
+      "ubuntu-latest / Python 3.12",
+      "windows-latest / Python 3.11",
+      "windows-latest / Python 3.12"
+    ],
+    "results": "https://github.com/rk0neki/OpenKatana/actions",
+    "instruction": "Check the completed run for the exact release commit. Local results do not imply remote success."
   },
-  "installed_render": {
-    "passed": true,
-    "checks": {
-      "svg_outline_renders": true,
-      "temporal_blur_broadens_motion": true,
-      "blur_deterministic": true,
-      "clamped_exposure_edges": true,
-      "static_exposure_preserves_pixels": true,
-      "physics_blur_seek_stable": true
-    },
-    "metrics": {
-      "motion_width_pixels": {
-        "sharp": 6,
-        "blurred": 33
-      }
-    },
-    "credits_used": 0
-  },
-  "skill_frontmatter_validation": true,
-  "fresh_git_install": {
-    "source_files_verified": 312,
-    "setup_script_completed": true,
-    "new_virtual_environment": true,
-    "cli_without_mcp": true,
-    "studio": {
+  "baseline_distribution_checks": {
+    "commit": "f7acf65ab480aa39e9269c1c0ced54c1b8efd2c7",
+    "scope": "Earlier fresh setup and installed-wheel validation, retained as dated baseline evidence",
+    "installed_wheel": {
       "passed": true,
-      "browser_errors": [],
-      "import_plan_edit_save_render": true,
-      "onboarding_and_tool_discovery": true,
-      "setup_clipboard": true,
-      "fixed_guide_toolbar_and_clipboard": true,
-      "tool_count": 72,
-      "external_agent_sync": true,
-      "unsaved_human_edit_protected": true,
-      "mobile_views_without_overflow": true,
-      "stale_save_rejected": true,
-      "cross_origin_write_rejected": true,
-      "render_frames": 30,
-      "human_visual_approval": false
+      "installed_package_isolated": true,
+      "all_guide_topics": 12,
+      "skill_installed": true,
+      "apache_license_and_notices_present": true,
+      "font_files_and_licenses_verified": 26,
+      "browser_dependency_hashes_verified": 24,
+      "face_model_hash_verified": true,
+      "new_and_legacy_page_interfaces_rendered": true,
+      "dependency_environment": "Existing Windows runtime; no new dependencies or models downloaded"
     },
-    "render_checks": {
-      "svg_outline_renders": true,
-      "temporal_blur_broadens_motion": true,
-      "blur_deterministic": true,
-      "clamped_exposure_edges": true,
-      "static_exposure_preserves_pixels": true,
-      "physics_blur_seek_stable": true
+    "installed_render": {
+      "passed": true,
+      "checks": {
+        "svg_outline_renders": true,
+        "temporal_blur_broadens_motion": true,
+        "blur_deterministic": true,
+        "clamped_exposure_edges": true,
+        "static_exposure_preserves_pixels": true,
+        "physics_blur_seek_stable": true
+      },
+      "metrics": {
+        "motion_width_pixels": {
+          "sharp": 6,
+          "blurred": 33
+        }
+      },
+      "credits_used": 0
     },
-    "system_dependencies": "Previously installed Chrome and FFmpeg"
+    "fresh_git_install": {
+      "source_files_verified": 312,
+      "setup_script_completed": true,
+      "new_virtual_environment": true,
+      "cli_without_mcp": true,
+      "studio": {
+        "passed": true,
+        "browser_errors": [],
+        "import_plan_edit_save_render": true,
+        "onboarding_and_tool_discovery": true,
+        "setup_clipboard": true,
+        "fixed_guide_toolbar_and_clipboard": true,
+        "tool_count": 72,
+        "external_agent_sync": true,
+        "unsaved_human_edit_protected": true,
+        "mobile_views_without_overflow": true,
+        "stale_save_rejected": true,
+        "cross_origin_write_rejected": true,
+        "render_frames": 30,
+        "human_visual_approval": false
+      },
+      "render_checks": {
+        "svg_outline_renders": true,
+        "temporal_blur_broadens_motion": true,
+        "blur_deterministic": true,
+        "clamped_exposure_edges": true,
+        "static_exposure_preserves_pixels": true,
+        "physics_blur_seek_stable": true
+      },
+      "system_dependencies": "Previously installed Chrome and FFmpeg"
+    }
   },
   "license": "Apache-2.0; separate dependency licenses retained",
   "limits": [
@@ -97,6 +113,8 @@
     "CI results and human approval are separate release checks",
     "License and hash checks are not legal clearance"
   ],
+  "human_visual_approval": false,
+  "credits_used": 0,
   "runtime_sha256": {
     "openkatana/__init__.py": "315264f823d440ae430f7bf5d1b54693dc16ae54625333238e22d15e81dbc27c",
     "openkatana/__main__.py": "6d8b7d7846a845059d7a3107143f11131f63c5511d669b44085b15ec5e3d2279",
@@ -125,7 +143,7 @@
     "openkatana/fontcov.py": "aa57e0e35f8f445559b5d8ffce39645675e5a240beb62130fc4b415a620cdae8",
     "openkatana/gates.py": "edf3dbc0dfac9e4171059269a2103966e108575ea3cf2a154509bdd1670bf3fb",
     "openkatana/graffiti.py": "241c96332e1644052bdef97b4eb48d704a276457b2f09fa2c5a3077be209435f",
-    "openkatana/hdr.py": "0b286b8a4d153d04c7793a342db7659d5f4d613ac4a48108d90042a2f71c7d06",
+    "openkatana/hdr.py": "982628fbaae1071b5efab67781a107e3cdbf66868b9870eeb7f887ca904c8dac",
     "openkatana/hooks.py": "95c098a830de45a291cacca221b52a949db1b1287031c2bd76eda04c5247ce2e",
     "openkatana/identity.py": "cab53b20248c18df95c0f4868d900514b6c8cc3dcda0179ce0af8d120a03afda",
     "openkatana/image_morph.py": "f5fe921582483a919fcebd6ec694ef7b1bf282e4819e3701e93691f6037ecdbd",
@@ -148,7 +166,7 @@
     "openkatana/qa.py": "2337dbb6c86955b564bef05f2c48788a2832dd409a87c6aff532431641619df8",
     "openkatana/recipes.py": "9566f7b203095f42371fc39a8daaec9d62655d635897a430ce4ad4af454436f2",
     "openkatana/render.py": "f60cd0a4db98bee5d4ed5e347cb64e4a79b9d667ca42db9ce380fd991435a95b",
-    "openkatana/scene3d.py": "0ebd1d9e55789d63dfb81b919b25f3b5c769b3217b1030d662313462f9ee5f8a",
+    "openkatana/scene3d.py": "684caf29582afc5fe4d1b1649ea3aa7fc0ed2def517290cdf3468ac608a1293b",
     "openkatana/sfx.py": "c159190bed60886bb2574401bc4a763c7fd72dfef99ce7f41aa3cee83aff167b",
     "openkatana/specials.py": "5495db5296f2a477fdb78eabcace648552c6b46d121d384335813c90c1083e61",
     "openkatana/stickers.py": "f8f3cff1e01d1aee6f233c12d792a27812cc2cb12e645ee472e4d48aed79b0ee",
@@ -180,15 +198,15 @@
     "openkatana/web/scene3d.html": "0fff3a71ba0adceeeae290f5414437392fef4e042c30ad12af1ed86f5ba237a8",
     "openkatana/web/scene3d.js": "af02e1757c9698708f8e1a3d560b24ffa464c47bb86f3d44becd3b211fbeb529",
     "openkatana/web/stickers.js": "8c06e886bcc615591bc31350f44b19efee8f2586ea9ac18a43064c81ba86a510",
-    "openkatana/web/studio-shell.js": "2fed13450a31f5f6846fbc8840e7f704935ab28c075bf995ac7cf33daa7c334b",
-    "openkatana/web/studio.css": "c31b8c09f47e9153009c0cd40f145e3c7651f93e51ee64650f031468c63d26a8",
-    "openkatana/web/studio.html": "488ae6b352379a0448db25d6eb6359bdc87bcec48f45b802c65a3cf5e98ce364",
-    "openkatana/web/studio.js": "f3092afc019bd8a1db7d1fb2f0fe3acfa65013b2e7ee95fc49e794c352eb2b31",
+    "openkatana/web/studio-shell.js": "66ee8fd8a20b19c49f3ce2afd2c00e578946894b6f20ba34b448fefa46be55b1",
+    "openkatana/web/studio.css": "406228823a2407e521f67fa806e0cd31da98af651f1ca1afca727e351d30be13",
+    "openkatana/web/studio.html": "a19070131bd263d988f9a585a326550e117245dad7fbba407f84cf9407f76507",
+    "openkatana/web/studio.js": "da9d3abd7de3bc600a434227f36978b08301cda2e769041e61278dac43e6c7ca",
     "openkatana/web/studiofx.js": "85b80b11909247f74e83913200c6d3cf1c77effed021730b0d2c951dec35bb64",
     "openkatana/web/transitions.js": "b4c36a432ce911a35a1adaa2bcb60ea54dd3d850479a4f614ff1cd18ac57fe02",
     "openkatana/web/typography.js": "ef3ecb537d7a1fe96c95e44fffc9ccfd0b6d4cc371f5fd95fc9d5cb9324053f9",
     "openkatana/web/webgl_helpers.js": "5ed25fa488725d7f9d60694c7d9f1b3bfb4f6e6c18a7aa930c1c9f45f84d3865",
-    "openkatana/webgl_authoring.py": "7899d8d7f6fc1f763b6ec532b58af756b05a180a758f58bc9a1556f44d7e8650",
+    "openkatana/webgl_authoring.py": "64838eee8902f6eb86b3dc116d8e9f9b71bf15083e9f90883aee615592cac4bb",
     "openkatana/workflow_schema.py": "3d5c587c77b07d19cb74e41b7cc691b368138a8ce1d50c128338a81eb7a2434b",
     "openkatana/workflows.py": "9ea57808ba68f9517568635de5e0a4106271df01d37af56309cb6980cac584ed"
   }

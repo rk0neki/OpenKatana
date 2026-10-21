@@ -1,7 +1,8 @@
 'use strict';
 const $=id=>document.getElementById(id);
 let project,edit,selected=0,frame=0,playing=false,drawing=false,dirty=false;
-function status(message,error=false){$('status').textContent=message;$('status').className=error?'error':'';if(typeof setDraftState==='function')setDraftState();}
+let statusTimer;
+function status(message,error=false){$('status').textContent=message;$('status').className=error?'error':'';$('notification').hidden=false;clearTimeout(statusTimer);if(!error)statusTimer=setTimeout(()=>$('notification').hidden=true,6500);if(typeof setDraftState==='function')setDraftState();}
 async function api(path,body){const r=await fetch('/api/'+path,body===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const data=await r.json();if(!r.ok)throw Error(data.error??r.statusText);return data;}
 function action(id,fn){$(id).onclick=async()=>{try{$(id).disabled=true;await fn();}catch(e){status(e.message,true);}finally{$(id).disabled=false;}};}
 function option(parent,text,value){const o=document.createElement('option');o.textContent=text;o.value=value;parent.append(o);}

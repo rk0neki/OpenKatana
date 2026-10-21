@@ -1,4 +1,5 @@
 import copy
+from contextlib import chdir
 import json
 from pathlib import Path
 import tempfile
@@ -25,6 +26,16 @@ class WebGLAuthoringTests(unittest.TestCase):
         self.assertEqual(set(inputs),{'scene.js','display/atlas.png','display/receipt.json'})
         with self.assertRaises(FileExistsError): create_kit(self.root,'film')
         with self.assertRaises(ContractError): create_kit(self.root,'../escape')
+
+    def test_relative_workspace_returns_portable_paths_and_manifest(self):
+        with chdir(self.root.parent):
+            root = Path(self.root.name)
+            result = create_kit(root, 'relative-film', 160, 96, 24, 12)
+            self.assertEqual(result['scene'], 'relative-film/scene.json')
+            self.assertEqual(result['module'], 'relative-film/scene.js')
+            scene = json.loads((root/result['scene']).read_text())
+            manifest = input_manifest(scene, root/'relative-film')
+        self.assertEqual(set(manifest), {'scene.js','display/atlas.png','display/receipt.json'})
 
     def test_local_dependencies_and_modules_are_enforced(self):
         for module in ('../escape.js','https://example.com/s.js','missing.js','display/atlas.png'):
