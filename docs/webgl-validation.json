@@ -1,0 +1,112 @@
+{
+  "date": "2026-10-21",
+  "status": "Completed local source and installed-package validation",
+  "passed": true,
+  "tools": 72,
+  "engine": "Three.js 0.180.0 (MIT), cannon-es 0.20.0 (MIT)",
+  "credits_used": 0,
+  "model_calls": 0,
+  "local_fixture": {
+    "contract": true,
+    "preview_and_shutter_assertions": true,
+    "exact_step_key_boundary": true,
+    "chunk_pixels_equal_full": true,
+    "display_clock": true,
+    "native_camera_cut": true,
+    "custom_geometry": true,
+    "three_not_blender": true,
+    "post_effects": true,
+    "no_external_requests": true,
+    "reordered_chunks_rejected": true,
+    "timeline_and_audio": true,
+    "undeclared_dependency_rejected": true
+  },
+  "existing_scene_regressions": {
+    "product_reverse_seek": true,
+    "product_frames": true,
+    "product_visible_change": true,
+    "morph_reverse_seek": true,
+    "morph_frames": true,
+    "morph_visible_change": true,
+    "physics_reverse_seek": true,
+    "physics_frames": true,
+    "physics_visible_change": true,
+    "sphere_euler_2": true,
+    "torus_euler_0": true,
+    "all_sampled_morph_frames_manifold": true,
+    "gravity_moves_body": true,
+    "floor_prevents_fallthrough": true,
+    "skin_and_clip_loaded": true,
+    "morph_clip_moves_weights": true,
+    "bone_moves_vertices": true,
+    "model_reverse_seek": true,
+    "timeline_import_render": true
+  },
+  "source": "Original OpenKatana code and fixtures, no hosted renderer/scene copied",
+  "code_sha256": {
+    "openkatana/scene3d.py": "7500029909b06345e4e3eaa759c0f9ba8cf91c2e9f646d96f2ad292d72640656",
+    "openkatana/webgl_authoring.py": "7899d8d7f6fc1f763b6ec532b58af756b05a180a758f58bc9a1556f44d7e8650",
+    "openkatana/web/webgl_helpers.js": "5ed25fa488725d7f9d60694c7d9f1b3bfb4f6e6c18a7aa930c1c9f45f84d3865",
+    "openkatana/web/scene3d.js": "af02e1757c9698708f8e1a3d560b24ffa464c47bb86f3d44becd3b211fbeb529",
+    "openkatana/templates/webgl_scene.js": "f187adb7226e68927c5aa82fa65d24df7b28302db780de96ff67cf4d738b9469",
+    "openkatana/production.py": "26cbdba7d93adbc03da23e81849ed090b42443fa596f23aa0f18f8c5cbec12f5",
+    "openkatana/agent_api.py": "461e180e760ce7b923e2016ee38f43b5598820d2c8b53684d75b5af860e8a9d2",
+    "openkatana/cli.py": "34fb783210064a815f2f034b10b6707362e7a2aaf1615c13e3406e1355f74e80"
+  },
+  "limits": [
+    "Not hosted pixel parity",
+    "Windows with existing Python/Chrome/FFmpeg dependencies; not a fresh OS",
+    "Small technical fixtures; arbitrary film quality is not certified",
+    "WebGL SDR rasterization; Blender remains optional for its own features"
+  ],
+  "unit_tests": {
+    "run": 239,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 1,
+    "skip_reason": "Optional Torch-dependent Comfy node test"
+  },
+  "fresh_wheel": {
+    "passed": true,
+    "runtime_hashes_match": true,
+    "cwd_outside_checkout_root": true,
+    "existing_dependencies_reused": true,
+    "checks": {
+      "contract": true,
+      "preview_and_shutter_assertions": true,
+      "exact_step_key_boundary": true,
+      "chunk_pixels_equal_full": true,
+      "display_clock": true,
+      "native_camera_cut": true,
+      "custom_geometry": true,
+      "three_not_blender": true,
+      "post_effects": true,
+      "no_external_requests": true,
+      "reordered_chunks_rejected": true,
+      "timeline_and_audio": true,
+      "undeclared_dependency_rejected": true
+    }
+  },
+  "mcp": {
+    "passed": true,
+    "tools_discovered": 72,
+    "calls": [
+      "read_guide",
+      "create_project",
+      "create_webgl_kit",
+      "render_scene3d",
+      "create_animation_kit",
+      "render_blender",
+      "assemble_render_clips"
+    ],
+    "webgl_and_blender_rendered": true,
+    "mixed_renderer_timeline_validated": true,
+    "untrusted_module_rejected": true,
+    "unknown_arguments_rejected": true,
+    "credits_used": 0,
+    "model_calls": 0
+  },
+  "skill_validation": "passed",
+  "visual_review": "Final technical fixture frame inspected; not a film-quality or listening approval",
+  "published": false
+}

@@ -1,0 +1,47 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "first.png"
+    }
+  },
+  "2": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "second.png"
+    }
+  },
+  "3": {
+    "class_type": "ImageBatch",
+    "inputs": {
+      "image1": [
+        "1",
+        0
+      ],
+      "image2": [
+        "2",
+        0
+      ]
+    }
+  },
+  "4": {
+    "class_type": "OpenKatanaInterpolate",
+    "inputs": {
+      "images": [
+        "3",
+        0
+      ],
+      "multiplier": 2
+    }
+  },
+  "5": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "4",
+        0
+      ],
+      "filename_prefix": "OpenKatana/interpolated"
+    }
+  }
+}

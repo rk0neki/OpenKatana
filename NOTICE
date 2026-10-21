@@ -1,0 +1,12 @@
+OpenKatana
+Copyright 2026 OpenKatana contributors
+
+Distributed under the Apache License, Version 2.0.
+
+This distribution includes third-party software, fonts and a face-detection
+model under their respective licenses. See THIRD_PARTY_NOTICES.md and the
+license files identified there. Those notices and license terms remain in force.
+
+The MIT notice for earlier OpenKatana code is retained in
+licenses/OpenKatana-MIT.txt. The kinetic example retains its MIT notice in
+examples/plugins/kinetic/LICENSE.txt.

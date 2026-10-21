@@ -1,0 +1,8 @@
+{
+  "model": "YOUR_QWEN_21_MODEL.safetensors",
+  "encoder": "YOUR_QWEN_ENCODER.safetensors",
+  "vae": "YOUR_QWEN_21_VAE.safetensors",
+  "references": 2,
+  "prompt": "Use the second reference to recolor the object in the first image. Preserve its shape.",
+  "resolution": 1024, "steps": 25, "seed": 1
+}

@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openkatana"
+version = "0.1.0rc2"
+description = "Independent, evidence-tested video editing with Comfy workflows"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26,<3", "Pillow>=10,<13", "playwright>=1.50,<2", "comfy-sdk>=0.5,<0.6"]
+
+[project.urls]
+Repository = "https://github.com/rk0neki/OpenKatana"
+Issues = "https://github.com/rk0neki/OpenKatana/issues"
+
+[project.optional-dependencies]
+text = ["uharfbuzz>=0.56,<0.57", "fonttools>=4.67,<5"]
+vision = ["opencv-python-headless>=4.10,<5"]
+local-comfy = ["comfy-api-proxy"]
+mcp = ["mcp>=1.30,<2"]
+transcribe = ["faster-whisper>=1.1,<2"]
+
+[project.scripts]
+openkatana = "openkatana.cli:main"
+
+[tool.setuptools.package-data]
+openkatana = ["templates/*.py", "templates/*.js", "web/*.js", "web/*.html", "web/*.css", "web/*.jpg", "web/vendor3d/**/*", "web/vendor3d/manifest.json", "fonts/*.ttf", "fonts/manifest.json", "fonts/licenses/*.txt", "models/*.onnx", "models/*.txt"]
+
+[tool.setuptools.data-files]
+"share/openkatana/examples" = ["examples/showcase.py"]
+"share/openkatana" = ["mcp.example.json", "AGENTS.md", "README.md", "LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md", "CONTRIBUTING.md"]
+"share/openkatana/comfy_nodes" = ["comfy_nodes/__init__.py"]
+"share/openkatana/examples/plugins/kinetic" = ["examples/plugins/kinetic/plugin.json", "examples/plugins/kinetic/kinetic.js", "examples/plugins/kinetic/LICENSE.txt"]
+"share/openkatana/examples/scene3d" = ["examples/scene3d/blender_orbit.py"]
+"share/openkatana/docs" = ["docs/AGENT_INTERFACE.md", "docs/animation-validation.json", "docs/ANIMATION.md", "docs/ARCHITECTURE.md", "docs/CAPABILITY-GAPS.md", "docs/CAPABILITY-MATRIX.md", "docs/COMFY_MODELS.md", "docs/COMPATIBILITY.md", "docs/composition-validation.json", "docs/COMPOSITIONS.md", "docs/dependency-inventory.json", "docs/EDITOR_TOOLS.md", "docs/EXPANSION.md", "docs/HDR.md", "docs/LICENSING.md", "docs/model-validation.json", "docs/RELEASE-READINESS.md", "docs/public-release-validation.json", "docs/RELEASE-TOOLS.md", "docs/release-validation.json", "docs/ROADMAP.md", "docs/scene3d-validation.json", "docs/SCENE3D.md", "docs/SETUP.md", "docs/STUDIO.md", "docs/TIMELINE.md", "docs/VALIDATION.md", "docs/webgl-validation.json", "docs/WEBGL.md"]
+"share/openkatana/docs/assets" = ["docs/assets/capabilities.png"]
+"share/openkatana/workflows" = ["workflows/qwen-reference-edit.parameters.json", "workflows/solid-smoke.api.json", "workflows/image-invert.api.json", "workflows/matte.api.json", "workflows/interpolation.api.json"]
+
+"share/openkatana/skills/openkatana-video" = ["skills/openkatana-video/SKILL.md"]
+
+"share/openkatana/licenses" = ["licenses/OpenKatana-MIT.txt"]
+
+[tool.setuptools.packages.find]
+include = ["openkatana*"]

@@ -1,0 +1,13 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.mp4 binary
+*.m4a binary
+*.ttf binary
+*.otf binary
+*.onnx binary
+# Preserve exact upstream bytes and hashes, including license text.
+openkatana/web/vendor3d/** -text -diff
+openkatana/fonts/** -text -diff
+openkatana/models/** -text -diff
+licenses/** -text

@@ -1,0 +1,98 @@
+{
+  "date": "2026-10-20",
+  "scope": "independently implemented 3D and geometric image morphing; not a general quality guarantee",
+  "regression": {
+    "run": 182,
+    "skipped": 1,
+    "failed": 0
+  },
+  "threejs": {
+    "version": "0.180.0",
+    "checks": {
+      "product_reverse_seek": true,
+      "product_frames": true,
+      "product_visible_change": true,
+      "morph_reverse_seek": true,
+      "morph_frames": true,
+      "morph_visible_change": true,
+      "physics_reverse_seek": true,
+      "physics_frames": true,
+      "physics_visible_change": true,
+      "sphere_euler_2": true,
+      "torus_euler_0": true,
+      "all_sampled_morph_frames_manifold": true,
+      "gravity_moves_body": true,
+      "floor_prevents_fallthrough": true,
+      "skin_and_clip_loaded": true,
+      "morph_clip_moves_weights": true,
+      "bone_moves_vertices": true,
+      "model_reverse_seek": true,
+      "timeline_import_render": true
+    },
+    "count": 19,
+    "sphere_topology": {
+      "vertices": 5210,
+      "edges": 15624,
+      "faces": 10416,
+      "euler": 2,
+      "nonmanifold_edges": 0,
+      "quantization": 1e-09,
+      "grid": 28
+    },
+    "torus_topology": {
+      "vertices": 3496,
+      "edges": 10488,
+      "faces": 6992,
+      "euler": 0,
+      "nonmanifold_edges": 0,
+      "quantization": 1e-09,
+      "grid": 28
+    },
+    "wheel_install_verified": true
+  },
+  "blender": {
+    "version": "5.1.2",
+    "engine": "BLENDER_EEVEE",
+    "frames": 3,
+    "width": 320,
+    "height": 180
+  },
+  "mcp": {
+    "tools_discovered": 53,
+    "operations_called": [
+      "read_guide",
+      "create_project",
+      "create_scene3d",
+      "check_scene3d",
+      "render_scene3d",
+      "render_scene3d",
+      "inspect_model3d",
+      "import_model3d",
+      "morph_images"
+    ]
+  },
+  "image_morph": {
+    "tests": 4,
+    "checks": [
+      "automatic shifted-texture registration",
+      "explicit geometric movement, not just dissolve",
+      "exact prepared endpoints",
+      "refusal of unreliable/invalid matches"
+    ]
+  },
+  "local_receipts": [
+    "work/scene3d-verified-validation/validation.json",
+    "work/scene3d-blender-001/receipt.json",
+    "work/scene3d-mcp-verified/validation.json"
+  ],
+  "environment_limits": "Windows only, reused installed Python dependencies/Chrome/FFmpeg/Blender; fresh app wheel install, not fresh OS",
+  "hosted_requests": 0,
+  "reference_runtime_used": false,
+  "wheel_sha256": "8b5b1a2783b513d7fac2b56ca102f2dc923696e3e8e02d36d12deb7e84784aef",
+  "development_fixes": [
+    "Retained tiny valid implicit triangles at grid crossings; all 25 sampled morph frames now have zero nonmanifold edge diagnostics.",
+    "Corrected the MCP test helper argument collision.",
+    "Bundled runtime dependencies and licenses; tested installed guide lookup."
+  ],
+  "wheel_license_check": "passed"
+}

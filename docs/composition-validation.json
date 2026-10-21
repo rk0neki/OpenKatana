@@ -1,0 +1,143 @@
+{
+  "date": "2026-10-20",
+  "scope": "Independent OpenKatana plugin, responsive layout and shaped text implementation",
+  "credits_used": 0,
+  "regression": {
+    "tests_run": 192,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  "rendering": {
+    "checks_passed": 22,
+    "browser": "155.0.8059.82",
+    "checks": [
+      {
+        "name": "actual plugin discovery and parameter schemas",
+        "passed": true
+      },
+      {
+        "name": "grid and intrinsic layout at 640x360; no content overflow",
+        "passed": true
+      },
+      {
+        "name": "Arabic RTL, Indic conjunct and combining-mark grapheme ranges",
+        "passed": true
+      },
+      {
+        "name": "actual contextual joins and OpenType ligature metrics",
+        "passed": true
+      },
+      {
+        "name": "variable font width axis changes real layout metrics",
+        "passed": true
+      },
+      {
+        "name": "reveal retains full shaped run and stable cluster geometry",
+        "passed": true
+      },
+      {
+        "name": "responsive portrait reflow at 360x640 without scaled-down text",
+        "passed": true
+      },
+      {
+        "name": "larger viewport recomputes layout and clamped font sizes",
+        "passed": true
+      },
+      {
+        "name": "vertical writing uses actual top-to-bottom glyph placement",
+        "passed": true
+      },
+      {
+        "name": "emoji ZWJ grapheme segmentation (not bundled emoji-font rendering)",
+        "passed": true
+      },
+      {
+        "name": "plugin effect mount/dispose lifecycle across viewport and document changes",
+        "passed": true
+      },
+      {
+        "name": "custom operator produces validated proposal without mutating input",
+        "passed": true
+      },
+      {
+        "name": "batch add/replace/remove/copy/move/test transaction",
+        "passed": true
+      },
+      {
+        "name": "failed batch leaves caller document unchanged",
+        "passed": true
+      },
+      {
+        "name": "unsupported operator parameter rejected",
+        "passed": true
+      },
+      {
+        "name": "post-operation invalid document rejected",
+        "passed": true
+      },
+      {
+        "name": "unsupported CSS value rejected by browser",
+        "passed": true
+      },
+      {
+        "name": "off-origin plugin request blocked",
+        "passed": true
+      },
+      {
+        "name": "plugin effects + RTL reveal render, backwards seek, remount and exact video frames",
+        "passed": true
+      },
+      {
+        "name": "same composition renders portrait with responsive layout",
+        "passed": true
+      },
+      {
+        "name": "stateful visual plugin fails deterministic render",
+        "passed": true
+      },
+      {
+        "name": "composition clip and native operator proposal work in existing timeline renderer",
+        "passed": true
+      }
+    ]
+  },
+  "mcp": {
+    "tools_discovered": 59,
+    "calls": [
+      "read_guide",
+      "create_project",
+      "create_composition",
+      "list_plugins",
+      "run_plugin_operator",
+      "save_composition",
+      "inspect_composition",
+      "render_composition"
+    ],
+    "stale_revision_rejected": true
+  },
+  "distribution": {
+    "wheel_sha256": "ec2f76dba49ff2d1362d6742fc7ff515aa47381d46768a18bfe24fbcde3d596c",
+    "isolated_target_install": true,
+    "application_bytes_match_checkout": true,
+    "environment": "Windows; separate application install using existing local Python dependencies, Chrome and FFmpeg. Not a fresh OS or cross-platform qualification."
+  },
+  "provenance": {
+    "new_code": "Original OpenKatana code and fixtures",
+    "new_assets": "Unmodified Noto Sans Arabic 2.012 and Noto Sans Devanagari 2.007, OFL-1.1, pinned Google Fonts commit 47d54ca1ebb14fd864695f1d39dc734f39017c33",
+    "legal_clearance_claimed": false
+  },
+  "limits": [
+    "No hosted comparison in this task",
+    "No private native plugin binary ABI or command-syntax compatibility",
+    "No glyph-ID/outline inspection API",
+    "Arbitrary script/font combinations and malicious plugin isolation not established",
+    "Browser-version and font coverage affect output"
+  ],
+  "local_evidence": [
+    "work/composition-package-validation/validation.json",
+    "work/composition-mcp-verified/validation.json",
+    "work/composition-wheel/",
+    "work/composition-installed/"
+  ]
+}

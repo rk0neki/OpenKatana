@@ -1,0 +1,8 @@
+{
+  "api": 1,
+  "id": "kinetic",
+  "version": "1.0.0",
+  "entry": "kinetic.js",
+  "files": ["kinetic.js", "LICENSE.txt"],
+  "license": "MIT"
+}

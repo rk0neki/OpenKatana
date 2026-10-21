@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-21",
+  "passed": true,
+  "version": "0.1.0rc2",
+  "tools": 70,
+  "platform": "Windows, existing Python 3.11/Blender 5.1.2/Chrome/FFmpeg",
+  "unit_tests": {
+    "run": 230,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 1,
+    "animation_tests": 13
+  },
+  "fresh_wheel": {
+    "isolated_target_install": true,
+    "cwd_outside_checkout_root": true,
+    "runtime_code_hashes_match_tested_checkout": true,
+    "dependencies": "Existing Python environment dependencies reused; not a clean OS test"
+  },
+  "live_fixture": {
+    "passed": true,
+    "frames": 12,
+    "dimensions": [
+      160,
+      96
+    ],
+    "fps": 24,
+    "audio": true,
+    "credits_used": 0,
+    "assertions": {
+      "cut_keys_preserved": true,
+      "shutter_cut_safe": true,
+      "reverse_camera_seek": true
+    }
+  },
+  "mcp": {
+    "passed": true,
+    "tools_discovered": 70,
+    "calls": [
+      "read_guide",
+      "create_animation_kit",
+      "build_display_atlas",
+      "synthesize_score",
+      "assemble_blender_clips",
+      "analyze_render_motion",
+      "analyze_camera_motion"
+    ],
+    "unknown_arguments_rejected": true,
+    "credits_used": 0
+  },
+  "skill_validation": "passed",
+  "visual_review": "Opening and final fixture frames inspected; tiny technical fixture, not a film-quality or listening approval",
+  "code_sha256": {
+    "openkatana/camera_path.py": "83207a7e6f5783514f691b3cfba88f027b6564f948bbb924cba32a494426dae6",
+    "openkatana/blender_helpers.py": "01c8634a6710b5ea03a52199b14671a1fa9e51e514f60822f1ac5b4fdbd0027b",
+    "openkatana/dotfont.py": "461bd797be9530586db74d0118a34a94db5fbabc85687acdd7b789a87bd64c4b",
+    "openkatana/production.py": "2771bbceb57361f5c5513ffee91951349c0debca4dbecd820800ea6308bcddb0",
+    "openkatana/motion_qa.py": "1feb53baa577c583f138aff904a20962d606035a00abea7161048b84268c1ee8",
+    "openkatana/blender_worker.py": "945dd8c5cfc3ef511dd64ee589c8feaedfd53b6cce8391378f74c7d8e5b43398",
+    "openkatana/agent_api.py": "165dd68927b4f2ce865e3eb39ff3c10b316ff48fdba43ce3ad27ec6e07a8cbda",
+    "openkatana/templates/animation_scene.py": "7c078ef0d30effa24322484274ef669711afa908dc8c46679af28bdf347f79a5"
+  },
+  "limits": [
+    "User media is not bundled",
+    "Original procedural helpers; review scene-specific results",
+    "Optical-flow/jolt detections are heuristic review candidates",
+    "Only installed Blender 5.1.2 tested; other releases/platforms need testing",
+    "LED font is limited; use shaped compositions for broader text"
+  ],
+  "model_calls": 0,
+  "paid_credits": 0,
+  "published": false
+}

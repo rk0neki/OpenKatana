@@ -1,0 +1,4 @@
+{
+  "1": {"class_type": "EmptyImage", "inputs": {"width": 320, "height": 192, "batch_size": 1, "color": 12607231}},
+  "2": {"class_type": "SaveImage", "inputs": {"images": ["1", 0], "filename_prefix": "OpenKatana/sdk-smoke"}}
+}
