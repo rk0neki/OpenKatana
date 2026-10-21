@@ -128,7 +128,7 @@ Official interface reference (checked 2026-10-18):
 https://docs.comfy.org/development/api-development/sdks
 
 
-## Reference and restoration adapters (0.1.0rc2)
+## Reference and restoration adapters (0.1.0)
 
 The original builders now target the inspected public core interfaces in ComfyUI
 0.41.0. They use installed files, never downloader nodes. Live preflight verifies

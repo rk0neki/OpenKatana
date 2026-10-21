@@ -152,3 +152,13 @@ The quick-edit example and derived README GIF use NASA imagery credited in
 `examples/quick-edit/assets/sources.json`, with source URLs and SHA-256 hashes.
 NASA media-use policy applies; the example does not imply NASA endorsement.
 The original synthesized score and its generator use Apache-2.0.
+
+The LTX-2.5 example API graph adapts Comfy Org's workflow template under MIT;
+copyright (c) 2023-present Comfy Org. The complete notice is in
+`licenses/Comfy-workflow-templates-MIT.txt`. The exact upstream revision and
+template/license hashes are recorded in `examples/comfy/assets/sources.json`.
+The bundled sample MP4 is AI-generated with Lightricks LTX-2.5 on Comfy Cloud,
+with an original prompt. Its original workflow metadata is preserved. The
+README GIF is a local OpenKatana edit of that sample with the bundled OFL Inter
+font. Model weights are not bundled; the LTX-2.x Community License and the text
+encoder's upstream terms are distinct from this project's code license.

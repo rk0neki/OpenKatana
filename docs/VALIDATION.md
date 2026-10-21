@@ -83,3 +83,22 @@ For public receipts, use `python scripts/export_validation.py receipt.json --roo
 PATH_TO_LOCAL_WORKSPACE --out docs/report.json`. It removes explicitly mapped roots
 and rejects unknown personal paths. Keep full paths in private project receipts.
 The release manifest scanner also rejects JSON-escaped Windows user paths.
+
+## LTX-2.5 generation-to-edit validation — 2026-10-22
+
+One authorized Comfy Cloud browser run of the open-weight LTX-2.5 distilled
+template produced 121 video frames at 24 fps with audio. The embedded API graph
+matched the submitted export. Its source clip and exact model filenames are
+recorded in [the example](../examples/comfy/README.md) and `model-validation.json`.
+The account's displayed balance decreased by approximately two credits.
+
+The local shared API then inspected/imported the output, preserved its audio,
+saved a five-second ramp/freeze timeline with typography, rendered 120 frames
+and measured motion. No motion flags were raised; the hold from frame 66 is
+intentional. Source and edit contact sheets were inspected. The regression
+suite ran 271 tests: 270 passed and one optional Torch test was skipped.
+
+This is a split-stage functional smoke test, not a model quality benchmark.
+It does not validate local LTX-2.5 inference, an all-in-one Cloud custom-node
+graph, Cloud SDK submission or prize eligibility. Earlier dated receipts retain
+the versions and limits of their original validation rounds.

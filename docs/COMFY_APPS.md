@@ -154,6 +154,9 @@ Connect its VIDEO to downstream video nodes; preview frames are a sample only.
 Model decoded IMAGE frames can replace LoadVideo in the fifth App. The original
 [LTX example](../examples/comfy/README.md) supplies the complete generation-to-edit
 API graph. Installed weights are required; schema validation is not inference.
+The same guide now includes a separately tested LTX-2.5 Cloud generation followed
+by a local shared-API edit. Download that result into the Video to edit App;
+do not assume OpenKatana custom nodes are installed on Comfy Cloud.
 Optical flow is classical OpenCV processing in the separate OpenKatana vision
 environment. The chroma matte and point helpers need only Comfy's tensor runtime.
 

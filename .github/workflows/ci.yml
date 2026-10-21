@@ -40,6 +40,8 @@ jobs:
         run: python scripts/release_bundle.py --check-manifest
       - name: Render bundled photo and video edit
         run: python examples/quick-edit/render.py --width 320 --height 180
+      - name: Edit bundled LTX output without generation
+        run: python examples/comfy/render_ltx_edit.py
       - name: Render glyph and shutter fixtures
         run: python scripts/test_release_features.py --out work/release-features
       - name: Studio browser workflow

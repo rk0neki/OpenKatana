@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-22",
+  "kind": "AI-generated functional smoke test",
+  "template": {
+    "repository": "https://github.com/Comfy-Org/workflow_templates",
+    "commit": "447747bf37b7e2f6d5fab3f15288e03bf889b82f",
+    "license": "MIT",
+    "license_sha256": "5dccd61c80c847cd6b22fa98124010163ab8646e573557a16a5cae31122f2056",
+    "paths": [
+      "templates/video_ltx2_5_t2v.json"
+    ],
+    "template_sha256": "eb1a415a467a2ef1ea63cdb4e79a35315e29c971b1e4f7646ed149a2971fdbd7",
+    "template_url": "https://raw.githubusercontent.com/Comfy-Org/workflow_templates/447747bf37b7e2f6d5fab3f15288e03bf889b82f/templates/video_ltx2_5_t2v.json"
+  },
+  "adaptation": {
+    "file": "../ltx25-generate.api.json",
+    "sha256": "3b01b72e71eadda9f445e130f422c17694b5cd791cbce6504ef7de5ac70c04b7",
+    "changes": "Original copper orbit prompt; five seconds, 24 fps, 0.2 megapixels; prompt enhancement disabled; flattened API export from Cloud."
+  },
+  "source": {
+    "file": "ltx25-source.mp4",
+    "sha256": "07576b3b64297768b0f7962b0404c46d6cf10390217a2303e2e44a569e7feb35",
+    "model_repository": "https://huggingface.co/Lightricks/LTX-2.5",
+    "model_license": "LTX-2.x Community License",
+    "license_url": "https://github.com/Lightricks/LTX-2/blob/main/LICENSE-2_x",
+    "models": {
+      "diffusion": "ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors",
+      "text_encoder": "gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors",
+      "video_vae": "ltx-2.5-video-vae-bf16.safetensors",
+      "audio_vae": "ltx-2.5-audio-vae-bf16.safetensors",
+      "latent_upscaler": "ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors"
+    },
+    "seed": 558811532553686,
+    "prompt_enhancement_executed": false,
+    "weights_bundled": false,
+    "execution": "Comfy Cloud browser; open-weight nodes, no Partner API nodes",
+    "width": 576,
+    "height": 320,
+    "fps": 24,
+    "frames": 121,
+    "duration_seconds": 5.041666666666667,
+    "audio": "AAC 48000 Hz",
+    "metadata": "Original workflow/prompt metadata retained. No personal media inputs.",
+    "rights_review": "Review exact model and encoder terms and output before publication; not a copyright guarantee."
+  }
+}

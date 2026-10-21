@@ -22,7 +22,12 @@ regenerated with `python scripts/release_bundle.py --manifest-only`.
 Suggested description: **Agent-driven video editing with Studio, ComfyUI Apps,
 CLI and MCP. Turn photos, footage and music into finished edits.**
 
-Suggested neutral topics: `comfyui`, `video-editing`, `ai-agents`, `open-source`.
+Suggested topics: `comfyui`, `video-editing`, `ai-agents`, `open-source`,
+`opensourcehiggsfield`.
+Describe the competition inspiration with the README's independence statement.
+Do not imply endorsement or service compatibility. A privacy-history cleanup
+does not establish code provenance, copyright clearance or an isolated
+development process; describe only what the source and dependency records support.
 Use [release notes](RELEASE-NOTES.md) for `v0.1.0` and attach the source ZIP, wheel
 and `docs/assets/quick-edit.gif`. Confirm the current source and all historical
 commits are suitable for public release before changing repository visibility.

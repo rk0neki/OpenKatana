@@ -1,5 +1,9 @@
 # OpenKatana
 
+An independent, open-source video editor inspired by Higgsfield's Katana, built
+with the Comfy Developer Platform for
+[#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield/).
+
 **Your photos and videos, made into a finished edit.** OpenKatana is an independent,
 open-source video editor for you and your AI agent: cuts, transitions, motion,
 typography and music in one shared project. Built with the Comfy Developer Platform,
@@ -73,12 +77,25 @@ Local model → Import media → Make edit → Render to video → VIDEO + previ
                  ↑ AUDIO (optional)
 ```
 
-For a concrete open-weights example, [LTX to edit](examples/comfy/README.md)
-connects sampling and decoding to a ramp/freeze edit. The graph schema is checked
-against ComfyUI; LTX inference requires separately installed weights and has not
-been run in this validation round. The typed media path was tested end to end
-with synthetic frames, interpolation, music and a rendered VIDEO round-trip.
-Existing model adapters have separate [recorded validation](docs/model-validation.json).
+For a tested open-weights example, [LTX to edit](examples/comfy/README.md) uses
+LTX-2.5 distilled on Comfy Cloud, then OpenKatana locally for a speed ramp,
+freeze, typography and audio render. The five-second source is bundled, so you
+can repeat the edit without credits or model downloads:
+
+```sh
+python examples/comfy/render_ltx_edit.py
+```
+
+![LTX-2.5 video edited locally by OpenKatana](docs/assets/ltx25-edit.gif)
+
+*AI-generated smoke-test footage, not a quality benchmark. Cloud generation
+and local editing were tested as separate stages; the Cloud SDK submission
+route was not exercised by this run. [Exact models, graph and evidence](examples/comfy/README.md).
+The GIF is silent; the MP4 preserves the generated room tone.*
+
+The typed Comfy media path was also tested with synthetic frames, interpolation,
+music and a rendered VIDEO round-trip. Other adapters have separate
+[recorded validation](docs/model-validation.json).
 
 These nodes run locally and reject cloud/paid jobs. The CLI and agent route can
 use authorized Comfy API jobs separately. Studio, CLI and optional stdio MCP
@@ -124,6 +141,14 @@ check the completed runs for the commit you install. **macOS is untested.**
 Python 3.11+ is required. FFmpeg, Chromium, optional Blender and generative weights
 are separate installations. Playwright's installed Chromium is a supported
 browser fallback. Studio is not a full graphical 3D scene editor.
+
+## Independence
+
+OpenKatana is inspired by Higgsfield's Katana and is not affiliated with,
+endorsed by, or sponsored by Higgsfield AI. It does not connect to Higgsfield's
+services. Those names identify the inspiration; their use does not imply
+endorsement or trademark rights. The project and its bundled dependencies have
+the licenses and source records linked below.
 
 ## License
 

@@ -1,5 +1,5 @@
 {
-  "release": "0.1.0rc2",
+  "release": "0.1.0",
   "date": "2026-10-20",
   "comfyui": "0.41.0",
   "sdk_transport": "official Comfy SDK via local API proxy",
@@ -122,6 +122,62 @@
           "type": "image"
         }
       ]
+    },
+    "ltx25-cloud-to-local-edit": {
+      "state": "collected",
+      "date": "2026-10-22",
+      "execution": "Cloud browser generation, then local shared AgentAPI edit/render",
+      "sdk_cloud_submission_tested": false,
+      "local_ltx_inference_tested": false,
+      "quality_benchmark": false,
+      "model_repository": "https://huggingface.co/Lightricks/LTX-2.5",
+      "models": {
+        "diffusion": "ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors",
+        "text_encoder": "gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors",
+        "video_vae": "ltx-2.5-video-vae-bf16.safetensors",
+        "audio_vae": "ltx-2.5-audio-vae-bf16.safetensors",
+        "latent_upscaler": "ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors"
+      },
+      "graph": "examples/comfy/ltx25-generate.api.json",
+      "graph_matches_embedded_output_prompt": true,
+      "paid_runs": 1,
+      "gpu_seconds_ui": 7.65,
+      "credits": {
+        "budget": 200,
+        "displayed_balance_delta": 2,
+        "exact_fractional_charge": null,
+        "published_rate_per_gpu_second": 0.266
+      },
+      "outputs": [
+        {
+          "file": "examples/comfy/assets/ltx25-source.mp4",
+          "sha256": "07576b3b64297768b0f7962b0404c46d6cf10390217a2303e2e44a569e7feb35",
+          "width": 576,
+          "height": 320,
+          "frames": 121,
+          "fps": 24,
+          "audio": true
+        },
+        {
+          "file": "local render (retained in validation workspace)",
+          "sha256": "4e9e2a9fe4d5aa46c4a48d56a6132e983da6dacf9f0ce329a7f382ee4da9cb12",
+          "width": 576,
+          "height": 320,
+          "frames": 120,
+          "fps": 24,
+          "audio": true
+        }
+      ],
+      "local_edit": {
+        "recipe": "ramp-freeze",
+        "typography": true,
+        "source_audio_preserved": true,
+        "intentional_freeze_from_frame": 66,
+        "motion_flags": [],
+        "network_calls": 0,
+        "model_calls": 0
+      },
+      "limits": "Split-stage smoke test. Does not establish model quality, prize eligibility or an all-in-one Cloud custom-node route."
     }
   },
   "remaining": {},
@@ -179,5 +235,7 @@
     "film_neural_execution_tested": false,
     "quality_scope": "Original moving-shape and line fixtures; not arbitrary footage or restoration ground truth."
   },
-  "visual_review": "Qwen synthetic color reference and RIFE/upscaling contact sheets inspected; real user video review pending."
+  "visual_review": "Qwen synthetic color reference and RIFE/upscaling contact sheets inspected; real user video review pending.",
+  "prior_validation_release": "0.1.0rc2",
+  "latest_validation_date": "2026-10-22"
 }
