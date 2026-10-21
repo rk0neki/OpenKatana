@@ -109,6 +109,25 @@ class HostedTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'quota'):
             pack(root, io.BytesIO(), 2)
 
+    def test_clip_processing_uses_account_model_service(self):
+        from dataclasses import replace
+        user = self.a['user']
+        arguments = {'project_id': 'film', 'clip_id': 'shot', 'kind': 'interpolation', 'directory': 'smooth',
+                     'endpoint': 'http://untrusted:8000', 'native_endpoint': 'http://untrusted:8188'}
+        with self.assertRaisesRegex(ValueError, 'Comfy model service'):
+            Service(self.config).submit(user, 'process_clip', arguments)
+        config = replace(self.config, comfy_proxy='http://comfy-{user}:8000', comfy_native='http://comfy-{user}:8188', model_network='models-{user}')
+        service = Service(config)
+        queued = service.submit(user, 'process_clip', arguments)
+        job = service.store.claim()
+        self.assertEqual(job['id'], queued['id'])
+        actual = json.loads(job['arguments'])
+        self.assertEqual(actual['endpoint'], f'http://comfy-{user}:8000')
+        self.assertEqual(actual['native_endpoint'], f'http://comfy-{user}:8188')
+        cmd = command(config, job, Path(self.tmp.name))
+        self.assertEqual(cmd[cmd.index('--network')+1], 'models-' + user)
+        self.assertNotIn('untrusted', ' '.join(cmd))
+
     def test_all_local_tools_have_hosted_schemas(self):
         catalog = {row['name']: row for row in schemas()}
         self.assertTrue(set(TOOLS).issubset(catalog))

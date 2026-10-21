@@ -1,5 +1,6 @@
 """Single-host worker. It alone talks to Docker; the web server has no socket."""
 import json
+import hashlib
 import os
 from pathlib import Path
 import shutil
@@ -76,7 +77,10 @@ def run_one(settings, store, job):
             temp = Path(temporary); source = temp / 'input'; source.mkdir()
             with (source / 'workspace.tar').open('wb') as out:
                 pack(root, out, settings.workspace_bytes)
-            request = {'tool': job['tool'], 'arguments': json.loads(job['arguments']), 'limit': settings.workspace_bytes}
+            with (source / 'workspace.tar').open('rb') as data:
+                checksum = hashlib.file_digest(data, 'sha256').hexdigest()
+            request = {'tool': job['tool'], 'arguments': json.loads(job['arguments']), 'limit': settings.workspace_bytes,
+                       'workspace_sha256': checksum}
             (source / 'request.json').write_text(json.dumps(request), encoding='utf-8')
             source.chmod(0o755)
             for item in source.iterdir():
@@ -121,6 +125,10 @@ def run_one(settings, store, job):
                     if proc.poll() is None:
                         proc.kill(); proc.wait()
                     proc.stdout.close()
+            expected = docker(['exec', name, 'cat', '/tmp/export.sha256']).decode().strip()
+            with snapshot.open('rb') as data:
+                if hashlib.file_digest(data, 'sha256').hexdigest() != expected:
+                    raise ValueError('Workspace download checksum mismatch')
             candidate = temp / 'candidate'
             with snapshot.open('rb') as src:
                 unpack(src, candidate, settings.workspace_bytes)

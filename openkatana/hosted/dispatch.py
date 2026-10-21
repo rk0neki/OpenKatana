@@ -12,7 +12,7 @@ from .files import inventory, safe_path
 
 
 FILE_TOOLS = ('write_project_file', 'read_project_file', 'list_project_files', 'preview_edit')
-MODEL_TOOLS = {'submit_workflow', 'collect_workflow', 'run_model_workflow', 'check_workflow'}
+MODEL_TOOLS = {'submit_workflow', 'collect_workflow', 'run_model_workflow', 'check_workflow', 'process_clip'}
 
 
 class HostedAPI(AgentAPI):
