@@ -1,46 +1,78 @@
-# Local use and hosting
+# Hosted OpenKatana
 
-## Local Studio and MCP
+The hosting preparation adds a browser editor and authenticated remote MCP.
+Visitors upload media and bring their AI; no checkout, Python or local rendering
+installation is needed. The operator installs the server. Nothing is deployed
+by the setup scripts or CI.
 
-Studio runs on the user's computer. An agent can use the CLI or the optional
-stdio MCP server to access the same operation catalog and project workspace.
-No public website, OAuth connector or OpenKatana account is needed. Follow
-[setup](SETUP.md) and [MCP configuration](AGENT_INTERFACE.md#optional-mcp-setup).
-The agent's MCP client must support launching local stdio servers.
+The default pilot has ten accounts, one active worker, eight pending jobs per
+account, 2 GiB workspaces, 256 MiB uploads and thirty-minute jobs. Extracted
+frames use much more storage than compressed videos. Benchmark before raising
+these limits or promising rendering speed.
 
-The Studio Agent setup dialog provides the CLI bootstrap and an optional MCP
-guide. Opening it does not register a server with an agent. The user or their
-agent configures the client with the correct Python executable and workspace.
+## Shared tools
 
-## Public website
+All 72 AgentAPI operations have hosted schemas, plus four file/preview helpers
+and two MCP queue helpers. Actual availability depends on installed models and
+services. Browser **Tools → Run tool** and MCP use the same account workspace.
 
-A static host can serve a landing page, documentation and download links. It
-cannot execute Python tools, FFmpeg, Chromium, Blender or access a visitor's
-local media. Hosting the Studio HTML alone does not create a working editor or
-a remote MCP endpoint. A public website can point visitors to the local setup.
+- Upload through **Files** or the media picker. Downloads require the same account.
+- Agents use `workspace://` paths and `list_project_files`.
+- Author scenes/scripts/workflows with `write_project_file`. Replacements require
+  the SHA-256 returned by `read_project_file`. Timelines use `save_timeline` and
+  its revision guard.
+- Poll `get_tool_job` until completion; queued is not success. Cancellation and
+  restart never automatically retry uncertain model submissions.
+- Previews run inside workers. User-authored JavaScript is not executed in the
+  signed-in browser. Scrubbing requests server stills; rendered videos play motion/audio.
 
-## Hosted editor or remote MCP
+```mermaid
+flowchart LR
+  Browser[Browser Studio] --> HTTPS[HTTPS proxy]
+  Agent[User's AI / MCP] --> HTTPS
+  HTTPS --> API[Authentication + shared queue]
+  API --> Worker[Disposable gVisor worker]
+  Worker --> Files[Validated account workspace]
+  Worker -. Model tools .-> Comfy[Account-isolated model service]
+```
 
-This release does not implement a hosted multi-user editor or remote MCP
-transport. The current server is intentionally bound to loopback. Do not expose
-it with a public tunnel or change its bind address as a deployment shortcut.
+The web process has no Docker access. Workers have read-only input, bounded
+tmpfs and CPU/memory/process/time limits, without internet access. Exports reject
+links, traversal and excessive size. Final workspace replacement is serialized
+with uploads/cancellation. Use a dedicated patched host: these controls are not
+a security audit. Read [Docker security](https://docs.docker.com/engine/security/)
+and [gVisor production guidance](https://gvisor.dev/docs/user_guide/production/).
 
-A remote edition would need:
+## Connect an AI
 
-- An HTTPS service and a supported MCP Streamable HTTP transport, with client
-  authentication and authorization appropriate to the selected clients.
-- Per-user workspaces and storage, bounded uploads, retention and deletion.
-- A durable render queue with resource limits, cancellation and job recovery.
-- Isolated workers for authored scripts, plugins, browser rendering and Blender.
-  Local trusted-script approval is not a multi-tenant sandbox.
-- Server-side provider credentials, spending limits and explicit authorization
-  for paid generation; credentials must never be shipped in the frontend.
-- The required CPU/GPU runtime, FFmpeg and browser packages. GPU model workloads
-  may run through configured Comfy endpoints instead of the web process.
+**Connect AI** supplies `https://YOUR_DOMAIN/mcp` using the official SDK's
+Streamable HTTP transport. Pilot clients can use revocable seven-day bearer
+keys in private Authorization-header configuration. Never publish keys.
 
-Plan and test these services before accepting uploads or enabling remote tool
-execution. Hosting costs depend on concurrency, render duration and storage;
-no paid service is configured or started by the local setup script.
+OAuth-only clients require an external authorization server. OpenKatana exposes
+resource metadata and verifies RS256 tokens against issuer, JWKS, audience and
+`openkatana` scope. Browser sign-in uses PKCE. Configure and test the provider's
+client registration/discovery, callbacks and audience with the actual AI clients;
+this is not a universal platform connector. See [MCP remote servers](https://modelcontextprotocol.io/docs/develop/connect-remote-servers).
+Users supply their own AI subscriptions.
 
-Protocol references: [local servers](https://modelcontextprotocol.io/docs/develop/connect-local-servers)
-and [remote servers](https://modelcontextprotocol.io/docs/develop/connect-remote-servers).
+## Models and remaining deployment work
+
+CPU editing, WebGL and Blender need no generation provider. Segmentation,
+transcription, generation, identity transfer and learned restoration require
+their packages/weights. The base image downloads no generation weights.
+
+Private Comfy services use separate `{user}` endpoints/internal networks for
+multiple accounts. Shared unauthenticated Comfy is not a tenant boundary. The
+operator provisions reviewed nodes and licensed models. Never expose raw ports.
+
+**Paid cloud execution is disabled in this hosted pilot.** Its local CLI option
+is unchanged. Online paid providers still require a credential broker, explicit
+per-user authorization and enforceable spending limits. Do not inject provider
+keys into authored-code workers. A listed tool does not mean every model is online.
+
+See [deployment](../deploy/README.md) and [budget](HOSTING-COSTS.md). Hosting CI
+builds the real worker and exercises HTTP/MCP, editing, WebGL, downloads and the
+browser. Check its result for the deployment commit. Fixtures do not validate
+production load or every model/provider. Do not expose local Studio publicly;
+use this authenticated entry point. Local setup remains in [SETUP.md](SETUP.md).

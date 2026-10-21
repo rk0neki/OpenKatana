@@ -16,7 +16,7 @@ from starlette.responses import FileResponse, HTMLResponse, JSONResponse, Redire
 from starlette.routing import Mount, Route
 
 from .auth import Identity, current_user
-from .dispatch import schemas
+from .dispatch import schemas, HostedAPI
 from .files import inventory, safe_path
 from .mcp import create as create_mcp
 from .service import Service
@@ -232,7 +232,7 @@ def create_app(settings):
         if route == 'tools':
             return JSONResponse(schemas())
         if route == 'guide':
-            return JSONResponse(AgentAPI('.').read_guide(request.query_params.get('topic', 'agent')))
+            return JSONResponse(HostedAPI('.').read_guide(request.query_params.get('topic', 'agent')))
         if route == 'tool-jobs':
             return JSONResponse(store.jobs(user))
         if route.startswith('tool-jobs/'):
