@@ -34,7 +34,7 @@ def install(root, python, workspace=None):
         raise ValueError('OpenKatana Python interpreter does not exist')
     # Check the selected environment before changing the Comfy installation.
     checked = subprocess.run([str(python), '-m', 'openkatana.comfy_apps'],
-        input=json.dumps({'action': 'catalog'}), cwd=SOURCE.parent, text=True,
+        input=json.dumps({'action': 'runtime'}), cwd=SOURCE.parent, text=True,
         encoding='utf-8', capture_output=True, timeout=30,
         creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
     if checked.returncode or not json.loads(checked.stdout).get('ok'):
@@ -42,8 +42,11 @@ def install(root, python, workspace=None):
     installed_catalog = json.loads((SOURCE / 'catalog.json').read_text(encoding='utf-8'))
     if installed_catalog != catalog():
         raise ValueError('Node catalogue is stale; regenerate it with scripts/build_comfy_apps.py')
-    link = root / 'custom_nodes' / NAME
-    if link.exists() or link.is_symlink():
+    manager_install = SOURCE.parent.parent == (root / 'custom_nodes').resolve()
+    link = SOURCE.parent if manager_install else root / 'custom_nodes' / NAME
+    if manager_install:
+        pass  # the root entry point is already discoverable; do not load it twice
+    elif link.exists() or link.is_symlink():
         if Path(os.path.realpath(link)) != SOURCE:
             raise ValueError(f'{link} already exists and points elsewhere; preserving it')
     elif os.name == 'nt':
@@ -53,10 +56,18 @@ def install(root, python, workspace=None):
     config = root / 'user' / 'openkatana' / 'config.json'
     value = {'python': str(python), 'checkout': str(SOURCE.parent),
              'workspace': str(Path(workspace or root / 'output' / 'OpenKatana').resolve())}
+    chrome = json.loads(checked.stdout)['result'].get('chrome')
+    if chrome:
+        value['chrome'] = chrome
     config.parent.mkdir(parents=True, exist_ok=True)
     if config.exists():
-        if json.loads(config.read_text(encoding='utf-8')) != value:
+        existing = json.loads(config.read_text(encoding='utf-8'))
+        if any(existing.get(k) != value[k] for k in ('python', 'checkout', 'workspace')):
             raise ValueError(f'Existing configuration differs; edit {config} explicitly. It was preserved.')
+        if chrome and not existing.get('chrome'):
+            existing['chrome'] = chrome
+            from openkatana.render import write_json
+            write_json(config, existing)
     else:
         with config.open('x', encoding='utf-8') as f:
             json.dump(value, f, indent=2)

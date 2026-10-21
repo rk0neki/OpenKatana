@@ -333,7 +333,7 @@
         "name": "composition clip and native operator proposal work in existing timeline renderer",
         "passed": true,
         "details": {
-          "output": "work\\hdr-model-audit\\fresh-compositions\\timeline-render"
+          "output": "work/hdr-model-audit/fresh-compositions/timeline-render"
         }
       }
     ]

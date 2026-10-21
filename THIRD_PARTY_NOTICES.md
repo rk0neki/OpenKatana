@@ -46,9 +46,10 @@ font binaries are the OFL fonts and the only model weights the YuNet face detect
 `openkatana/fonts/licenses/` and a provenance record (sha256, upstream source, name-table copyright) in
 `openkatana/fonts/manifest.json`. The OFL permits bundling and redistribution with software provided each font keeps
 its copyright notice and licence and is not sold by itself; Reserved Font Names stay with unmodified fonts only.
-League Gothic, UnifrakturMaguntia, Cormorant and Inter (roman) are recorded against a pinned google/fonts commit; the
-others were taken from a local copy that carried their OFL texts, and their identity comes from each font's own name
-table. Importing a bundled font into a project (`import_media`) copies its licence beside it. Fonts are third-party
+All 26 font files are recorded against Google Fonts commit
+`5e8a3ba899557829a76cfdac30fa512bda91d7ca`; source and OFL URLs are pinned in the
+manifest. `scripts/refresh_font_sources.py --download` verifies upstream bytes and
+font identity before replacing files. Importing a bundled font into a project (`import_media`) copies its licence beside it. Fonts are third-party
 works; OpenKatana's project licence does not apply to them.
 
 | Font | File | Copyright (font name table) |
@@ -144,3 +145,10 @@ no ComfyUI implementation or weights are bundled by these adapters. Selected
 model licenses still require independent review. Interface inspection covered
 ComfyUI 0.41.0 Qwen 2.1, MiniMax H3, SeedVR2, video I/O and frame-interpolation
 nodes. Reference-conditioned output is not a guarantee of model fidelity.
+
+## Example media
+
+The quick-edit example and derived README GIF use NASA imagery credited in
+`examples/quick-edit/assets/sources.json`, with source URLs and SHA-256 hashes.
+NASA media-use policy applies; the example does not imply NASA endorsement.
+The original synthesized score and its generator use Apache-2.0.

@@ -32,7 +32,7 @@ jobs:
           python -m playwright install --with-deps chromium
           python -c "from playwright.sync_api import sync_playwright; import os; p=sync_playwright().start(); open(os.environ['GITHUB_ENV'],'a').write('OPENKATANA_CHROME='+p.chromium.executable_path+'\n'); p.stop()"
       - name: Build the rendering worker (no model weights)
-        run: docker build -f deploy/Dockerfile.worker -t openkatana-worker:0.1.0rc2 .
+        run: docker build -f deploy/Dockerfile.worker -t openkatana-worker:0.1.0 .
       - name: Exercise real hosted tools, files, render and MCP
         run: python scripts/test_hosted_live.py --out work/hosted-check --runtime runsc
       - uses: actions/upload-artifact@v4

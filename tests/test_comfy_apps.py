@@ -96,6 +96,12 @@ class ComfyAppsTests(unittest.TestCase):
         for name, workflow in templates().items():
             self.assertTrue(name.endswith('.app.json'))
             self.assertTrue(workflow['extra']['linearMode'])
+            if name.startswith('05 '):
+                self.assertEqual(workflow['extra']['linearData']['outputs'], [4])
+                self.assertEqual([n['type'] for n in workflow['nodes']],
+                    ['LoadVideo','OpenKatanaImportMedia','OpenKatanaMakeEdit','OpenKatanaRenderVideo'])
+                self.assertEqual(workflow['links'][0][-1], 'VIDEO')
+                continue
             self.assertEqual(workflow['extra']['linearData']['outputs'], [1, 2])
             for node in workflow['nodes']:
                 self.assertTrue(node['type'] in bridge.NODE_CLASS_MAPPINGS or node['type'] == 'PreviewAny')

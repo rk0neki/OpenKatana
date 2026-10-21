@@ -25,15 +25,5 @@ window.OpenKatanaHooks = (() => {
     return [...(declared.layers ?? []).filter(n => !layers[n]).map(n => 'layer ' + n), ...(declared.text_types ?? []).filter(n => !texts[n]).map(n => 'text type ' + n)];
   }
   function reset() { for (const k of Object.keys(layers)) delete layers[k]; for (const k of Object.keys(texts)) delete texts[k]; inited.clear(); }
-  // Compatibility alias for hooks written against the RRC.register("LAYERS"|"TEXT", name, spec) interface: the state
-  // object S carries W, H, t (absolute s, frame centre), f, fps, lt (s into the shot), dur. RRC.util is not provided.
-  window.RRC = {
-    register(kind, n, spec) {
-      if (kind === 'LAYERS') layer(n, {phase: spec.phase, order: spec.order, draw: (ctx, params, info) => spec.draw(info, params, ctx)});
-      else if (kind === 'TEXT') text(n, {init: spec.init ? (item, i) => spec.init(item, i) : null, draw: (ctx, item, info, i) => spec.draw(info, item, ctx, i)});
-      else throw Error(`RRC.register("${kind}") is not available in OpenKatana hooks (LAYERS and TEXT only)`);
-    },
-    util: new Proxy({}, {get: (_, k) => { throw Error(`RRC.util.${String(k)} is not available in OpenKatana hooks`); }}),
-  };
   return {layer, text, drawLayer, drawText, defaults, missing, reset, violations: () => violations.slice()};
 })();

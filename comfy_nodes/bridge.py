@@ -18,18 +18,22 @@ def configuration():
     root = HERE.parent
     python = root / '.venv' / ('Scripts/python.exe' if os.name == 'nt' else 'bin/python')
     return {'python': config.get('python', str(python)), 'checkout': config.get('checkout', str(root)),
-            'workspace': config.get('workspace', str(Path(folder_paths.get_output_directory()) / 'OpenKatana'))}
+            'workspace': config.get('workspace', str(Path(folder_paths.get_output_directory()) / 'OpenKatana')),
+            'chrome': config.get('chrome')}
 
 
 def invoke(action, **kwargs):
     config = configuration()
     python = Path(config['python'])
     if not python.is_file():
-        raise RuntimeError('OpenKatana runtime not configured. Run scripts/install_comfy_nodes.py with its Python environment.')
+        raise RuntimeError('OpenKatana runtime not configured. From the OpenKatana folder, run python scripts/setup.py, '
+                           'then use its Python to run scripts/install_comfy_nodes.py --comfy-root PATH_TO_COMFYUI.')
     env = dict(os.environ, PYTHONUTF8='1', PYTHONIOENCODING='utf-8')
     # Never pass a provider credential to this local-only adapter.
     env.pop('COMFY_API_KEY', None)
     env.pop('OPENKATANA_PRIVATE_COMFY_ENDPOINTS', None)
+    if config.get('chrome'):
+        env['OPENKATANA_CHROME'] = config['chrome']
     request = {'action': action, 'workspace': config['workspace'], **kwargs}
     with _LOCK:
         result = subprocess.run([str(python), '-m', 'openkatana.comfy_apps'],

@@ -13,7 +13,15 @@ def source_frames(source,out,times):
     out.mkdir(parents=True,exist_ok=False);images=[]
     for i,t in enumerate(times):
         path=out/f'{i:02d}.png'
-        run(['ffmpeg','-v','error','-ss',str(t),'-i',source,'-frames:v','1','-vf','scale=768:-2',path])
+        if Path(source).suffix.lower() in ('.png', '.jpg', '.jpeg', '.webp'):
+            from PIL import Image, ImageOps
+            if t != 0: raise ContractError('Still-image previews use time 0')
+            with Image.open(source) as original:
+                im = ImageOps.exif_transpose(original).convert('RGB')
+                im.thumbnail((768, 768), Image.Resampling.LANCZOS)
+                im.save(path)
+        else:
+            run(['ffmpeg','-v','error','-ss',str(t),'-i',source,'-frames:v','1','-vf','scale=768:-2',path])
         if not path.is_file():raise ContractError(f'No source picture at {t} seconds')
         images.append(str(path.resolve()))
     return {'times':times,'preview_images':images,'source':str(source)}

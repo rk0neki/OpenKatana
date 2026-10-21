@@ -1,0 +1,38 @@
+{
+  "policy": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+  "note": "Editorial example. NASA does not endorse OpenKatana. Media is not licensed as CC0.",
+  "assets": [
+    {
+      "file": "apollo17.jpg",
+      "source": "https://svs.gsfc.nasa.gov/vis/a030000/a030600/a030613/blue_marble_apollo_17_19721207_print.jpg",
+      "source_page": "https://svs.gsfc.nasa.gov/30613/",
+      "credit": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+      "sha256": "13419b34c17722be52b4a71a7f0beb3ecc8673183c8a2cee8572d5cd9bbe3f93",
+      "rights": "NASA public-domain media; see media-use policy"
+    },
+    {
+      "file": "earth-rotation.mp4",
+      "source": "https://svs.gsfc.nasa.gov/vis/a030000/a030700/a030763/R_earth_viirs_360p.mp4",
+      "source_page": "https://svs.gsfc.nasa.gov/30763/",
+      "credit": "NASA Scientific Visualization Studio; Amy Moran and Jesse Allen",
+      "sha256": "6f436803b09f1fc93ec648ec441921c1fd537959af3ce09561927d3800bb2ae7",
+      "rights": "NASA public-domain media; see media-use policy"
+    },
+    {
+      "file": "blue-marble.jpg",
+      "source": "https://svs.gsfc.nasa.gov/vis/a000000/a004500/a004550/BlueMarble_starfield_4k_2160p30_v2.01000_print.jpg",
+      "source_page": "https://svs.gsfc.nasa.gov/4550/",
+      "credit": "NASA Scientific Visualization Studio; Cheng Zhang",
+      "sha256": "7dbf717a55aa845cb5446685d89cfca07e74ff3f7c05ee7b43b0c8b779b7c2ab",
+      "rights": "NASA public-domain media; see media-use policy"
+    }
+  ],
+  "score": {
+    "file": "orbit.wav",
+    "license": "Apache-2.0",
+    "copyright": "2026 OpenKatana contributors",
+    "source": "../make_score.py",
+    "description": "Original synthesized score, no external recordings or samples.",
+    "sha256": "d0c03550b432975d1432f8aa49337843c8be9b1cf9fbd1925e3bdeed3731219e"
+  }
+}

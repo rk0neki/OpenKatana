@@ -128,13 +128,30 @@ def open_engine(page, port, attempts=2):
 
 def chrome_path():
     options = [os.environ.get('OPENKATANA_CHROME'), shutil.which('google-chrome'), shutil.which('chromium'),
+               shutil.which('google-chrome-stable'), shutil.which('chromium-browser'), shutil.which('msedge'),
                r'C:\Program Files\Google\Chrome\Application\chrome.exe',
                r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe',
-               '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome']
+               '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+               '/Applications/Chromium.app/Contents/MacOS/Chromium',
+               '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge']
     for name in options:
         if name and Path(name).is_file():
             return name
-    raise RuntimeError('Chrome not found; set OPENKATANA_CHROME to an installed browser executable')
+    # A separate thread also works when the caller already has a Playwright event
+    # loop. Querying executable_path does not install or launch a browser.
+    from concurrent.futures import ThreadPoolExecutor
+    def bundled():
+        with playwright()() as runtime:
+            return runtime.chromium.executable_path
+    try:
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            name = pool.submit(bundled).result(timeout=15)
+        if Path(name).is_file():
+            return name
+    except (ImportError, OSError, RuntimeError, TimeoutError):
+        pass
+    raise RuntimeError('Chrome not found. Install Chrome/Chromium, run python -m playwright install chromium '
+                       'in the OpenKatana environment, or set OPENKATANA_CHROME to an installed browser executable.')
 
 
 def guard_page(page, port):

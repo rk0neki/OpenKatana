@@ -419,8 +419,7 @@ OpenKatanaHooks.text('k_text', {init(item, i) {}, draw(ctx, item, s, i) { /* ite
 ```
 
 `s` carries `W`, `H`, `t` (absolute seconds at the frame centre), `f`, `fps`, `lt` (seconds into the shot), `dur`,
-`face` and `noise(a, b, c)`. For hooks written against the `RRC.register("LAYERS"|"TEXT", name, spec)` interface
-the same calls accept the alternate argument order (`draw(S, p, x)`); `RRC.util` is not provided. Sandbox: the script
+`face` and `noise(a, b, c)`. Register hooks through `OpenKatanaHooks` as above. The script
 runs in the headless render page under a same-origin Content-Security-Policy; every request that is not to the
 loopback project server is blocked and listed in `receipt.hooks.blocked_requests`; `Math.random` is re-seeded every
 frame so renders are reproducible; the script's SHA-256 is in the input manifest and `receipt.hooks`. A hook that

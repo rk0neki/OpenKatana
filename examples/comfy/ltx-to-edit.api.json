@@ -1,0 +1,153 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "SELECT_INSTALLED_LTX_V1_CHECKPOINT.safetensors"
+    }
+  },
+  "2": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "SELECT_INSTALLED_T5XXL.safetensors",
+      "type": "ltxv",
+      "device": "default"
+    }
+  },
+  "3": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "2",
+        0
+      ],
+      "text": "A scarlet paper ribbon twists slowly above a charcoal pedestal. Soft studio lighting, static camera, simple dark background, smooth continuous motion."
+    }
+  },
+  "4": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "2",
+        0
+      ],
+      "text": "text, watermark, blur, jitter, abrupt cuts"
+    }
+  },
+  "5": {
+    "class_type": "EmptyLTXVLatentVideo",
+    "inputs": {
+      "width": 384,
+      "height": 256,
+      "length": 49,
+      "batch_size": 1
+    }
+  },
+  "6": {
+    "class_type": "LTXVConditioning",
+    "inputs": {
+      "positive": [
+        "3",
+        0
+      ],
+      "negative": [
+        "4",
+        0
+      ],
+      "frame_rate": 24
+    }
+  },
+  "7": {
+    "class_type": "ModelSamplingLTXV",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "max_shift": 2.05,
+      "base_shift": 0.95,
+      "latent": [
+        "5",
+        0
+      ]
+    }
+  },
+  "8": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": [
+        "7",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "6",
+        1
+      ],
+      "latent_image": [
+        "5",
+        0
+      ],
+      "seed": 42,
+      "steps": 20,
+      "cfg": 3,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1
+    }
+  },
+  "9": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "8",
+        0
+      ],
+      "vae": [
+        "1",
+        2
+      ]
+    }
+  },
+  "10": {
+    "class_type": "OpenKatanaImportMedia",
+    "inputs": {
+      "images": [
+        "9",
+        0
+      ],
+      "project_id": "ltx-first-edit",
+      "fps": 24,
+      "rights": "review_pending"
+    }
+  },
+  "11": {
+    "class_type": "OpenKatanaMakeEdit",
+    "inputs": {
+      "project_id": "ltx-first-edit",
+      "media_id": [
+        "10",
+        0
+      ],
+      "preset": "ramp-freeze",
+      "seconds": 2,
+      "width": 384,
+      "height": 256,
+      "fps": 24,
+      "replace_existing": false
+    }
+  },
+  "12": {
+    "class_type": "OpenKatanaRenderVideo",
+    "inputs": {
+      "project_id": "ltx-first-edit",
+      "preview_frames": 8,
+      "after": [
+        "11",
+        0
+      ]
+    }
+  }
+}

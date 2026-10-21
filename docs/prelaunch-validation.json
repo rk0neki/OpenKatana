@@ -1,0 +1,88 @@
+{
+  "version": "0.1.0",
+  "date": "2026-10-21",
+  "platform": "Windows",
+  "unit_tests": {
+    "ran": 271,
+    "passed": 270,
+    "failed": 0,
+    "skipped": 1,
+    "skip_reason": "Optional Torch-dependent unit fixture; tensor nodes separately tested in real ComfyUI Python"
+  },
+  "comfy": {
+    "version": "0.41.0",
+    "frontend": "1.55.18",
+    "python": "3.12.11",
+    "mode": "isolated CPU instance; root Manager-style install",
+    "nodes": 82,
+    "tools": 72,
+    "saved_apps": 5,
+    "image_import": true,
+    "optical_flow_separate_environment": true,
+    "timeline_render": true,
+    "video_roundtrip": true,
+    "audio_roundtrip": true,
+    "bounded_image_output": true,
+    "ltx_graph_schema": true,
+    "ltx_inference": false,
+    "app_mode_inputs_verified": true,
+    "root_matte_and_points": true
+  },
+  "quick_edit": {
+    "rendered": true,
+    "dimensions": [
+      960,
+      540
+    ],
+    "fps": 24,
+    "frames": 192,
+    "audio_present": true,
+    "model_calls": 0,
+    "credits_used": 0
+  },
+  "fonts": {
+    "pinned_files": 26,
+    "newly_pinned": 20,
+    "newly_pinned_bytes_unchanged": true,
+    "upstream_commit": "5e8a3ba899557829a76cfdac30fa512bda91d7ca"
+  },
+  "not_tested": [
+    "macOS",
+    "LTX inference or generative quality in this round",
+    "public hosting deployment",
+    "registry installation"
+  ],
+  "studio": {
+    "passed": true,
+    "browser_errors": [],
+    "import_plan_edit_save_render": true,
+    "onboarding_and_tool_discovery": true,
+    "setup_clipboard": true,
+    "fixed_guide_toolbar_and_clipboard": true,
+    "guide_download_content_and_filename": true,
+    "keyboard_tool_cards": true,
+    "guided_studio": true,
+    "local_mcp_setup_guide": true,
+    "dismissible_notifications": true,
+    "tool_count": 72,
+    "external_agent_sync": true,
+    "unsaved_human_edit_protected": true,
+    "mobile_views_without_overflow": true,
+    "stale_save_rejected": true,
+    "cross_origin_write_rejected": true,
+    "render_frames": 30,
+    "human_visual_approval": false
+  },
+  "package_metadata_check": "wheel and sdist passed twine check",
+  "isolated_wheel": {
+    "version": "0.1.0",
+    "tools": 72,
+    "installed_import_verified": true,
+    "bundled_quick_edit_rendered": true,
+    "dimensions": [
+      320,
+      180
+    ],
+    "audio_present": true
+  }
+}

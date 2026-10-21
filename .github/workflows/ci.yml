@@ -36,6 +36,10 @@ jobs:
         run: python -c "from playwright.sync_api import sync_playwright; import os; p=sync_playwright().start(); open(os.environ['GITHUB_ENV'],'a').write('OPENKATANA_CHROME='+p.chromium.executable_path+'\n'); p.stop()"
       - name: Contracts and regression tests
         run: python -m unittest discover -s tests -q
+      - name: Verify source manifest and public paths
+        run: python scripts/release_bundle.py --check-manifest
+      - name: Render bundled photo and video edit
+        run: python examples/quick-edit/render.py --width 320 --height 180
       - name: Render glyph and shutter fixtures
         run: python scripts/test_release_features.py --out work/release-features
       - name: Studio browser workflow

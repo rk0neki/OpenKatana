@@ -7,11 +7,11 @@ import re
 import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
-TOP={'LICENSE','NOTICE','README.md','THIRD_PARTY_NOTICES.md','AGENTS.md','MANIFEST.in',
+TOP={'LICENSE','NOTICE','README.md','THIRD_PARTY_NOTICES.md','AGENTS.md','MANIFEST.in','SECURITY.md','__init__.py',
      'pyproject.toml','requirements-lock.txt','mcp.example.json','.gitignore','.gitattributes','.dockerignore','CONTRIBUTING.md'}
 DIRS={'openkatana','comfy_nodes','workflows','docs','scripts','tests','examples','.github','skills','licenses','deploy'}
 EXCLUDED={'docs/SESSION_HANDOFF.md','docs/NEXT_SESSION_CONTEXT.md'}
-EXTENSIONS={'.py','.js','.html','.css','.jpg','.json','.md','.txt','.ttf','.otf','.onnx','.toml','.yml','.yaml','.png','.svg','.service','.worker'}
+EXTENSIONS={'.gif','.wav','.mp4','.py','.js','.html','.css','.jpg','.json','.md','.txt','.ttf','.otf','.onnx','.toml','.yml','.yaml','.png','.svg','.service','.worker'}
 
 
 def entries():
@@ -30,20 +30,34 @@ def entries():
             if p.suffix in {'.py','.js','.md','.json','.toml','.yml','.yaml'}:
                 text=data.decode('utf-8')
                 if re.search(r'(?:sk-ant-api\d+-|ghp_)[A-Za-z0-9_-]{20,}',text):raise ValueError('Credential-like value in '+rel)
-                if re.search(r'[A-Za-z]:[\\/]Users[\\/][^/\\\s"\']+',text):raise ValueError('Personal absolute path in '+rel)
+                if re.search(r'[A-Za-z]:[\\/]+Users[\\/]+[^/\\\s"\']+',text):raise ValueError('Personal absolute path in '+rel)
             result.append((rel,data))
     return result
 
 
-def main():
-    p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True);args=p.parse_args()
-    out=args.out.resolve()
-    if out==ROOT or not out.is_relative_to(ROOT/'work'):raise ValueError('Release staging must be a new directory under this checkout/work')
-    files=entries();version=re.search(r'__version__ = "([^"]+)"',(ROOT/'openkatana/__init__.py').read_text()).group(1)
-    out.mkdir(parents=True,exist_ok=False);source=out/f'openkatana-{version}';source.mkdir()
+def source_manifest(files, version):
     manifest={'schema':1,'version':version,'history_included':False,'private_work_included':False,
               'scope':'Current source and licensed assets. Private work, local configuration and Git metadata are excluded.',
               'files':{rel:hashlib.sha256(data).hexdigest() for rel,data in files}}
+    return manifest
+
+
+def main():
+    p=argparse.ArgumentParser();mode=p.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--out',type=Path);mode.add_argument('--manifest-only',action='store_true')
+    mode.add_argument('--check-manifest',action='store_true');args=p.parse_args()
+    files=entries();version=re.search(r'__version__ = "([^"]+)"',(ROOT/'openkatana/__init__.py').read_text()).group(1)
+    manifest=source_manifest(files,version)
+    if args.check_manifest:
+        if json.loads((ROOT/'SOURCE-MANIFEST.json').read_text())!=manifest:
+            raise SystemExit('Source manifest is stale; run scripts/release_bundle.py --manifest-only')
+        print('Source manifest verified');return
+    if args.manifest_only:
+        (ROOT/'SOURCE-MANIFEST.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
+        print(f'Recorded {len(files)} files');return
+    out=args.out.resolve()
+    if out==ROOT or not out.is_relative_to(ROOT/'work'):raise ValueError('Release staging must be a new directory under this checkout/work')
+    out.mkdir(parents=True,exist_ok=False);source=out/f'openkatana-{version}';source.mkdir()
     for rel,data in files:
         dest=source/rel;dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(data)
     (source/'SOURCE-MANIFEST.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')

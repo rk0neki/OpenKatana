@@ -168,7 +168,17 @@ def dispatch(request):
     action = request['action']
     if action == 'catalog':
         return {'tools': catalog()}
+    if action == 'runtime':
+        from .render import chrome_path
+        try:
+            chrome = chrome_path()
+        except RuntimeError:
+            chrome = None
+        return {'tools': catalog(), 'chrome': chrome}
     workspace = Path(request['workspace']).expanduser().resolve()
+    if action in ('interpolate_frames', 'import_frames', 'render_video'):
+        from .comfy_media import dispatch_media
+        return dispatch_media(workspace, action, request)
     if action == 'studio':
         return studio(workspace, request['project_id'], request.get('name', 'My film'))
     if action == 'status':

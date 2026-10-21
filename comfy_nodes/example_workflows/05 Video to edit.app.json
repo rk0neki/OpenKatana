@@ -1,0 +1,282 @@
+{
+  "id": "d9a8dda0-b235-506a-a204-ed2337575bae",
+  "revision": 0,
+  "last_node_id": 4,
+  "last_link_id": 4,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadVideo",
+      "title": "1 · Your generated video",
+      "pos": [
+        60,
+        100
+      ],
+      "size": [
+        340,
+        340
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadVideo"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 2,
+      "type": "OpenKatanaImportMedia",
+      "title": "2 · Import into OpenKatana",
+      "pos": [
+        450,
+        100
+      ],
+      "size": [
+        340,
+        340
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 1
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "media_id",
+          "type": "STRING",
+          "links": [
+            2
+          ]
+        },
+        {
+          "name": "music_asset_id",
+          "type": "STRING",
+          "links": [
+            3
+          ]
+        },
+        {
+          "name": "result_json",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "OpenKatanaImportMedia"
+      },
+      "widgets_values": [
+        "my-film",
+        24,
+        "review_pending"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "OpenKatanaMakeEdit",
+      "title": "3 · Make your edit",
+      "pos": [
+        840,
+        100
+      ],
+      "size": [
+        340,
+        340
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "media_id",
+          "type": "STRING",
+          "link": 2
+        },
+        {
+          "name": "music_asset_id",
+          "type": "STRING",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result_json",
+          "type": "STRING",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "OpenKatanaMakeEdit"
+      },
+      "widgets_values": [
+        "my-film",
+        "ramp-freeze",
+        6,
+        1280,
+        720,
+        24,
+        false,
+        "[]"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "OpenKatanaRenderVideo",
+      "title": "4 · Finished video",
+      "pos": [
+        1230,
+        100
+      ],
+      "size": [
+        340,
+        340
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "after",
+          "type": "STRING",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        },
+        {
+          "name": "preview_frames",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "result_json",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "OpenKatanaRenderVideo"
+      },
+      "widgets_values": [
+        "my-film",
+        16
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      1,
+      "VIDEO"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "STRING"
+    ],
+    [
+      3,
+      2,
+      1,
+      3,
+      1,
+      "STRING"
+    ],
+    [
+      4,
+      3,
+      0,
+      4,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "version": 0.4,
+  "extra": {
+    "linearMode": true,
+    "linearData": {
+      "inputs": [
+        [
+          "d9a8dda0-b235-506a-a204-ed2337575bae:1:file",
+          "file"
+        ],
+        [
+          "d9a8dda0-b235-506a-a204-ed2337575bae:2:project_id",
+          "project_id"
+        ],
+        [
+          "d9a8dda0-b235-506a-a204-ed2337575bae:2:rights",
+          "rights"
+        ],
+        [
+          "d9a8dda0-b235-506a-a204-ed2337575bae:3:project_id",
+          "project_id"
+        ],
+        [
+          "d9a8dda0-b235-506a-a204-ed2337575bae:3:preset",
+          "preset"
+        ],
+        [
+          "d9a8dda0-b235-506a-a204-ed2337575bae:3:seconds",
+          "seconds"
+        ],
+        [
+          "d9a8dda0-b235-506a-a204-ed2337575bae:3:replace_existing",
+          "replace_existing"
+        ],
+        [
+          "d9a8dda0-b235-506a-a204-ed2337575bae:4:project_id",
+          "project_id"
+        ]
+      ],
+      "outputs": [
+        4
+      ]
+    },
+    "openkatana": {
+      "description": "Set all three project IDs alike. Upload a video or replace LoadVideo with a model VIDEO output. IMAGE batches connect to Import media images. Model weights are separate.",
+      "local_only": true
+    }
+  }
+}

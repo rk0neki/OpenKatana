@@ -1,7 +1,7 @@
 {
   "data": "/srv/openkatana",
   "public_url": "https://studio.example.org",
-  "worker_image": "openkatana-worker:0.1.0rc2",
+  "worker_image": "openkatana-worker:0.1.0",
   "runtime": "runsc",
   "workspace_bytes": 2147483648,
   "upload_bytes": 268435456,

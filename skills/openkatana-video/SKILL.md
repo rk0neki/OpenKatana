@@ -19,6 +19,14 @@ Model operations may return an adapter background job: inspect its result and
 the nested model receipt before calling it complete. Preserve request IDs and
 collect existing jobs; do not resubmit to make a pending status disappear.
 
+For a model-to-edit graph, connect decoded IMAGE frames or native VIDEO to
+`OpenKatanaImportMedia`, its media/music IDs to `OpenKatanaMakeEdit`, and the
+saved result to `OpenKatanaRenderVideo.after`. Keep all project IDs identical.
+Connect only one image/video source; optional AUDIO supplies the soundtrack.
+The VIDEO output contains the complete render; IMAGE is a sampled preview batch.
+The fifth saved App and `examples/comfy/` show these connections. LTX's example
+needs separately installed weights; a schema pass is not an inference test.
+
 Discover the installed capabilities with `openkatana tools` / `get_capabilities`.
 Read `read_guide(topic="agent")` and the relevant guide before forming arguments.
 CLI and MCP share the same operations; use whichever the current agent supports.

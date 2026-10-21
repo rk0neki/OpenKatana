@@ -14,7 +14,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/anton_Anton-Regular-OFL.txt",
       "license_sha256": "ee67e6ee22790b7929f1a3769ca2801d565c64b5a9096942c1adf5596de9c9e4",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/anton/Anton-Regular.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/anton/OFL.txt"
     },
     {
       "file": "bebasneue_BebasNeue-Regular.ttf",
@@ -29,7 +30,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/bebasneue_BebasNeue-Regular-OFL.txt",
       "license_sha256": "72082f6cb4d04be2ecf7cc7d9e1e7d73787f0af8a5a278a47cade70c16b78341",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/bebasneue/BebasNeue-Regular.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/bebasneue/OFL.txt"
     },
     {
       "file": "caveat_Caveat-VF.ttf",
@@ -46,7 +48,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/caveat_Caveat-VF-OFL.txt",
       "license_sha256": "1f9d81d094273d82f3898a1ee8b598a717d050ecbf5ff7bede105b704880157b",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/caveat/Caveat%5Bwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/caveat/OFL.txt"
     },
     {
       "file": "Cormorant[wght].ttf",
@@ -81,7 +84,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/cormorantgaramond_CormorantGaramond-VF-OFL.txt",
       "license_sha256": "60700d351cac4650c51f3f9db318d2a420f8b45052dba2715eb5fec41f0f6956",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/cormorantgaramond/CormorantGaramond%5Bwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/cormorantgaramond/OFL.txt"
     },
     {
       "file": "delagothicone_DelaGothicOne-Regular.ttf",
@@ -96,7 +100,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/delagothicone_DelaGothicOne-Regular-OFL.txt",
       "license_sha256": "c0014792d4f4abc0508c295b277f2b17ae44465c8dc88d12af9cea48279b5fda",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/delagothicone/DelaGothicOne-Regular.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/delagothicone/OFL.txt"
     },
     {
       "file": "firasansextracondensed_FiraSansExtraCondensed-Black.ttf",
@@ -111,7 +116,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/firasansextracondensed_FiraSansExtraCondensed-Black-OFL.txt",
       "license_sha256": "8f24842e9174beda18a556c2ae7d54f5dc444340c19a3a9ef77e23bca366adbd",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/firasansextracondensed/FiraSansExtraCondensed-Black.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/firasansextracondensed/OFL.txt"
     },
     {
       "file": "firasansextracondensed_FiraSansExtraCondensed-Bold.ttf",
@@ -126,7 +132,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/firasansextracondensed_FiraSansExtraCondensed-Bold-OFL.txt",
       "license_sha256": "8f24842e9174beda18a556c2ae7d54f5dc444340c19a3a9ef77e23bca366adbd",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/firasansextracondensed/FiraSansExtraCondensed-Bold.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/firasansextracondensed/OFL.txt"
     },
     {
       "file": "firasansextracondensed_FiraSansExtraCondensed-ExtraBold.ttf",
@@ -141,7 +148,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/firasansextracondensed_FiraSansExtraCondensed-ExtraBold-OFL.txt",
       "license_sha256": "8f24842e9174beda18a556c2ae7d54f5dc444340c19a3a9ef77e23bca366adbd",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/firasansextracondensed/FiraSansExtraCondensed-ExtraBold.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/firasansextracondensed/OFL.txt"
     },
     {
       "file": "greatvibes_GreatVibes-Regular.ttf",
@@ -156,7 +164,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/greatvibes_GreatVibes-Regular-OFL.txt",
       "license_sha256": "61093a21f5e63dedf54222b3c09997e54c0fe43e3851d21386e02ddcbc246d49",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/greatvibes/GreatVibes-Regular.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/greatvibes/OFL.txt"
     },
     {
       "file": "inter_Inter-Italic-VF.ttf",
@@ -174,7 +183,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/inter_Inter-Italic-VF-OFL.txt",
       "license_sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/inter/Inter-Italic%5Bopsz%2Cwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/inter/OFL.txt"
     },
     {
       "file": "Inter[opsz,wght].ttf",
@@ -210,7 +220,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/jetbrainsmono_JetBrainsMono-VF-OFL.txt",
       "license_sha256": "b2fe5e8987594e9ffd1d2ca52a2f5d73eb8335243893c5d6254b5ad69269591d",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/jetbrainsmono/OFL.txt"
     },
     {
       "file": "LeagueGothic[wdth].ttf",
@@ -245,7 +256,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/montserrat_Montserrat-VF-OFL.txt",
       "license_sha256": "8b7141c03fa4f8d44e6345d5d4931709290f0f67875e452e95ac1fd3a027802e",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/montserrat/Montserrat%5Bwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/montserrat/OFL.txt"
     },
     {
       "file": "notosans_NotoSans-VF.ttf",
@@ -263,7 +275,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/notosans_NotoSans-VF-OFL.txt",
       "license_sha256": "cee9892f9f0cc8fe882c9e9537ee6a89621d86ee7ceaf70b02e2b2b1c25c061a",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/notosans/NotoSans%5Bwdth%2Cwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/notosans/OFL.txt"
     },
     {
       "file": "nunito_Nunito-VF.ttf",
@@ -280,7 +293,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/nunito_Nunito-VF-OFL.txt",
       "license_sha256": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/nunito/Nunito%5Bwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/nunito/OFL.txt"
     },
     {
       "file": "oswald_Oswald-VF.ttf",
@@ -297,7 +311,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/oswald_Oswald-VF-OFL.txt",
       "license_sha256": "0fd731a904b729a4e02eaf5e8ebd06783edd9abe400e8882760160230675b652",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/oswald/Oswald%5Bwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/oswald/OFL.txt"
     },
     {
       "file": "playfairdisplay_PlayfairDisplay-Italic-VF.ttf",
@@ -314,7 +329,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/playfairdisplay_PlayfairDisplay-Italic-VF-OFL.txt",
       "license_sha256": "566be814f8e96e93dfa16101331557eb6b5467e9e03f627c0910fe93ca12300e",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/playfairdisplay/PlayfairDisplay-Italic%5Bwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/playfairdisplay/OFL.txt"
     },
     {
       "file": "playfairdisplay_PlayfairDisplay-VF.ttf",
@@ -331,7 +347,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/playfairdisplay_PlayfairDisplay-VF-OFL.txt",
       "license_sha256": "566be814f8e96e93dfa16101331557eb6b5467e9e03f627c0910fe93ca12300e",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/playfairdisplay/PlayfairDisplay%5Bwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/playfairdisplay/OFL.txt"
     },
     {
       "file": "pressstart2p_PressStart2P-Regular.ttf",
@@ -346,7 +363,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/pressstart2p_PressStart2P-Regular-OFL.txt",
       "license_sha256": "705960c3281a5765ecc0b59bd4ed7ca59eed165748076bc2fc3e8fdbfeb944b0",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/pressstart2p/PressStart2P-Regular.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/pressstart2p/OFL.txt"
     },
     {
       "file": "rubik_Rubik-VF.ttf",
@@ -363,7 +381,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/rubik_Rubik-VF-OFL.txt",
       "license_sha256": "472cbe7c25441df63e9c7864b43eb3c0f4b3df950c66a76224e6cfe1eae843fb",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/rubik/Rubik%5Bwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/rubik/OFL.txt"
     },
     {
       "file": "unbounded_Unbounded-VF.ttf",
@@ -380,7 +399,8 @@
       "license": "OFL-1.1",
       "license_file": "licenses/unbounded_Unbounded-VF-OFL.txt",
       "license_sha256": "31e5d4e83955e7103c34570dd49b0570ef490800bd65b42923c0dd02445263b3",
-      "source": "local copy distributed with its OFL text; identity from the font name table"
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/unbounded/Unbounded%5Bwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/unbounded/OFL.txt"
     },
     {
       "file": "UnifrakturMaguntia-Book.ttf",

@@ -2,7 +2,7 @@
 
 Run OpenKatana locally from ComfyUI's Apps panel. The integration exposes every
 shared AgentAPI tool (currently 72), plus the existing three tensor utilities and
-four convenience nodes. Studio, CLI and MCP continue to use the same project
+seven convenience/media nodes (82 nodes total). Studio, CLI and MCP continue to use the same project
 files and revision checks. ComfyUI Apps is an additional entry point.
 
 No hosted server, account, cloud credits or model download is needed for editing
@@ -24,7 +24,7 @@ python scripts/install_comfy_nodes.py --comfy-root PATH_TO_COMFYUI
 and `output`. `--python PATH_TO_OPENKATANA_PYTHON` selects another installed
 OpenKatana environment; `--workspace PATH_TO_PROJECTS` selects an existing shared
 workspace. The default is `ComfyUI/output/OpenKatana`. The script links the node
-pack, writes `user/openkatana/config.json`, and installs four App workflows under
+pack, writes `user/openkatana/config.json`, and installs five App workflows under
 `user/default/workflows/OpenKatana`. It does not pip-install into ComfyUI or
 download dependencies. Existing edited Apps and differing configuration are
 preserved. Stop active work, restart ComfyUI once and refresh its interface.
@@ -36,7 +36,18 @@ profiles can import the supplied `.app.json` files from
 configuration and projects remain yours. Do not move/remove the OpenKatana
 installation while its link is in use.
 
-## The four Apps
+A Manager **Install via Git URL** clone into `custom_nodes/OpenKatana` now loads
+through the root entry point. Run `python scripts/setup.py` there, then the node
+installer with that environment's Python. It detects the existing root install
+and does not create a duplicate link. Installing the node pack alone does not
+install the editor's separate runtime. Missing configuration gives setup guidance.
+
+The installer records detected Chrome/Chromium in its local config. If none is
+installed, explicitly run `python -m playwright install chromium` with OpenKatana's
+Python, then run the installer again. The renderer also discovers installed
+Playwright Chromium automatically; it never downloads a browser at render time.
+
+## The five Apps
 
 1. **Open Studio:** choose a simple project ID and display name; Run creates or
    reopens it and starts a loopback Studio. Open the returned URL. Its setup data
@@ -53,6 +64,11 @@ installation while its link is in use.
    are starting examples; your agent can edit their JSON and rerender through
    `render_scene3d`. No Blender or generation model is needed for this App.
 4. **Background job:** paste a job ID to read its result. It never resubmits work.
+5. **Video to edit:** upload a video and set the same project ID on Import media,
+   Make edit and Render to video. Choose a recipe; Run imports, saves and renders.
+   Existing timelines are protected unless `replace_existing` is explicitly enabled.
+   Source audio is imported separately and passed to the recipe. A silent source
+   requires a silent preset such as ramp-freeze (beat-montage requires music).
 
 Example: select `create_project`, set project ID `film`, and arguments
 `{"name":"My film"}`. For an existing project use `get_project` with `{}`.
@@ -124,3 +140,23 @@ focus Run and press Enter. The OpenKatana adapter does not change other extensio
 
 Validation on ComfyUI 0.41.0 / frontend 1.55.18 is recorded in
 [comfy-apps-validation.json](comfy-apps-validation.json).
+
+## Typed media ports
+
+`OpenKatanaImportMedia` accepts exactly one RGB IMAGE batch or native VIDEO,
+plus optional AUDIO. IMAGE frames use the explicit fps; VIDEO keeps its timing.
+Import returns `media_id`, `music_asset_id` and result JSON. AUDIO replaces the
+source soundtrack when connected. `OpenKatanaMakeEdit` connects those IDs to a
+recipe and saves with revision checks. `OpenKatanaRenderVideo` returns the full
+native VIDEO (with audio) plus a bounded IMAGE preview, not all full-size frames.
+Connect its VIDEO to downstream video nodes; preview frames are a sample only.
+
+Model decoded IMAGE frames can replace LoadVideo in the fifth App. The original
+[LTX example](../examples/comfy/README.md) supplies the complete generation-to-edit
+API graph. Installed weights are required; schema validation is not inference.
+Optical flow is classical OpenCV processing in the separate OpenKatana vision
+environment. The chroma matte and point helpers need only Comfy's tensor runtime.
+
+```sh
+python -m scripts.test_comfy_typed_live --endpoint http://127.0.0.1:8188 --out work/typed-check
+```

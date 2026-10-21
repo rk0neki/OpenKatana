@@ -48,7 +48,7 @@ and Linux, but only completed CI runs establish results for a release commit.
 
 Technical passes do not establish human approval, legal clearance, general
 model fidelity or quality on arbitrary creative briefs.
-# ComfyUI Apps integration — 2026-10-21
+# ComfyUI Apps integration â€” 2026-10-21
 
 All 72 AgentAPI operations are exposed by the local Comfy adapter, plus four
 convenience nodes and the three existing tensor nodes (79 total). See
@@ -64,7 +64,22 @@ while Comfy's queue remained available. No model weights or paid services were
 used. This is a queue/transport test, not a new quality test of every model.
 
 Browser verification covered saved Apps discovery, App Mode input controls,
-text-result display/download controls, Studio linking and a 640×360 product video
+text-result display/download controls, Studio linking and a 640Ã—360 product video
 preview. An isolated wheel loaded its 72-tool catalog, four App workflows, frontend
 extension and guide. Linux integration with a running ComfyUI was not exercised
 in this round; the ordinary platform CI remains applicable to shared code.
+
+# Pre-launch review — 2026-10-21
+
+See `prelaunch-validation.json` for the updated scope. An isolated Windows ComfyUI
+root install registered 82 nodes. IMAGE batches passed through subprocess optical
+flow, import, a saved timeline and VIDEO/IMAGE output. A second import preserved
+the VIDEO frames and soundtrack. The fifth saved App's controls loaded in App Mode.
+Root-package chroma matte and point helpers also ran in ComfyUI's own Python.
+The original eight-second quick-edit example rendered with its soundtrack.
+LTX's 12-node example passed schema/link checks only; no new model inference ran.
+
+For public receipts, use `python scripts/export_validation.py receipt.json --root
+PATH_TO_LOCAL_WORKSPACE --out docs/report.json`. It removes explicitly mapped roots
+and rejects unknown personal paths. Keep full paths in private project receipts.
+The release manifest scanner also rejects JSON-escaped Windows user paths.

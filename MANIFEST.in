@@ -1,4 +1,4 @@
-include LICENSE NOTICE THIRD_PARTY_NOTICES.md README.md requirements-lock.txt
+include LICENSE NOTICE THIRD_PARTY_NOTICES.md README.md SECURITY.md requirements-lock.txt __init__.py
 recursive-include licenses *.txt
 include AGENTS.md mcp.example.json
 recursive-include openkatana/web *.js *.html *.css *.jpg
@@ -8,7 +8,7 @@ recursive-include workflows *.json
 recursive-include docs *.md *.json
 recursive-include tests *.py
 recursive-include scripts *.py
-recursive-include examples *.py *.json *.js *.txt
+recursive-include examples *.py *.json *.js *.txt *.md *.jpg *.wav *.mp4
 prune work
 prune .venv
 global-exclude __pycache__ *.pyc
@@ -19,7 +19,7 @@ exclude docs/SESSION_HANDOFF.md docs/NEXT_SESSION_CONTEXT.md
 include CONTRIBUTING.md
 recursive-include .github *.yml
 
-recursive-include docs/assets *.png
+recursive-include docs/assets *.png *.gif
 
 recursive-include openkatana/templates *.py *.js
 recursive-include skills *.md
