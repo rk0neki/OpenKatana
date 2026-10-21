@@ -106,6 +106,8 @@ def main():
                         raise TimeoutError('Hosted job did not finish: ' + tool)
                     time.sleep(.3); job = client.get('/api/tool-jobs/' + job['id']).json()
                 if job['state'] != 'succeeded':
+                    for diagnostic in store.workspace(account['user']).glob('film/.openkatana/blender/*/blender.log'):
+                        print(diagnostic.read_text(errors='replace')[-8000:], flush=True)
                     raise RuntimeError(tool + ': ' + str(job))
                 return job['result']['result']
             cap = call('get_capabilities', {}); checks['runtime_dependencies'] = bool(cap['ffmpeg'] and cap['chrome'])
@@ -130,6 +132,8 @@ def main():
                                           'scene': starter(width=96, height=64, fps=3, frames=3)})
             three = call('render_scene3d', {'project_id': 'film', 'scene': scene['scene'], 'preview_frames': [0, 2], 'video': False})
             checks['webgl_in_sandbox'] = bool(three)
+            picture = client.get('/files/' + three['preview_images'][0].removeprefix('workspace://'))
+            picture.raise_for_status(); (root/'webgl.png').write_bytes(picture.content)
             authored = call('write_project_file', {'project_id': 'film', 'path': 'notes.txt', 'text': 'Hosted authored asset'})
             read = call('read_project_file', {'project_id': 'film', 'path': 'notes.txt'})
             checks['author_without_checkout'] = read['text'] == 'Hosted authored asset' and read['sha256'] == authored['sha256']
@@ -145,6 +149,8 @@ s.cycles.samples=1
 '''})
             blender = call('render_blender', {'project_id': 'film', 'source': 'cube.py', 'engine': 'CYCLES', 'trusted_script': True})
             checks['blender_in_sandbox'] = blender['frames'] == 2 and bool(blender['video'])
+            picture = client.get('/files/' + blender['preview_images'][0].removeprefix('workspace://'))
+            picture.raise_for_status(); (root/'blender.png').write_bytes(picture.content)
             headers = {'Accept': 'application/json, text/event-stream'}
             mcp = client.post('/mcp', headers=headers, json={'jsonrpc': '2.0', 'id': 1, 'method': 'tools/list'}); mcp.raise_for_status()
             checks['real_http_mcp_catalog'] = len(mcp.json()['result']['tools']) == 78
@@ -162,6 +168,8 @@ s.cycles.samples=1
             (root / 'result.json').write_text(json.dumps(report, indent=2) + '\n')
             print(json.dumps(report, indent=2)); return 0 if report['passed'] else 1
     finally:
+        if not (root/'result.json').exists():
+            (root/'result.json').write_text(json.dumps({'passed': False, 'completed_checks': checks, 'deployed': False}, indent=2))
         stop.set(); thread.join(timeout=190)
         process.terminate()
         try:
