@@ -1,0 +1,442 @@
+{
+  "license": "SIL Open Font License 1.1 (each font: licenses/<file>)",
+  "fonts": [
+    {
+      "file": "anton_Anton-Regular.ttf",
+      "family": "Anton",
+      "style": "Regular",
+      "copyright": "Copyright 2020 The Anton Project Authors (https://github.com/googlefonts/AntonFont.git)",
+      "version": "Version 2.116; ttfautohint (v1.8.3)",
+      "designer": "Vernon Adams",
+      "license_url": "https://scripts.sil.org/OFL",
+      "axes": [],
+      "sha256": "a4ba3a92350ebb031da0cb47630ac49eb265082ca1bc0450442f4a83ab947cab",
+      "license": "OFL-1.1",
+      "license_file": "licenses/anton_Anton-Regular-OFL.txt",
+      "license_sha256": "ee67e6ee22790b7929f1a3769ca2801d565c64b5a9096942c1adf5596de9c9e4",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "bebasneue_BebasNeue-Regular.ttf",
+      "family": "Bebas Neue",
+      "style": "Regular",
+      "copyright": "Copyright 2019 The Bebas Neue Project Authors (https://github.com/dharmatype/Bebas-Neue)",
+      "version": "Version 2.000",
+      "designer": "Ryoichi Tsunekawa",
+      "license_url": "http://scripts.sil.org/OFL",
+      "axes": [],
+      "sha256": "08e4623805102d819f58601e46e345648846075e363b2ceb23313c2d1c83ec73",
+      "license": "OFL-1.1",
+      "license_file": "licenses/bebasneue_BebasNeue-Regular-OFL.txt",
+      "license_sha256": "72082f6cb4d04be2ecf7cc7d9e1e7d73787f0af8a5a278a47cade70c16b78341",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "caveat_Caveat-VF.ttf",
+      "family": "Caveat",
+      "style": "Regular",
+      "copyright": "Copyright 2014 The Caveat Project Authors (https://github.com/googlefonts/caveat)",
+      "version": "Version 2.000",
+      "designer": "Pablo Impallari",
+      "license_url": "http://scripts.sil.org/OFL",
+      "axes": [
+        "wght"
+      ],
+      "sha256": "0bdb6b660482d31531b3945849fba5916b3ef8695da7024a9e6b9ee3c4157988",
+      "license": "OFL-1.1",
+      "license_file": "licenses/caveat_Caveat-VF-OFL.txt",
+      "license_sha256": "1f9d81d094273d82f3898a1ee8b598a717d050ecbf5ff7bede105b704880157b",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "Cormorant[wght].ttf",
+      "family": "Cormorant",
+      "style": "Light",
+      "copyright": "Copyright 2015 The Cormorant Project Authors (github.com/CatharsisFonts/Cormorant)",
+      "version": "Version 4.000",
+      "designer": "Christian Thalmann (Catharsis Fonts)",
+      "license_url": "https://scripts.sil.org/OFL",
+      "axes": [
+        "wght"
+      ],
+      "sha256": "8f12cb21f05b61649192eaff13eeeb1b5619bc524feeae672fb916974259a076",
+      "license": "OFL-1.1",
+      "license_file": "licenses/Cormorant[wght]-OFL.txt",
+      "license_sha256": "60700d351cac4650c51f3f9db318d2a420f8b45052dba2715eb5fec41f0f6956",
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/cormorant/Cormorant%5Bwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/cormorant/OFL.txt"
+    },
+    {
+      "file": "cormorantgaramond_CormorantGaramond-VF.ttf",
+      "family": "Cormorant Garamond",
+      "style": "Light",
+      "copyright": "Copyright 2015 The Cormorant Project Authors (github.com/CatharsisFonts/Cormorant)",
+      "version": "Version 4.001",
+      "designer": "Christian Thalmann (Catharsis Fonts)",
+      "license_url": "https://openfontlicense.org",
+      "axes": [
+        "wght"
+      ],
+      "sha256": "b20b7d9626dd956b2c5e558692ad328b1f19e3275e2782db4fa07670d83f35e0",
+      "license": "OFL-1.1",
+      "license_file": "licenses/cormorantgaramond_CormorantGaramond-VF-OFL.txt",
+      "license_sha256": "60700d351cac4650c51f3f9db318d2a420f8b45052dba2715eb5fec41f0f6956",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "delagothicone_DelaGothicOne-Regular.ttf",
+      "family": "Dela Gothic One",
+      "style": "Regular",
+      "copyright": "Copyright 2020 The Dela Gothic Project Authors (https://github.com/syakuzen/DelaGothic)",
+      "version": "Version 1.005",
+      "designer": "artakana",
+      "license_url": "https://scripts.sil.org/OFL",
+      "axes": [],
+      "sha256": "4ff87a0965f1b0505e5a2c58424bc6ad3cff27e56a82f21c2fc9d6b0e3857ee2",
+      "license": "OFL-1.1",
+      "license_file": "licenses/delagothicone_DelaGothicOne-Regular-OFL.txt",
+      "license_sha256": "c0014792d4f4abc0508c295b277f2b17ae44465c8dc88d12af9cea48279b5fda",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "firasansextracondensed_FiraSansExtraCondensed-Black.ttf",
+      "family": "Fira Sans Extra Condensed",
+      "style": "Black",
+      "copyright": "Digitized data copyright 2012-2016, The Mozilla Foundation and Telefonica S.A.",
+      "version": "Version 4.203",
+      "designer": "Carrois Corporate & Edenspiekermann AG",
+      "license_url": "http://scripts.sil.org/OFL",
+      "axes": [],
+      "sha256": "9792878489db97d068aaf115cab50bdadd1e843274ff51b3786ca8102ba16a87",
+      "license": "OFL-1.1",
+      "license_file": "licenses/firasansextracondensed_FiraSansExtraCondensed-Black-OFL.txt",
+      "license_sha256": "8f24842e9174beda18a556c2ae7d54f5dc444340c19a3a9ef77e23bca366adbd",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "firasansextracondensed_FiraSansExtraCondensed-Bold.ttf",
+      "family": "Fira Sans Extra Condensed",
+      "style": "Bold",
+      "copyright": "Digitized data copyright 2012-2016, The Mozilla Foundation and Telefonica S.A.",
+      "version": "Version 4.203",
+      "designer": "Carrois Corporate & Edenspiekermann AG",
+      "license_url": "http://scripts.sil.org/OFL",
+      "axes": [],
+      "sha256": "3e385cfbd93c8a924ac4b33b0f33a39dd49c3919dffa2f661091a3f21cc4150e",
+      "license": "OFL-1.1",
+      "license_file": "licenses/firasansextracondensed_FiraSansExtraCondensed-Bold-OFL.txt",
+      "license_sha256": "8f24842e9174beda18a556c2ae7d54f5dc444340c19a3a9ef77e23bca366adbd",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "firasansextracondensed_FiraSansExtraCondensed-ExtraBold.ttf",
+      "family": "Fira Sans Extra Condensed",
+      "style": "ExtraBold",
+      "copyright": "Digitized data copyright 2012-2016, The Mozilla Foundation and Telefonica S.A.",
+      "version": "Version 4.203",
+      "designer": "Carrois Corporate & Edenspiekermann AG",
+      "license_url": "http://scripts.sil.org/OFL",
+      "axes": [],
+      "sha256": "056cad28b3697bf0a093eb49e55d02e873b1de1eb4ed64467c8c80b10c6750e9",
+      "license": "OFL-1.1",
+      "license_file": "licenses/firasansextracondensed_FiraSansExtraCondensed-ExtraBold-OFL.txt",
+      "license_sha256": "8f24842e9174beda18a556c2ae7d54f5dc444340c19a3a9ef77e23bca366adbd",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "greatvibes_GreatVibes-Regular.ttf",
+      "family": "Great Vibes",
+      "style": "Regular",
+      "copyright": "Copyright 2010 The Great Vibes Pro Project Authors (https://github.com/googlefonts/great-vibes)",
+      "version": "Version 1.103; ttfautohint (v1.8.4.7-5d5b)",
+      "designer": "Robert E. Leuschke, Viktoriya Grabowska, Viviana Monsalve, Eben Sorkin",
+      "license_url": "https://openfontlicense.org",
+      "axes": [],
+      "sha256": "8d509802186f1b51572531ecf313e8098f9a5bfdfaca93f0c9b34467f9982d15",
+      "license": "OFL-1.1",
+      "license_file": "licenses/greatvibes_GreatVibes-Regular-OFL.txt",
+      "license_sha256": "61093a21f5e63dedf54222b3c09997e54c0fe43e3851d21386e02ddcbc246d49",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "inter_Inter-Italic-VF.ttf",
+      "family": "Inter",
+      "style": "Italic",
+      "copyright": "Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)",
+      "version": "Version 4.001;git-66647c0bb",
+      "designer": "Rasmus Andersson",
+      "license_url": "https://openfontlicense.org",
+      "axes": [
+        "opsz",
+        "wght"
+      ],
+      "sha256": "acd98e64795781b2058f07b18475e0ecee2a0fe2b42a49e2f9e37d0d6bf66ce6",
+      "license": "OFL-1.1",
+      "license_file": "licenses/inter_Inter-Italic-VF-OFL.txt",
+      "license_sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "Inter[opsz,wght].ttf",
+      "family": "Inter",
+      "style": "Regular",
+      "copyright": "Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)",
+      "version": "Version 4.001;git-66647c0bb",
+      "designer": "Rasmus Andersson",
+      "license_url": "https://openfontlicense.org",
+      "axes": [
+        "opsz",
+        "wght"
+      ],
+      "sha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031",
+      "license": "OFL-1.1",
+      "license_file": "licenses/Inter[opsz,wght]-OFL.txt",
+      "license_sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57",
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/inter/Inter%5Bopsz%2Cwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/inter/OFL.txt"
+    },
+    {
+      "file": "jetbrainsmono_JetBrainsMono-VF.ttf",
+      "family": "JetBrains Mono",
+      "style": "Regular",
+      "copyright": "Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)",
+      "version": "Version 2.211",
+      "designer": "Philipp Nurullin, Konstantin Bulenkov",
+      "license_url": "https://scripts.sil.org/OFL",
+      "axes": [
+        "wght"
+      ],
+      "sha256": "48715a42ec242c21e9f02692891e147d022299a52e48d5e413e1a942193ffeda",
+      "license": "OFL-1.1",
+      "license_file": "licenses/jetbrainsmono_JetBrainsMono-VF-OFL.txt",
+      "license_sha256": "b2fe5e8987594e9ffd1d2ca52a2f5d73eb8335243893c5d6254b5ad69269591d",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "LeagueGothic[wdth].ttf",
+      "family": "League Gothic",
+      "style": "Regular",
+      "copyright": "Copyright 2020 The League Gothic Project Authors (https://github.com/theleagueof/league-gothic)",
+      "version": "Version 2.001",
+      "designer": "The League of Moveable Type",
+      "license_url": "https://scripts.sil.org/OFL",
+      "axes": [
+        "wdth"
+      ],
+      "sha256": "3b0e998c9a0034222394ffecdd383e6948259ad037b95555b139a217629ce1d0",
+      "license": "OFL-1.1",
+      "license_file": "licenses/LeagueGothic[wdth]-OFL.txt",
+      "license_sha256": "44778c339892f79188c60b7471485dd5af92c59351c7f9629a00fc625c6cae5d",
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/leaguegothic/LeagueGothic%5Bwdth%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/leaguegothic/OFL.txt"
+    },
+    {
+      "file": "montserrat_Montserrat-VF.ttf",
+      "family": "Montserrat",
+      "style": "Thin",
+      "copyright": "Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)",
+      "version": "Version 9.000",
+      "designer": "Julieta Ulanovsky",
+      "license_url": "https://openfontlicense.org",
+      "axes": [
+        "wght"
+      ],
+      "sha256": "0f7b311b2f3279e4eef9b2f968bcdbab6e28f4daeb1f049f4f278a902bcd82f7",
+      "license": "OFL-1.1",
+      "license_file": "licenses/montserrat_Montserrat-VF-OFL.txt",
+      "license_sha256": "8b7141c03fa4f8d44e6345d5d4931709290f0f67875e452e95ac1fd3a027802e",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "notosans_NotoSans-VF.ttf",
+      "family": "Noto Sans",
+      "style": "Regular",
+      "copyright": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)",
+      "version": "Version 2.015",
+      "designer": "Monotype Design Team",
+      "license_url": "https://openfontlicense.org",
+      "axes": [
+        "wght",
+        "wdth"
+      ],
+      "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+      "license": "OFL-1.1",
+      "license_file": "licenses/notosans_NotoSans-VF-OFL.txt",
+      "license_sha256": "cee9892f9f0cc8fe882c9e9537ee6a89621d86ee7ceaf70b02e2b2b1c25c061a",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "nunito_Nunito-VF.ttf",
+      "family": "Nunito",
+      "style": "ExtraLight",
+      "copyright": "Copyright 2014 The Nunito Project Authors (https://github.com/googlefonts/nunito)",
+      "version": "Version 3.602",
+      "designer": "Vernon Adams",
+      "license_url": "https://scripts.sil.org/OFL",
+      "axes": [
+        "wght"
+      ],
+      "sha256": "bb55a5ca5c2042335b3991af27c4d0705d0ef41cac6164ac737fd8f2a1e85207",
+      "license": "OFL-1.1",
+      "license_file": "licenses/nunito_Nunito-VF-OFL.txt",
+      "license_sha256": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "oswald_Oswald-VF.ttf",
+      "family": "Oswald",
+      "style": "Regular",
+      "copyright": "Copyright 2016 The Oswald Project Authors (https://github.com/googlefonts/OswaldFont)",
+      "version": "Version 4.103;gftools[0.9.33.dev8+g029e19f]",
+      "designer": "Vernon Adams",
+      "license_url": "https://scripts.sil.org/OFL",
+      "axes": [
+        "wght"
+      ],
+      "sha256": "5b38c246e255a12f5712d640d56bcced0472466fc68983d2d0410ec0457c2817",
+      "license": "OFL-1.1",
+      "license_file": "licenses/oswald_Oswald-VF-OFL.txt",
+      "license_sha256": "0fd731a904b729a4e02eaf5e8ebd06783edd9abe400e8882760160230675b652",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "playfairdisplay_PlayfairDisplay-Italic-VF.ttf",
+      "family": "Playfair Display",
+      "style": "Italic",
+      "copyright": "Copyright 2017 The Playfair Display Project Authors (https://github.com/clauseggers/Playfair-Display), with Reserved Font Name \"Playfair Display\".",
+      "version": "Version 1.203",
+      "designer": "Claus Eggers Sørensen",
+      "license_url": "http://scripts.sil.org/OFL",
+      "axes": [
+        "wght"
+      ],
+      "sha256": "a5e26dc5e2e77fb2803a0bf02fd4f81ee136ec8dea863ccdb0c59a263b21378b",
+      "license": "OFL-1.1",
+      "license_file": "licenses/playfairdisplay_PlayfairDisplay-Italic-VF-OFL.txt",
+      "license_sha256": "566be814f8e96e93dfa16101331557eb6b5467e9e03f627c0910fe93ca12300e",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "playfairdisplay_PlayfairDisplay-VF.ttf",
+      "family": "Playfair Display",
+      "style": "Regular",
+      "copyright": "Copyright 2017 The Playfair Display Project Authors (https://github.com/clauseggers/Playfair-Display), with Reserved Font Name \"Playfair Display\".",
+      "version": "Version 1.203",
+      "designer": "Claus Eggers Sørensen",
+      "license_url": "http://scripts.sil.org/OFL",
+      "axes": [
+        "wght"
+      ],
+      "sha256": "c40f2293766a503bc70cce9e512ef844a4ccb7cbcde792fe2ea31d191917d8d6",
+      "license": "OFL-1.1",
+      "license_file": "licenses/playfairdisplay_PlayfairDisplay-VF-OFL.txt",
+      "license_sha256": "566be814f8e96e93dfa16101331557eb6b5467e9e03f627c0910fe93ca12300e",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "pressstart2p_PressStart2P-Regular.ttf",
+      "family": "Press Start 2P",
+      "style": "Regular",
+      "copyright": "Copyright 2012 The Press Start 2P Project Authors (cody@zone38.net), with Reserved Font Name \"Press Start 2P\"",
+      "version": "Version 3.000",
+      "designer": "CodeMan38",
+      "license_url": "http://scripts.sil.org/OFL",
+      "axes": [],
+      "sha256": "034c77f1f05ec89421e4a63f0e3a4ca1ecf852cc6d2bf611f126f275728e017d",
+      "license": "OFL-1.1",
+      "license_file": "licenses/pressstart2p_PressStart2P-Regular-OFL.txt",
+      "license_sha256": "705960c3281a5765ecc0b59bd4ed7ca59eed165748076bc2fc3e8fdbfeb944b0",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "rubik_Rubik-VF.ttf",
+      "family": "Rubik",
+      "style": "Light",
+      "copyright": "Copyright 2015 The Rubik Project Authors (https://github.com/googlefonts/rubik)",
+      "version": "Version 2.300;gftools[0.9.30]",
+      "designer": "Hubert and Fischer",
+      "license_url": "https://scripts.sil.org/OFL",
+      "axes": [
+        "wght"
+      ],
+      "sha256": "1b3a7437ba2af80e465e773ed60c5036d1ba6ace492d89046dbcf18fb31e4e88",
+      "license": "OFL-1.1",
+      "license_file": "licenses/rubik_Rubik-VF-OFL.txt",
+      "license_sha256": "472cbe7c25441df63e9c7864b43eb3c0f4b3df950c66a76224e6cfe1eae843fb",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "unbounded_Unbounded-VF.ttf",
+      "family": "Unbounded",
+      "style": "Regular",
+      "copyright": "Copyright 2022 The Unbounded Project Authors (https://github.com/googlefonts/unbounded)",
+      "version": "Version 1.701;gftools[0.9.28.dev5+ged2979d]",
+      "designer": "Luke Prowse, Jean-Baptiste Morizot, Fátima Lázaro, Florian Runge",
+      "license_url": "https://scripts.sil.org/OFL",
+      "axes": [
+        "wght"
+      ],
+      "sha256": "323b511be380c8d474ef030686b71aedde501f8d9cd46da558b7c40454372c3f",
+      "license": "OFL-1.1",
+      "license_file": "licenses/unbounded_Unbounded-VF-OFL.txt",
+      "license_sha256": "31e5d4e83955e7103c34570dd49b0570ef490800bd65b42923c0dd02445263b3",
+      "source": "local copy distributed with its OFL text; identity from the font name table"
+    },
+    {
+      "file": "UnifrakturMaguntia-Book.ttf",
+      "family": "UnifrakturMaguntia",
+      "style": "Book",
+      "copyright": "Copyright (c) 2010 j. 'mach' wust with Reserved Font Name UnifrakturMaguntia.\nCopyright (c) 2009 Peter Wiegel.\n\nThis Font Software is licensed under the SIL Open Font License, Version 1.1.",
+      "version": "Version 2010-11-24",
+      "designer": "j. 'mach' wust, based on a font by Peter Wiegel, original typeface by Carl Albert Fahrenwaldt 1901",
+      "license_url": "http://scripts.sil.org/OFL",
+      "axes": [],
+      "sha256": "d64afc0547059dd2e4a78da48bda0aba0a9901be58c7f8c201a8b2b6b4492cc8",
+      "license": "OFL-1.1",
+      "license_file": "licenses/UnifrakturMaguntia-Book-OFL.txt",
+      "license_sha256": "96199bf9ff12dd471a66911dee95440737b437e7f5a6fd30e9e950c16d66e8df",
+      "source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/unifrakturmaguntia/UnifrakturMaguntia-Book.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/5e8a3ba899557829a76cfdac30fa512bda91d7ca/ofl/unifrakturmaguntia/OFL.txt"
+    },
+    {
+      "file": "NotoSansArabic[wdth,wght].ttf",
+      "family": "Noto Sans Arabic",
+      "style": "Regular",
+      "copyright": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/arabic)",
+      "version": "Version 2.012",
+      "designer": "Monotype Design Team, Nadine Chahine, Nizar Qandah and Khaled Hosny",
+      "license_url": "https://scripts.sil.org/OFL",
+      "axes": [
+        "wght",
+        "wdth"
+      ],
+      "sha256": "63111b5b2e074dd48cc67692e0a2726d86ee94c1c37fe8598257b7b4e87e869e",
+      "license": "OFL-1.1",
+      "license_file": "licenses/notosansarabic-OFL.txt",
+      "license_sha256": "07fc70bfeb985cc1a87a8587d0a0c80bab11c86c9dc3fd95b6f0cb332f983e96",
+      "source": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/notosansarabic/NotoSansArabic%5Bwdth%2Cwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/notosansarabic/OFL.txt",
+      "upstream_revision": "47d54ca1ebb14fd864695f1d39dc734f39017c33"
+    },
+    {
+      "file": "NotoSansDevanagari[wdth,wght].ttf",
+      "family": "Noto Sans Devanagari",
+      "style": "Regular",
+      "copyright": "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/devanagari)",
+      "version": "Version 2.007",
+      "designer": "Jelle Bosma - Monotype Design Team",
+      "license_url": "https://openfontlicense.org",
+      "axes": [
+        "wght",
+        "wdth"
+      ],
+      "sha256": "14ec4af41f27482216d1c2229f417ff9b1425e1babb014e57d1d40d03229853e",
+      "license": "OFL-1.1",
+      "license_file": "licenses/notosansdevanagari-OFL.txt",
+      "license_sha256": "a216f6f8d85c7228093e0ee5e258d9d377e6671f68acb4db1930b29583d0f331",
+      "source": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/notosansdevanagari/NotoSansDevanagari%5Bwdth%2Cwght%5D.ttf",
+      "license_source": "https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/notosansdevanagari/OFL.txt",
+      "upstream_revision": "47d54ca1ebb14fd864695f1d39dc734f39017c33"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "openkatana": {
+      "type": "stdio",
+      "command": "PATH_TO_OPENKATANA_PYTHON",
+      "args": ["-m", "openkatana", "mcp", "--workspace", "PATH_TO_EDIT_PROJECTS"]
+    }
+  }
+}

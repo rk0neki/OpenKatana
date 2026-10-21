@@ -1,0 +1,183 @@
+{
+  "release": "0.1.0rc2",
+  "date": "2026-10-20",
+  "comfyui": "0.41.0",
+  "sdk_transport": "official Comfy SDK via local API proxy",
+  "downloads": {
+    "explicitly_user_approved": true,
+    "automatic_app_downloads": false,
+    "count": 2,
+    "total_bytes": 27559799
+  },
+  "quality_benchmark": false,
+  "fixtures": "original synthetic geometric object, color reference, 2-second source and sine tone",
+  "cases": {
+    "qwen-edit": {
+      "state": "collected",
+      "execution": "local",
+      "outputs": [
+        {
+          "file": "000-generated_00002_.png",
+          "sha256": "11867cf2b8757fdcabd5a80ad10e9f978c7ee85de05a99c2519599948dd3afa8",
+          "size": [
+            256,
+            256
+          ]
+        }
+      ]
+    },
+    "seedvr2-restore": {
+      "state": "collected",
+      "execution": "local",
+      "outputs": [
+        {
+          "file": "000-short.mp4",
+          "sha256": "53b00f27bb98534a186e8d6a9524efa4e7d63e2a566ccca3154cf7ceabf03586",
+          "streams": [
+            {
+              "codec_type": "video",
+              "codec_name": "h264",
+              "width": 128,
+              "height": 128,
+              "r_frame_rate": "24/1",
+              "nb_read_frames": "5"
+            },
+            {
+              "codec_type": "audio",
+              "codec_name": "aac",
+              "r_frame_rate": "0/0",
+              "nb_read_frames": "5",
+              "sample_rate": "24000"
+            }
+          ]
+        },
+        {
+          "file": "001-restored_00001_.mp4",
+          "sha256": "ab8b2c65a609f2ae25e98bad8fad353f8729b9ebf25f8f4ccd4fee1962f20fa0",
+          "streams": [
+            {
+              "codec_type": "video",
+              "codec_name": "h264",
+              "width": 256,
+              "height": 256,
+              "r_frame_rate": "24/1",
+              "nb_read_frames": "5"
+            },
+            {
+              "codec_type": "audio",
+              "codec_name": "aac",
+              "r_frame_rate": "0/0",
+              "nb_read_frames": "5",
+              "sample_rate": "24000"
+            }
+          ]
+        }
+      ]
+    },
+    "h3-reference": {
+      "state": "collected",
+      "execution": "local",
+      "outputs": [
+        {
+          "file": "000-generated-h3_00001_.mp4",
+          "sha256": "d1a261d9673dcef1febdb1ec0874aba9385fa6093d9235bee457cdd9373042e2",
+          "streams": [
+            {
+              "codec_type": "video",
+              "codec_name": "h264",
+              "width": 256,
+              "height": 256,
+              "r_frame_rate": "24/1",
+              "nb_read_frames": "5"
+            },
+            {
+              "codec_type": "audio",
+              "codec_name": "aac",
+              "r_frame_rate": "0/0",
+              "nb_read_frames": "7",
+              "sample_rate": "32000"
+            }
+          ]
+        }
+      ]
+    },
+    "model-interpolation": {
+      "state": "collected",
+      "execution": "local through fresh installed wheel",
+      "outputs": [
+        {
+          "file": "000-interpolated_00005_.mp4",
+          "sha256": "fe64f57b4f83dc53c2bbb978d2032ec9f4ad9d7f8f29e264a3f0c235bda458e3",
+          "type": "image"
+        }
+      ]
+    },
+    "image-upscale": {
+      "state": "collected",
+      "execution": "local through fresh installed wheel",
+      "outputs": [
+        {
+          "file": "000-upscaled_00001_.png",
+          "sha256": "866b9216acc7735d739b64e8983ca505489f7b80ea68a80e083f9bcd7061e528",
+          "type": "image"
+        }
+      ]
+    }
+  },
+  "remaining": {},
+  "note": "H3 reference fixture: quantized weights, 5 output frames and 2 steps; execution only. Two user video tests remain.",
+  "test_weights": [
+    {
+      "file": "rife_v4.26.safetensors",
+      "bytes": 22674688,
+      "url": "https://huggingface.co/Comfy-Org/frame_interpolation/resolve/219da3c9d8c357ceaf457fc1d5932c6e861b8dee/frame_interpolation/rife_v4.26.safetensors",
+      "expected_sha256": "151874592c877740e5db11522f4514df569eeafb0a0fcb2696f16e9e8d317c94",
+      "license": "MIT",
+      "license_evidence": "https://github.com/hzwer/Practical-RIFE#trained-model",
+      "license_revision": "bbfd2ea90910789a860ea3e2b32a240cd577b75e",
+      "license_url": "https://raw.githubusercontent.com/hzwer/Practical-RIFE/bbfd2ea90910789a860ea3e2b32a240cd577b75e/LICENSE",
+      "license_sha256": "7932fb49341512b959b1744a6d9cbb39e5a1ec89da438a34d0454d5d8df9fecd",
+      "sha256": "151874592c877740e5db11522f4514df569eeafb0a0fcb2696f16e9e8d317c94",
+      "publisher_checksum_available": true
+    },
+    {
+      "file": "realesr-general-x4v3.pth",
+      "bytes": 4885111,
+      "url": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth",
+      "license": "BSD-3-Clause",
+      "license_evidence": "https://github.com/xinntao/Real-ESRGAN/blob/master/LICENSE",
+      "license_revision": "a4abfb2979a7bbff3f69f58f58ae324608821e27",
+      "license_url": "https://raw.githubusercontent.com/xinntao/Real-ESRGAN/a4abfb2979a7bbff3f69f58f58ae324608821e27/LICENSE",
+      "license_sha256": "4a699ec4863d96a91fc265948a0c90033f7e8735d515524dcf3444736406e0c2",
+      "sha256": "8dc7edb9ac80ccdc30c3a5dca6616509367f05fbc184ad95b731f05bece96292",
+      "publisher_checksum_available": false
+    }
+  ],
+  "untested_variants": [
+    "FILM neural execution; the installed RIFE alternative was tested",
+    "Arbitrary model variants, full-resolution quality and semantic identity guarantees"
+  ],
+  "restoration_metrics": {
+    "passed": true,
+    "execution": "local official SDK",
+    "weights_downloaded_by_this_script": false,
+    "source_frames": 12,
+    "output_frames": 23,
+    "source_fps": 12,
+    "output_fps": 24,
+    "audio_preserved": true,
+    "max_midpoint_position_error_pixels": 0.014140334864553239,
+    "upscale_input_size": [
+      128,
+      128
+    ],
+    "upscale_output_size": [
+      512,
+      512
+    ],
+    "upscale_mean_absolute_difference_from_bicubic": 5.0668996175130205,
+    "film_neural_execution_tested": false,
+    "quality_scope": "Original moving-shape and line fixtures; not arbitrary footage or restoration ground truth."
+  },
+  "visual_review": "Qwen synthetic color reference and RIFE/upscaling contact sheets inspected; real user video review pending."
+}

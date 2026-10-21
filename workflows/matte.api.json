@@ -1,0 +1,39 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "input.png"
+    }
+  },
+  "2": {
+    "class_type": "OpenKatanaMatte",
+    "inputs": {
+      "image": [
+        "1",
+        0
+      ],
+      "key": "#00ff00",
+      "tolerance": 0.18,
+      "softness": 0.08
+    }
+  },
+  "3": {
+    "class_type": "MaskToImage",
+    "inputs": {
+      "mask": [
+        "2",
+        0
+      ]
+    }
+  },
+  "4": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "3",
+        0
+      ],
+      "filename_prefix": "OpenKatana/matte"
+    }
+  }
+}

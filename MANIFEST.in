@@ -1,0 +1,25 @@
+include LICENSE NOTICE THIRD_PARTY_NOTICES.md README.md requirements-lock.txt
+recursive-include licenses *.txt
+include CLAUDE.md AGENTS.md mcp.example.json
+recursive-include openkatana/web *.js *.html *.css *.jpg
+recursive-include openkatana/web/vendor3d *
+recursive-include comfy_nodes *.py
+recursive-include workflows *.json
+recursive-include docs *.md *.json
+recursive-include tests *.py
+recursive-include scripts *.py
+recursive-include examples *.py *.json *.js *.txt
+prune work
+prune .venv
+global-exclude __pycache__ *.pyc
+recursive-include openkatana/fonts *.ttf *.txt *.json
+recursive-include openkatana/models *.onnx *.txt
+
+exclude docs/SESSION_HANDOFF.md docs/NEXT_SESSION_CONTEXT.md
+include CONTRIBUTING.md
+recursive-include .github *.yml
+
+recursive-include docs/assets *.png
+
+recursive-include openkatana/templates *.py *.js
+recursive-include skills *.md

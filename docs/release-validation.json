@@ -1,0 +1,410 @@
+{
+  "release": "0.1.0rc2",
+  "date": "2026-10-20",
+  "platform": "Windows, Python 3.11.9, separately installed Chrome 155 and FFmpeg; not a fresh OS image",
+  "unit_suite": {
+    "tests_run": 217,
+    "failures": 0,
+    "errors": 0,
+    "skipped": [
+      {
+        "test": "test_click_point_node_maps_to_pixels (test_cutout_workflow.CutoutWorkflowTests.test_click_point_node_maps_to_pixels)",
+        "reason": "torch is only in ComfyUI environments"
+      }
+    ],
+    "passed": true,
+    "seconds": 26.03
+  },
+  "reference": {
+    "commit": "630c217b8192b63ddfe3a31d4e8464112008d2a0",
+    "tracked_file_count": 1577,
+    "all_tracked_hashes_unchanged": true,
+    "git_status_unchanged": true,
+    "commit_unchanged": true
+  },
+  "comparisons": [
+    {
+      "suite": "basic-current",
+      "reference_commit": "630c217b8192b63ddfe3a31d4e8464112008d2a0",
+      "cases": 16,
+      "frames": 384,
+      "all_frames_exact": true
+    },
+    {
+      "suite": "editing-current",
+      "reference_commit": "630c217b8192b63ddfe3a31d4e8464112008d2a0",
+      "cases": 52,
+      "frames": 2496,
+      "all_frames_exact": true
+    }
+  ],
+  "fresh_install": {
+    "from": "history-free source bundle -> wheel -> new venv with declared dependencies",
+    "pip_check": "passed",
+    "dependency_inventory": "dependency-inventory.json",
+    "external_reference_dependency": false
+  },
+  "compositions": {
+    "passed": true,
+    "checks": 22,
+    "browser": "155.0.8059.82"
+  },
+  "scene3d": {
+    "passed": true,
+    "checks": {
+      "product_reverse_seek": true,
+      "product_frames": true,
+      "product_visible_change": true,
+      "morph_reverse_seek": true,
+      "morph_frames": true,
+      "morph_visible_change": true,
+      "physics_reverse_seek": true,
+      "physics_frames": true,
+      "physics_visible_change": true,
+      "sphere_euler_2": true,
+      "torus_euler_0": true,
+      "all_sampled_morph_frames_manifold": true,
+      "gravity_moves_body": true,
+      "floor_prevents_fallthrough": true,
+      "skin_and_clip_loaded": true,
+      "morph_clip_moves_weights": true,
+      "bone_moves_vertices": true,
+      "model_reverse_seek": true,
+      "timeline_import_render": true
+    }
+  },
+  "glyphs_and_blur": {
+    "passed": true,
+    "checks": {
+      "svg_outline_renders": true,
+      "temporal_blur_broadens_motion": true,
+      "blur_deterministic": true,
+      "clamped_exposure_edges": true,
+      "static_exposure_preserves_pixels": true,
+      "physics_blur_seek_stable": true
+    },
+    "metrics": {
+      "motion_width_pixels": {
+        "sharp": 6,
+        "blurred": 33
+      }
+    }
+  },
+  "mcp": {
+    "passed": true,
+    "tools_discovered": 61,
+    "composition_glyph_edit_calls": [
+      "read_guide",
+      "create_project",
+      "create_composition",
+      "list_plugins",
+      "run_plugin_operator",
+      "save_composition",
+      "inspect_composition",
+      "render_composition",
+      "shape_text",
+      "save_timeline",
+      "edit_timeline"
+    ],
+    "scene_morph_calls": [
+      "read_guide",
+      "create_project",
+      "create_scene3d",
+      "check_scene3d",
+      "render_scene3d",
+      "render_scene3d",
+      "inspect_model3d",
+      "import_model3d",
+      "morph_images"
+    ],
+    "scope": "rc1 protocol receipts retained; current 64-operation rc2 checks recorded below"
+  },
+  "studio": {
+    "passed": true,
+    "browser_errors": [],
+    "import_plan_edit_save_render": true,
+    "stale_save_rejected": true,
+    "cross_origin_write_rejected": true,
+    "render_frames": 30,
+    "human_visual_approval": false
+  },
+  "bundled_dependencies": {
+    "fonts": 26,
+    "all_font_and_license_hashes_verified": true,
+    "vendors": {
+      "three": {
+        "version": "0.180.0",
+        "license": "MIT",
+        "files": 21
+      },
+      "cannon-es": {
+        "version": "0.20.0",
+        "license": "MIT",
+        "files": 3
+      }
+    },
+    "all_vendor_hashes_verified": true
+  },
+  "showcase": {
+    "frames": 180,
+    "fps": 24,
+    "seconds": 7.5,
+    "size": [
+      640,
+      360
+    ],
+    "audio": "silent by design",
+    "original_inputs": true,
+    "video_sha256": "ae1893083cefaa55d07f11d7ae2fb48e7cf70e1e9d490753e58b2eba4587a62b"
+  },
+  "hosted_audit": {
+    "scope": "read-only help/recipe/hash inventory plus native initialization, validation and smoke-frame inspection",
+    "model_generation_calls": 0,
+    "hosted_pixel_parity_tested": false
+  },
+  "issues_found_and_fixed": [
+    "Installed integration harness now discovers examples in sys.prefix/share as well as target installs",
+    "Strict-CSP 3D module startup no longer uses expression-string polling"
+  ],
+  "remote_ci_run": false,
+  "publication_performed": false,
+  "full_hosted_parity_claimed": false,
+  "previous_release": "0.1.0rc1",
+  "torch_environment_check": {
+    "passed": true,
+    "tests": 5,
+    "note": "Optional cutout check rerun in existing ComfyUI Python; no installation changes"
+  },
+  "hdr_and_model_mcp": {
+    "inventory": 64,
+    "hdr_import_render": true,
+    "reference_builder": true,
+    "original_job_resumed_without_resubmission": true
+  },
+  "hdr_precision": {
+    "pq_hlg_roundtrip": true,
+    "linear_blend_exposure": true,
+    "greater_than_256_levels_in_delivery": true,
+    "original_preserved": true,
+    "audio_mux": true,
+    "animated_srgb_overlays": true,
+    "short_input_fails": true
+  },
+  "model_workflows": "model-validation.json",
+  "scope_note": "Prior reference/3D/composition evidence is retained from rc1 where unchanged. rc2 fresh-wheel checks are recorded separately.",
+  "fresh_install_rc2": {
+    "tests_run": 217,
+    "failures": 0,
+    "errors": 0,
+    "skipped": [
+      {
+        "test": "test_click_point_node_maps_to_pixels (test_cutout_workflow.CutoutWorkflowTests.test_click_point_node_maps_to_pixels)",
+        "reason": "torch is only in ComfyUI environments"
+      }
+    ],
+    "passed": true,
+    "seconds": 28.91
+  },
+  "hdr_model_mcp_rc2": {
+    "passed": true,
+    "checks": {
+      "inventory": 64,
+      "hdr_import_render": true,
+      "reference_builder": true,
+      "original_job_resumed_without_resubmission": true
+    }
+  },
+  "compositions_rc2": {
+    "passed": true,
+    "checks": [
+      {
+        "name": "actual plugin discovery and parameter schemas",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "grid and intrinsic layout at 640x360; no content overflow",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "Arabic RTL, Indic conjunct and combining-mark grapheme ranges",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "actual contextual joins and OpenType ligature metrics",
+        "passed": true,
+        "details": {
+          "joined": 112.03125,
+          "isolated": 157.578125,
+          "liga": 51.78125,
+          "noLiga": 56.828125,
+          "narrow": 106.5,
+          "wide": 126.25
+        }
+      },
+      {
+        "name": "variable font width axis changes real layout metrics",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "reveal retains full shaped run and stable cluster geometry",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "responsive portrait reflow at 360x640 without scaled-down text",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "larger viewport recomputes layout and clamped font sizes",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "vertical writing uses actual top-to-bottom glyph placement",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "emoji ZWJ grapheme segmentation (not bundled emoji-font rendering)",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "plugin effect mount/dispose lifecycle across viewport and document changes",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "custom operator produces validated proposal without mutating input",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "batch add/replace/remove/copy/move/test transaction",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "failed batch leaves caller document unchanged",
+        "passed": true,
+        "details": "Page.evaluate: Error: Path missing: /missing"
+      },
+      {
+        "name": "unsupported operator parameter rejected",
+        "passed": true,
+        "details": "Page.evaluate: Error: Unknown parameter: oops"
+      },
+      {
+        "name": "post-operation invalid document rejected",
+        "passed": true,
+        "details": "composition: unsupported fields: magic"
+      },
+      {
+        "name": "unsupported CSS value rejected by browser",
+        "passed": true,
+        "details": "Page.evaluate: Error: Unsupported CSS value: width: not-a-size"
+      },
+      {
+        "name": "off-origin plugin request blocked",
+        "passed": true,
+        "details": "Composition runtime: Failed to fetch; connect-src: https://example.invalid/never-download"
+      },
+      {
+        "name": "plugin effects + RTL reveal render, backwards seek, remount and exact video frames",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "same composition renders portrait with responsive layout",
+        "passed": true,
+        "details": null
+      },
+      {
+        "name": "stateful visual plugin fails deterministic render",
+        "passed": true,
+        "details": "Composition is not deterministic when seeking backwards"
+      },
+      {
+        "name": "composition clip and native operator proposal work in existing timeline renderer",
+        "passed": true,
+        "details": {
+          "output": "C:\\Users\\mohan\\OneDrive\\Documents\\Codex\\OpenKatana\\work\\hdr-model-audit\\fresh-compositions\\timeline-render"
+        }
+      }
+    ]
+  },
+  "scene3d_rc2": {
+    "passed": true,
+    "checks": {
+      "product_reverse_seek": true,
+      "product_frames": true,
+      "product_visible_change": true,
+      "morph_reverse_seek": true,
+      "morph_frames": true,
+      "morph_visible_change": true,
+      "physics_reverse_seek": true,
+      "physics_frames": true,
+      "physics_visible_change": true,
+      "sphere_euler_2": true,
+      "torus_euler_0": true,
+      "all_sampled_morph_frames_manifold": true,
+      "gravity_moves_body": true,
+      "floor_prevents_fallthrough": true,
+      "skin_and_clip_loaded": true,
+      "morph_clip_moves_weights": true,
+      "bone_moves_vertices": true,
+      "model_reverse_seek": true,
+      "timeline_import_render": true
+    }
+  },
+  "glyph_blur_rc2": {
+    "passed": true,
+    "checks": {
+      "svg_outline_renders": true,
+      "temporal_blur_broadens_motion": true,
+      "blur_deterministic": true,
+      "clamped_exposure_edges": true,
+      "static_exposure_preserves_pixels": true,
+      "physics_blur_seek_stable": true
+    }
+  },
+  "studio_rc2": {
+    "passed": true,
+    "browser_errors": [],
+    "render_frames": 30
+  },
+  "reference_rc2": {
+    "commit": "630c217b8192b63ddfe3a31d4e8464112008d2a0",
+    "tracked_files": 1577,
+    "changed_files": [],
+    "head_unchanged": true,
+    "status_unchanged": true
+  },
+  "restoration_model_checks": {
+    "passed": true,
+    "execution": "local official SDK",
+    "weights_downloaded_by_this_script": false,
+    "source_frames": 12,
+    "output_frames": 23,
+    "source_fps": 12,
+    "output_fps": 24,
+    "audio_preserved": true,
+    "max_midpoint_position_error_pixels": 0.014140334864553239,
+    "upscale_input_size": [
+      128,
+      128
+    ],
+    "upscale_output_size": [
+      512,
+      512
+    ],
+    "upscale_mean_absolute_difference_from_bicubic": 5.0668996175130205,
+    "film_neural_execution_tested": false,
+    "quality_scope": "Original moving-shape and line fixtures; not arbitrary footage or restoration ground truth."
+  }
+}

@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.egg-info/
+.env
+/work/
+/dist/
+/build/
+*.log
+.mcp.json
+projects/
