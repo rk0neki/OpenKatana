@@ -142,11 +142,19 @@ class Decoder:
         return np.frombuffer(raw, dtype='<f4').reshape(self.shape)[[2, 0, 1]].transpose(1, 2, 0).copy()
 
     def close(self):
-        if self.proc.poll() is None:
-            self.proc.terminate()
-        self.proc.wait(timeout=15)
-        self.proc.stdout.close()
-        self.errors.close()
+        # A caller may stop before consuming every frame. Close the read end
+        # first so FFmpeg cannot remain blocked writing into a full POSIX pipe.
+        try:
+            self.proc.stdout.close()
+            if self.proc.poll() is None:
+                self.proc.terminate()
+            try:
+                self.proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                self.proc.kill()
+                self.proc.wait(timeout=5)
+        finally:
+            self.errors.close()
 
     def __enter__(self):
         return self
