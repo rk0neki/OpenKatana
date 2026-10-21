@@ -11,6 +11,14 @@ project. Resume the reported project using its Python environment; do not create
 a new project for every session. No account or platform-specific connector is
 required. CLI is the default; MCP is optional.
 
+When the user works inside **ComfyUI Apps**, read `docs/COMFY_APPS.md` (or
+`read_guide(topic="comfy-apps")`). The installed Apps share the same AgentAPI and
+workspace as Studio/CLI/MCP. Use the project and interpreter returned by **Open
+Studio**, not a new parallel project. Local Apps reject paid/cloud execution.
+Model operations may return an adapter background job: inspect its result and
+the nested model receipt before calling it complete. Preserve request IDs and
+collect existing jobs; do not resubmit to make a pending status disappear.
+
 Discover the installed capabilities with `openkatana tools` / `get_capabilities`.
 Read `read_guide(topic="agent")` and the relevant guide before forming arguments.
 CLI and MCP share the same operations; use whichever the current agent supports.

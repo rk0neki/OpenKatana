@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-21",
+  "platform": "Windows",
+  "comfyui": "0.41.0",
+  "frontend": "1.55.18",
+  "shared_tools": 72,
+  "registered_nodes": 79,
+  "saved_apps": 4,
+  "unit_tests": {
+    "run": 265,
+    "failed": 0,
+    "skipped": 1,
+    "skip": "Optional Torch-dependent tensor test in OpenKatana environment"
+  },
+  "live_checks": [
+    "project creation and Studio reuse",
+    "moving WebGL morph: 12 frames at 320x180",
+    "timeline save, preview and MP4 export",
+    "stale revision rejection",
+    "paid execution rejection",
+    "CLI and stdio MCP read shared revision",
+    "official SDK local workflow submission and background collection",
+    "72 MCP operations discovered"
+  ],
+  "browser_checks": [
+    "four saved Apps discovered",
+    "3D starter opened in App Mode",
+    "640x360 product MP4 displayed",
+    "all-tools result displayed as downloadable text",
+    "Studio link opened the shared Studio with 72 tools"
+  ],
+  "distribution_checks": [
+    "wheel installed in isolated directory",
+    "bundled 72-tool catalog, four Apps, extension and guide loaded",
+    "fresh installer and preservation of edited App/configuration tested"
+  ],
+  "credits_used": 0,
+  "model_weight_downloads": 0,
+  "limitations": [
+    "No new model inference quality sweep",
+    "Live Linux ComfyUI not tested in this round",
+    "Model, browser, FFmpeg and optional Blender dependencies remain separate"
+  ]
+}

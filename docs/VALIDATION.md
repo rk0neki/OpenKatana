@@ -48,3 +48,23 @@ and Linux, but only completed CI runs establish results for a release commit.
 
 Technical passes do not establish human approval, legal clearance, general
 model fidelity or quality on arbitrary creative briefs.
+# ComfyUI Apps integration — 2026-10-21
+
+All 72 AgentAPI operations are exposed by the local Comfy adapter, plus four
+convenience nodes and the three existing tensor nodes (79 total). See
+[ComfyUI Apps](COMFY_APPS.md) and `comfy-apps-validation.json` for scope.
+
+On Windows, the final regression suite ran 265 tests with no failures and one
+optional Torch-dependent skip. Real ComfyUI 0.41.0 / frontend 1.55.18 prompts
+created and reopened a shared Studio, rendered a moving WebGL morph and exported
+a timeline. CLI and a real stdio MCP client read the same revision. Stale saves
+and paid execution were rejected. An EmptyImage workflow submitted through the
+official SDK and a temporary local proxy was collected by the background adapter
+while Comfy's queue remained available. No model weights or paid services were
+used. This is a queue/transport test, not a new quality test of every model.
+
+Browser verification covered saved Apps discovery, App Mode input controls,
+text-result display/download controls, Studio linking and a 640×360 product video
+preview. An isolated wheel loaded its 72-tool catalog, four App workflows, frontend
+extension and guide. Linux integration with a running ComfyUI was not exercised
+in this round; the ordinary platform CI remains applicable to shared code.

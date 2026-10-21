@@ -56,7 +56,7 @@ class AgentAPI:
         except RuntimeError:chrome=None
         return {'name':'OpenKatana','version':__version__,'workspace':str(self.workspace),'tools':list(TOOLS),
             'ffmpeg':shutil.which('ffmpeg'),'ffprobe':shutil.which('ffprobe'),'chrome':chrome,'dependencies':dependencies,
-            'guides':['agent','timeline','effects','compatibility','tool-audit','comfy-models','scene3d','composition','release-tools','hdr','animation','webgl'],'comfy_execution':'official SDK: local by default; cloud requires explicit execution, endpoint and allow_paid plus COMFY_API_KEY; no automatic fallback',
+            'guides':['agent','timeline','effects','compatibility','tool-audit','comfy-models','comfy-apps','scene3d','composition','release-tools','hdr','animation','webgl'],'comfy_execution':'official SDK: local by default; cloud requires explicit execution, endpoint and allow_paid plus COMFY_API_KEY; no automatic fallback',
             'roles':'Your agent chooses and reviews the edit; OpenKatana executes it. No automatic publication.',
             'limits':['Canvas timelines use SDR CFR; HDR finishing uses the separate float32 render_hdr route','Face detector needs visual review',
                       'Semantic segmentation needs installed BiRefNet weights; point-click cut-outs need ComfyUI with the SAM2 and OpenKatana nodes and an installed SAM2 model','3D scene rendering is available; automatic scene reconstruction and semantic video morphing still need separate models',
@@ -80,9 +80,9 @@ class AgentAPI:
             'presets':preset_catalog(),
             'shot_transitions':shot_transitions(),'studio_looks':studio_looks()}
 
-    def read_guide(self,topic:Literal['agent','timeline','effects','compatibility','tool-audit','comfy-models','scene3d','composition','release-tools','hdr','animation','webgl']='agent') -> dict:
+    def read_guide(self,topic:Literal['agent','timeline','effects','compatibility','tool-audit','comfy-models','comfy-apps','scene3d','composition','release-tools','hdr','animation','webgl']='agent') -> dict:
         """Read the exact supported timeline contract and editing workflow; do not guess parameters."""
-        names={'agent':'AGENT_INTERFACE.md','timeline':'TIMELINE.md','effects':'EXPANSION.md','compatibility':'COMPATIBILITY.md','tool-audit':'EDITOR_TOOLS.md','comfy-models':'COMFY_MODELS.md','scene3d':'SCENE3D.md','composition':'COMPOSITIONS.md','release-tools':'RELEASE-TOOLS.md','hdr':'HDR.md','animation':'ANIMATION.md','webgl':'WEBGL.md'}
+        names={'agent':'AGENT_INTERFACE.md','timeline':'TIMELINE.md','effects':'EXPANSION.md','compatibility':'COMPATIBILITY.md','tool-audit':'EDITOR_TOOLS.md','comfy-models':'COMFY_MODELS.md','comfy-apps':'COMFY_APPS.md','scene3d':'SCENE3D.md','composition':'COMPOSITIONS.md','release-tools':'RELEASE-TOOLS.md','hdr':'HDR.md','animation':'ANIMATION.md','webgl':'WEBGL.md'}
         if topic not in names:raise ContractError('Unknown guide')
         for base in (Path(__file__).resolve().parent.parent/'docs',Path(sys.prefix)/'share/openkatana/docs',Path(__file__).resolve().parent.parent/'share/openkatana/docs'):
             p=base/names[topic]

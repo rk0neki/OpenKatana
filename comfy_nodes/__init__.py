@@ -1,9 +1,7 @@
-"""OpenKatana local Comfy nodes.
+"""OpenKatana local nodes and Apps. Install with scripts/install_comfy_nodes.py.
 
-Install by linking this folder into ComfyUI's custom_nodes (scripts/install_comfy_nodes.py). The nodes import
-OpenKatana from this checkout (the folder's real parent), so nothing is pip-installed into Comfy's environment;
-they need only numpy and opencv, which ComfyUI already provides.
-No network, filesystem reads, model downloads, or paid services in these nodes.
+The original tensor helpers use Comfy's environment. Full editor tools run in
+OpenKatana's separate interpreter and share projects with Studio/CLI/MCP.
 """
 import json
 import os
@@ -78,3 +76,14 @@ class OpenKatanaPoints:
 NODE_CLASS_MAPPINGS={'OpenKatanaMatte':OpenKatanaMatte,'OpenKatanaInterpolate':OpenKatanaInterpolate,'OpenKatanaPoints':OpenKatanaPoints}
 NODE_DISPLAY_NAME_MAPPINGS={'OpenKatanaMatte':'OpenKatana • Chroma matte','OpenKatanaInterpolate':'OpenKatana • Optical flow',
                             'OpenKatanaPoints':'OpenKatana • Click points'}
+
+from . import bridge
+NODE_CLASS_MAPPINGS.update(bridge.NODE_CLASS_MAPPINGS)
+NODE_DISPLAY_NAME_MAPPINGS.update(bridge.NODE_DISPLAY_NAME_MAPPINGS)
+WEB_DIRECTORY = './web'
+try:
+    from server import PromptServer
+    if getattr(PromptServer, 'instance', None) is not None:
+        bridge.register_routes()
+except ImportError:
+    pass  # standalone node tests have no running Comfy server

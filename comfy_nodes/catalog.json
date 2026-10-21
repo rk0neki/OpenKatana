@@ -1,0 +1,2054 @@
+[
+  {
+    "name": "get_capabilities",
+    "description": "Discover actual tools, supported workflows, runtime readiness and limits before editing.",
+    "signature": "() -> dict",
+    "parameters": {}
+  },
+  {
+    "name": "read_guide",
+    "description": "Read the exact supported timeline contract and editing workflow; do not guess parameters.",
+    "signature": "(topic: Literal['agent', 'timeline', 'effects', 'compatibility', 'tool-audit', 'comfy-models', 'comfy-apps', 'scene3d', 'composition', 'release-tools', 'hdr', 'animation', 'webgl'] = 'agent') -> dict",
+    "parameters": {
+      "topic": {
+        "type": "typing.Literal['agent', 'timeline', 'effects', 'compatibility', 'tool-audit', 'comfy-models', 'comfy-apps', 'scene3d', 'composition', 'release-tools', 'hdr', 'animation', 'webgl']",
+        "required": false,
+        "default": "agent"
+      }
+    }
+  },
+  {
+    "name": "create_project",
+    "description": "Create a fresh editing project. Existing projects are never replaced.",
+    "signature": "(name: str, project_id: str | None = None) -> dict",
+    "parameters": {
+      "name": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "project_id": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "get_project",
+    "description": "Read media IDs, the current timeline and its revision for conflict-safe saving.",
+    "signature": "(project_id: str) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "inspect_media",
+    "description": "Inspect a local media file's duration, dimensions, rates and streams without changing it.",
+    "signature": "(source: str) -> dict",
+    "parameters": {
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "preview_source",
+    "description": "See source frames at explicit times BEFORE choosing shots. Request up to 12 times.",
+    "signature": "(project_id: str, source: str, times: list[float]) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "times": {
+        "type": "list[float]",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "view_image",
+    "description": "View a saved image or matte inside the project. Path is relative to that project.",
+    "signature": "(project_id: str, path: str) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "path": {
+        "type": "<class 'str'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "import_media",
+    "description": "Import media, optionally a trimmed/resized video excerpt or its audio. Originals stay untouched.\n\nInspect first; use a short excerpt to avoid extracting an entire long video.\nRights records are provenance, not legal clearance. HDR/rotation need explicit conformance.",
+    "signature": "(project_id: str, source: str, rights: str = 'review_pending', start: float = 0, duration: float | None = None, max_width: int | None = None, audio_only: bool = False) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "rights": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "review_pending"
+      },
+      "start": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      },
+      "duration": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      },
+      "max_width": {
+        "type": "int | None",
+        "required": false,
+        "default": null
+      },
+      "audio_only": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": false
+      }
+    }
+  },
+  {
+    "name": "plan_edit",
+    "description": "Optional original recipe starting point. Returns a timeline for the agent to edit; does not save it.",
+    "signature": "(project_id: str, asset_ids: list[str], recipe: str = 'Drift', seconds: float = 3, width: int = 1280, height: int = 720, fps: float = 30, caption: str = '') -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "asset_ids": {
+        "type": "list[str]",
+        "required": true
+      },
+      "recipe": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "Drift"
+      },
+      "seconds": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 3
+      },
+      "width": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 1280
+      },
+      "height": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 720
+      },
+      "fps": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 30
+      },
+      "caption": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": ""
+      }
+    }
+  },
+  {
+    "name": "validate_timeline",
+    "description": "Check a complete timeline against real local assets before saving or rendering.",
+    "signature": "(project_id: str, timeline: dict) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "timeline": {
+        "type": "<class 'dict'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "save_timeline",
+    "description": "Save the agent's authored timeline; pass the revision from get_project (null for first save).",
+    "signature": "(project_id: str, timeline: dict, revision: str | None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "timeline": {
+        "type": "<class 'dict'>",
+        "required": true
+      },
+      "revision": {
+        "type": "str | None",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "preview_timeline",
+    "description": "See actual rendered frames of the saved timeline, including text/masks/camera/effects.",
+    "signature": "(project_id: str, frames: list[int]) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "frames": {
+        "type": "list[int]",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "start_render",
+    "description": "Render a saved timeline asynchronously. Reuse request_id after uncertain results to avoid duplicate jobs.",
+    "signature": "(project_id: str, request_id: str) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "request_id": {
+        "type": "<class 'str'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "get_render",
+    "description": "Read a recorded render status and output path, also after MCP reconnects. Never resubmits.",
+    "signature": "(project_id: str, job_id: str) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "job_id": {
+        "type": "<class 'str'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "review_render",
+    "description": "Record the agent's review against rendered source/timeline hashes. Does not publish or imply human approval.",
+    "signature": "(project_id: str, job_id: str, decision: Literal['approved', 'changes_requested'], notes: str) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "job_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "decision": {
+        "type": "typing.Literal['approved', 'changes_requested']",
+        "required": true
+      },
+      "notes": {
+        "type": "<class 'str'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "analyze_clip",
+    "description": "Run local source analysis. Preview results; apply=true saves a new timeline revision.\n\nmasks options: mode (chroma, luma, alpha, grabcut, refine), key, tolerance, softness, rect, feather;\nmode refine (an existing matte): grow (px, - shrinks), feather, fill_holes, smooth (frames), keep_largest. faces: min_size,\ndetector (auto: the bundled YuNet model with eyes, nose tip and mouth corners; cascade: OpenCV cascades, eyes\nonly), cascade (a classifier file, cascade detector). interpolate: multiplier. retime (slow motion as a plate with\none new picture per output frame): start, seconds (clip source interval), output_frames, fps (default the\ncanvas fps), take_start/take_seconds (one take; cuts inside are refused), deduplicate (collapse baked repeats,\nrun-centre timing), duplicate_threshold; returns a new clip to add and use at speed 1 from src 0 (apply is not\navailable for retime). No models are automatically downloaded.",
+    "signature": "(project_id: str, clip_id: str, operation: Literal['masks', 'faces', 'interpolate', 'retime'], options: dict | None = None, apply: bool = False) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "clip_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "operation": {
+        "type": "typing.Literal['masks', 'faces', 'interpolate', 'retime']",
+        "required": true
+      },
+      "options": {
+        "type": "dict | None",
+        "required": false,
+        "default": null
+      },
+      "apply": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": false
+      }
+    }
+  },
+  {
+    "name": "build_workflow",
+    "description": "Build an audited LOCAL workflow with explicit installed model names; returns a project-relative file.",
+    "signature": "(project_id: str, kind: Literal['matte', 'segmentation', 'interpolation', 'generation', 'qwen-generation', 'h3-generation', 'cutout', 'qwen-edit', 'h3-reference', 'seedvr2-restore', 'model-interpolation', 'image-upscale'], parameters: dict | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "kind": {
+        "type": "typing.Literal['matte', 'segmentation', 'interpolation', 'generation', 'qwen-generation', 'h3-generation', 'cutout', 'qwen-edit', 'h3-reference', 'seedvr2-restore', 'model-interpolation', 'image-upscale']",
+        "required": true
+      },
+      "parameters": {
+        "type": "dict | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "check_workflow",
+    "description": "Check local nodes/models without execution. For imported API workflows, reviewed_local_nodes\nextends this workflow's supported nodes after inspecting their implementation for local-only,\nno-download behavior. It never permits partner API nodes. See the comfy-models guide.",
+    "signature": "(project_id: str, workflow: str, native_endpoint: str = 'http://127.0.0.1:8000', reviewed_local_nodes: list[str] | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "workflow": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "native_endpoint": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "http://127.0.0.1:8000"
+      },
+      "reviewed_local_nodes": {
+        "type": "list[str] | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "submit_workflow",
+    "description": "Submit through official Comfy SDK. assets maps NODE.INPUT to project-relative files.\n\nUse a stable request_id. Existing receipts are returned, including unknown submission\noutcomes; the server never blindly retries them. Local is the default. For paid workflows,\nuse execution=cloud, endpoint=https://cloud.comfy.org and allow_paid=true only after\nuser authorization for the job and media upload. COMFY_API_KEY comes from the environment.\nSupply an API-format workflow supported by Comfy Cloud; build_workflow remains local.\nImported local workflows may supply reviewed_local_nodes after source/schema inspection\nestablishes no paid calls or automatic downloads. The extension is recorded in the receipt.",
+    "signature": "(project_id: str, workflow: str, request_id: str, assets: dict[str, str] | None = None, endpoint: str = 'http://127.0.0.1:8189', native_endpoint: str = 'http://127.0.0.1:8000', execution: Literal['local', 'cloud'] = 'local', allow_paid: bool = False, reviewed_local_nodes: list[str] | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "workflow": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "request_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "assets": {
+        "type": "dict[str, str] | None",
+        "required": false,
+        "default": null
+      },
+      "endpoint": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "http://127.0.0.1:8189"
+      },
+      "native_endpoint": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "http://127.0.0.1:8000"
+      },
+      "execution": {
+        "type": "typing.Literal['local', 'cloud']",
+        "required": false,
+        "default": "local"
+      },
+      "allow_paid": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": false
+      },
+      "reviewed_local_nodes": {
+        "type": "list[str] | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "collect_workflow",
+    "description": "Collect the previously submitted Comfy job; never submit a replacement.",
+    "signature": "(project_id: str, directory: str) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "directory": {
+        "type": "<class 'str'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "import_workflow_output",
+    "description": "Import collected images/masks or one video/audio output. Select output_file for mixed outputs.",
+    "signature": "(project_id: str, directory: str, kind: Literal['clip', 'mask'] = 'clip', clip_id: str | None = None, fps: float = 30, output_file: str | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "directory": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "kind": {
+        "type": "typing.Literal['clip', 'mask']",
+        "required": false,
+        "default": "clip"
+      },
+      "clip_id": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      },
+      "fps": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 30
+      },
+      "output_file": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "process_clip",
+    "description": "Advance a resumable whole-clip Comfy sequence. Reuse directory and settings to collect/continue.\n\ncutout: point-click subject cut-out. points/negative_points are [x, y] clicks in 0..1 coordinates of the clip's\nfirst frame (on / off the subject); a SAM2 video model (model, e.g. sam2.1_hiera_base_plus.safetensors, must\nalready be installed) carries the selection through the clip in one job and the masks become the clip's mask_dir\nafter review. Preview the first frame (preview_source) to place the clicks.",
+    "signature": "(project_id: str, clip_id: str, kind: Literal['matte', 'segmentation', 'interpolation', 'cutout'], directory: str, endpoint: str = 'http://127.0.0.1:8189', native_endpoint: str = 'http://127.0.0.1:8000', model: str | None = None, points: list[list[float]] | None = None, negative_points: list[list[float]] | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "clip_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "kind": {
+        "type": "typing.Literal['matte', 'segmentation', 'interpolation', 'cutout']",
+        "required": true
+      },
+      "directory": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "endpoint": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "http://127.0.0.1:8189"
+      },
+      "native_endpoint": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "http://127.0.0.1:8000"
+      },
+      "model": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      },
+      "points": {
+        "type": "list[list[float]] | None",
+        "required": false,
+        "default": null
+      },
+      "negative_points": {
+        "type": "list[list[float]] | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "source_contact_sheet",
+    "description": "Inspect up to 96 timestamped source frames as contact sheets. Use smaller intervals around cut candidates.",
+    "signature": "(project_id: str, source: str, start: float = 0, end: float | None = None, step: float = 0.5, columns: int = 4) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "start": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      },
+      "end": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      },
+      "step": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0.5
+      },
+      "columns": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 4
+      }
+    }
+  },
+  {
+    "name": "analyze_reference",
+    "description": "Find scene-change and audio energy-rise candidates in up to 120 seconds. These are NOT verified cuts/beats/lyrics.",
+    "signature": "(project_id: str, source: str, start: float = 0, duration: float = 30, scene_threshold: float = 0.25) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "start": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      },
+      "duration": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 30
+      },
+      "scene_threshold": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0.25
+      }
+    }
+  },
+  {
+    "name": "list_fonts",
+    "description": "List actual local font family/style/path metadata. Use a supplied folder for project fonts. No downloads or automatic matching.\nWith `text`, each font reports the characters it lacks (`missing`) and whether it `covers` the text.",
+    "signature": "(directory: str | None = None, query: str = '', limit: int = 100, text: str | None = None) -> dict",
+    "parameters": {
+      "directory": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      },
+      "query": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": ""
+      },
+      "limit": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 100
+      },
+      "text": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "preview_fonts",
+    "description": "See side-by-side specimens and exact hashes of up to eight local TTF/OTF/TTC font files before choosing one (TTC: first face, as browsers load it).",
+    "signature": "(project_id: str, sources: list[str], text: str = 'AFTER HOURS') -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "sources": {
+        "type": "list[str]",
+        "required": true
+      },
+      "text": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "AFTER HOURS"
+      }
+    }
+  },
+  {
+    "name": "preview_segment",
+    "description": "Create a playable video excerpt (up to 15s) and an audio preview for clients supporting audio input. Never claim listening from metadata.",
+    "signature": "(project_id: str, source: str, start: float = 0, duration: float = 5, max_width: int = 960) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "start": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      },
+      "duration": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 5
+      },
+      "max_width": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 960
+      }
+    }
+  },
+  {
+    "name": "compare_reference",
+    "description": "See paired reference/render pictures at the same requested times (render time = reference time + offset).",
+    "signature": "(project_id: str, reference: str, rendered: str, times: list[float], render_offset: float = 0) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "reference": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "rendered": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "times": {
+        "type": "list[float]",
+        "required": true
+      },
+      "render_offset": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      }
+    }
+  },
+  {
+    "name": "save_reference_plan",
+    "description": "Record verified reference timing/text/font/effect requirements. Read tool-audit guide for schema. Render blocks mismatches; do not invent or silently weaken requirements.",
+    "signature": "(project_id: str, plan: dict) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "plan": {
+        "type": "<class 'dict'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "audit_reference_plan",
+    "description": "Check saved timeline against exact cut frames, literal timed text, font file hashes and specified shot settings.",
+    "signature": "(project_id: str) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "import_media_batch",
+    "description": "Import 1..32 excerpts, hashing a large source once. Each excerpt has start/duration and optional max_width/audio_only. Repeated request IDs return recorded partial/completed results without duplicating imports.",
+    "signature": "(project_id: str, source: str, excerpts: list[dict], request_id: str, rights: str = 'review_pending') -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "excerpts": {
+        "type": "list[dict]",
+        "required": true
+      },
+      "request_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "rights": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "review_pending"
+      }
+    }
+  },
+  {
+    "name": "analyze_audio",
+    "description": "Measure music for cutting: BPM with octave candidates, a constant beat grid fitted to onsets, downbeats, onsets\n(all/strong/low), level-based sections, silence and EBU R128 loudness, plus a timeline image. Times are seconds\nfrom `start`; pass fps for frame numbers. Estimates for planning cuts, not verified musical structure.",
+    "signature": "(project_id: str, source: str, start: float = 0, duration: float | None = None, fps: float | None = None, beats_per_bar: int = 4) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "start": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      },
+      "duration": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      },
+      "fps": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      },
+      "beats_per_bar": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 4
+      }
+    }
+  },
+  {
+    "name": "analyze_energy",
+    "description": "Measure a video's energy: cuts, white/black flashes, shake bursts, pans and motion hits (each with a ready\ntimeline entry: specials / cam.shake / cam.pan / cam.punch), per-second rates and a 0.5 s energy curve, plus a\nchart image. With `reference`, also measure it and check the source's rates against it (FAIL below floor x the\nreference, or too much shake/jitter). Event times are seconds of the file; amplitudes are px of a canvas_w canvas.",
+    "signature": "(project_id: str, source: str, reference: str | None = None, start: float = 0, duration: float | None = None, canvas_w: int = 1080, floor: float = 0.6) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "reference": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      },
+      "start": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      },
+      "duration": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      },
+      "canvas_w": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 1080
+      },
+      "floor": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0.6
+      }
+    }
+  },
+  {
+    "name": "plan_music_edit",
+    "description": "Plan cuts to music: analyse the track, then return a beat-aligned cut list (tempo-aware pace per level section:\nthe smallest of 1/2/4/8 beats lasting >= 0.5 s loud, 1 s mid, 2 s quiet; half-beat burst after a drop), shot spans, suggested specials/punch/shake entries and,\nwith asset_ids, a draft timeline (clips assigned in order; the track is included when it lives in the project).\nA starting point for the editor; nothing is saved.",
+    "signature": "(project_id: str, source: str, asset_ids: list[str] | None = None, start: float = 0, duration: float | None = None, fps: float = 30, width: int = 1080, height: int = 1920, pace: str = 'auto', min_shot: float = 0.15, burst: bool = True) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "asset_ids": {
+        "type": "list[str] | None",
+        "required": false,
+        "default": null
+      },
+      "start": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      },
+      "duration": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      },
+      "fps": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 30
+      },
+      "width": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 1080
+      },
+      "height": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 1920
+      },
+      "pace": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "auto"
+      },
+      "min_shot": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0.15
+      },
+      "burst": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": true
+      }
+    }
+  },
+  {
+    "name": "make_captions",
+    "description": "Turn supplied word timings (words JSON or SRT/VTT; no transcription) into caption text events for the timeline,\ngrouped for reading (max_chars/max_words/max_gap/max_duration, sentence ends), in a style (clean, bold_pop,\nkaraoke with per-word highlight, lower_third, title_card), plus SRT and WebVTT files. `offset` subtracts seconds\n(e.g. the audio start used in the timeline). Insert the events into the timeline's `text` yourself.",
+    "signature": "(project_id: str, words: str, family: str, fps: float = 30, style: str = 'clean', size: int | None = None, height: int = 1080, offset: float = 0, highlight: str = '#ffd200', karaoke_mode: str = 'word', max_chars: int = 32, max_words: int = 7, max_gap: float = 0.6, max_duration: float = 3) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "words": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "family": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "fps": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 30
+      },
+      "style": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "clean"
+      },
+      "size": {
+        "type": "int | None",
+        "required": false,
+        "default": null
+      },
+      "height": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 1080
+      },
+      "offset": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      },
+      "highlight": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "#ffd200"
+      },
+      "karaoke_mode": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "word"
+      },
+      "max_chars": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 32
+      },
+      "max_words": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 7
+      },
+      "max_gap": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0.6
+      },
+      "max_duration": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 3
+      }
+    }
+  },
+  {
+    "name": "list_sfx",
+    "description": "Browse OpenKatana's own synthesised sound effects (no recordings or licences involved): name, category,\nvariants, duration and default level. Place them with timeline audio.cues [{sfx, variant, at, level_db}].",
+    "signature": "(category: str | None = None) -> dict",
+    "parameters": {
+      "category": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "set_review_policy",
+    "description": "Optional strict mode: start_render then refuses until every source used by the timeline was inspected\n(preview_source / source_contact_sheet) and the current revision was previewed (preview_timeline); with\nrequire_motion also until revise_motion measured the current revision against a reference.",
+    "signature": "(project_id: str, strict: bool, require_motion: bool | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "strict": {
+        "type": "<class 'bool'>",
+        "required": true
+      },
+      "require_motion": {
+        "type": "bool | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "render_page",
+    "description": "Render a project HTML/CSS/SVG/Canvas page that defines window.openkatanaPage = {width, height, fps, frames, render(t, f)}\ninto PNG frames (render(f/fps, f) per frame) after a forward/reverse determinism check; returns a clip to add to\nthe timeline. Same-origin only: requests outside the project server are blocked and listed.",
+    "signature": "(project_id: str, page: str, frames: int | None = None, fps: float | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "page": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "frames": {
+        "type": "int | None",
+        "required": false,
+        "default": null
+      },
+      "fps": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "build_recipe",
+    "description": "Starting-point timeline for one of 8 recipe families (beat_cut_punch, xerox_ink, mono_noir, cutout_collage,\nspeed_ramp_freeze, facelock_strobe, timed_type, glitch_hits) from imported assets; music (an imported audio\nasset) drives beat-based families. `family` may also be one of OpenKatana's 12 presets (get_capabilities\npresets: a family plus a look and finishing, e.g. neon-beat, travel-diary). Returned validated, not saved; the\neditor adapts it.",
+    "signature": "(project_id: str, family: str, asset_ids: list[str], music_asset_id: str | None = None, text: str | None = None, font_family: str | None = None, font_file: str | None = None, seconds: float = 6, width: int = 1080, height: int = 1920, fps: float = 30) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "family": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "asset_ids": {
+        "type": "list[str]",
+        "required": true
+      },
+      "music_asset_id": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      },
+      "text": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      },
+      "font_family": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      },
+      "font_file": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      },
+      "seconds": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 6
+      },
+      "width": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 1080
+      },
+      "height": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 1920
+      },
+      "fps": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 30
+      }
+    }
+  },
+  {
+    "name": "revise_motion",
+    "description": "Bounded motion revision loop: render the saved timeline, measure per-second cuts, flashes, shake frames,\njitter, camera movement and motion energy against a reference video (analyze_energy measures), then up to\nmax_revisions (0-4) times propose camera-only edits on unlocked shots (shake bursts, pans, punch hits at the\nreference's event times; amplitude scaling bounded 0.5-2x per step), re-render and re-measure; the best attempt\nis kept. Clips, shot spans, sources, transitions, flashes, text, looks, post and audio never change; cut/flash\nshortfalls are listed for the editor. ceiling (e.g. 2) also fails camera movement / motion energy above\nceiling x the reference and scales camera moves down (0.5x minimum per step). apply=true saves the best\nattempt only if it scores better. Records the\nassessment for the strict review gate. Slow: one full render per attempt.",
+    "signature": "(project_id: str, reference: str, max_revisions: int = 2, locked_shots: list[int] | None = None, floor: float = 0.6, reference_start: float = 0, reference_duration: float | None = None, apply: bool = False, ceiling: float | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "reference": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "max_revisions": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 2
+      },
+      "locked_shots": {
+        "type": "list[int] | None",
+        "required": false,
+        "default": null
+      },
+      "floor": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0.6
+      },
+      "reference_start": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      },
+      "reference_duration": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      },
+      "apply": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": false
+      },
+      "ceiling": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "review_mask",
+    "description": "Review a clip's matte: sheets of the source every `step` s plus the last frame with the background tinted, the\nmatte edge outlined and coverage per frame; flags empty/full mattes and coverage jumps. Look at the sheets, then\ncall again with accept true/false to record the decision (strict mode blocks matte-dependent renders - cutout,\noutline, contour, contour_glow, cut-out stickers - until the current matte is accepted).",
+    "signature": "(project_id: str, clip_id: str, step: float = 0.25, accept: bool | None = None, note: str = '') -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "clip_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "step": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0.25
+      },
+      "accept": {
+        "type": "bool | None",
+        "required": false,
+        "default": null
+      },
+      "note": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": ""
+      }
+    }
+  },
+  {
+    "name": "bind_reference",
+    "description": "Record a named reference (role identity, style, product or location) from imported assets, with their hashes.\nIn strict review mode, generated material (clips imported from a Comfy job) must then be accepted against every\nidentity reference with inspect_identity before it renders.",
+    "signature": "(project_id: str, name: str, asset_ids: list[str], role: str = 'identity', subject_type: str = 'person', description: str = '') -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "name": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "asset_ids": {
+        "type": "list[str]",
+        "required": true
+      },
+      "role": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "identity"
+      },
+      "subject_type": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "person"
+      },
+      "description": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": ""
+      }
+    }
+  },
+  {
+    "name": "inspect_identity",
+    "description": "Compare an asset with bound references: a sheet of the largest detected face (or the centre) in each reference\nand in the chosen frames of the asset. Visual comparison only - no biometric identity score. Look at the sheet,\nthen call again with accept true/false to record the decision used by the strict review gate.",
+    "signature": "(project_id: str, asset_id: str, references: list[str] | None = None, frames: list[int] | None = None, accept: bool | None = None, note: str = '') -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "asset_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "references": {
+        "type": "list[str] | None",
+        "required": false,
+        "default": null
+      },
+      "frames": {
+        "type": "list[int] | None",
+        "required": false,
+        "default": null
+      },
+      "accept": {
+        "type": "bool | None",
+        "required": false,
+        "default": null
+      },
+      "note": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": ""
+      }
+    }
+  },
+  {
+    "name": "transcribe_audio",
+    "description": "Transcribe speech locally with word timings (faster-whisper; a Whisper model already in the local cache, see\nget_capabilities transcription; never downloaded). Writes a words file for make_captions; times are seconds of\nthe source file. Machine output: check words, names and timings against the audio before captioning.",
+    "signature": "(project_id: str, source: str, model: str | None = None, language: str | None = None, start: float = 0, duration: float | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "model": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      },
+      "language": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      },
+      "start": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      },
+      "duration": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "plan_storyboard",
+    "description": "Storyboard mode: plan a music edit as slots to fill before footage exists. Each beat-aligned slot gets a brief\n(part, role, shot size, subject, camera, seconds of footage needed) and a slate picture, so the draft timeline\nrenders for review. save=true makes it the project timeline. The verdict stays \"GAPS storyboard: k of n slots\nstill to fill\" until fill_storyboard puts imported footage into every slot.",
+    "signature": "(project_id: str, source: str, start: float = 0, duration: float | None = None, fps: float = 30, width: int = 1080, height: int = 1920, pace: str = 'auto', subject: str = 'the main subject', camera: str | None = None, save: bool = False) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "start": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      },
+      "duration": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      },
+      "fps": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 30
+      },
+      "width": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 1080
+      },
+      "height": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 1920
+      },
+      "pace": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "auto"
+      },
+      "subject": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "the main subject"
+      },
+      "camera": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      },
+      "save": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": false
+      }
+    }
+  },
+  {
+    "name": "fill_storyboard",
+    "description": "Put imported footage into storyboard slots of the saved timeline (fills: [{slot, asset_id, srcf?}]; each\nslot's other shot settings are kept) and save a new revision. Video slots need enough footage from srcf. With no\nfills, only report the verdict: \"GAPS storyboard: k of n slots still to fill\" with the briefs, or \"FILLED\".",
+    "signature": "(project_id: str, storyboard_id: str, fills: list[dict] | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "storyboard_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "fills": {
+        "type": "list[dict] | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "create_scene3d",
+    "description": "Create an editable 3D scene, never overwrite one. Read scene3d guide. Optional scene is a complete schema-1 scene; asset paths are relative to scenes/NAME/.",
+    "signature": "(project_id: str, name: str = 'scene', template: Literal['product', 'morph', 'physics'] = 'product', scene: dict | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "name": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "scene"
+      },
+      "template": {
+        "type": "typing.Literal['product', 'morph', 'physics']",
+        "required": false,
+        "default": "product"
+      },
+      "scene": {
+        "type": "dict | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "inspect_model3d",
+    "description": "Inspect a supplied local GLB/glTF model's clips, skins, morph targets and dependencies. No import, generation or download.",
+    "signature": "(source: str) -> dict",
+    "parameters": {
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "import_model3d",
+    "description": "Copy a supplied GLB/glTF and its local dependencies into a NEW project-relative folder, normally scenes/NAME/assets/MODEL. Rights remain the user's responsibility.",
+    "signature": "(project_id: str, source: str, destination: str) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "destination": {
+        "type": "<class 'str'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "check_scene3d",
+    "description": "Validate scene JSON, animation targets, local model dependencies and supported fields before rendering. Does not establish visual quality.",
+    "signature": "(project_id: str, scene: str) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "scene": {
+        "type": "<class 'str'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "render_scene3d",
+    "description": "Render WebGL 3D locally with reverse-seek checks. Preview stills or an inclusive start/end chunk; omit range for full clip. Custom ES modules need trusted_script=true after review. Returns PNG clip, optional MP4 and a receipt usable by assemble_render_clips. No model services or Blender required.",
+    "signature": "(project_id: str, scene: str, preview_frames: list[int] | None = None, video: bool = True, start: int | None = None, end: int | None = None, trusted_script: bool = False) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "scene": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "preview_frames": {
+        "type": "list[int] | None",
+        "required": false,
+        "default": null
+      },
+      "video": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": true
+      },
+      "start": {
+        "type": "int | None",
+        "required": false,
+        "default": null
+      },
+      "end": {
+        "type": "int | None",
+        "required": false,
+        "default": null
+      },
+      "trusted_script": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": false
+      }
+    }
+  },
+  {
+    "name": "render_blender",
+    "description": "Render a project .blend or explicitly trusted .py scene script using separately installed Blender. Full Blender geometry/material/rigging/simulation authoring is available to scripts; this is NOT a security sandbox. Returns PNG clip and MP4. No automatic downloads or services.",
+    "signature": "(project_id: str, source: str, engine: Literal['BLENDER_EEVEE', 'CYCLES'] = 'BLENDER_EEVEE', start: int | None = None, end: int | None = None, trusted_script: bool = False) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "engine": {
+        "type": "typing.Literal['BLENDER_EEVEE', 'CYCLES']",
+        "required": false,
+        "default": "BLENDER_EEVEE"
+      },
+      "start": {
+        "type": "int | None",
+        "required": false,
+        "default": null
+      },
+      "end": {
+        "type": "int | None",
+        "required": false,
+        "default": null
+      },
+      "trusted_script": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": false
+      }
+    }
+  },
+  {
+    "name": "morph_images",
+    "description": "Morph two local images using geometric ORB correspondence or explicit normalized landmarks. Refuses unreliable matches/folded triangles. Returns an editable correspondence receipt and timeline clip; not semantic video generation.",
+    "signature": "(project_id: str, source: str, target: str, width: int = 512, height: int = 512, fps: int = 30, frames: int = 60, points: dict | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "target": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "width": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 512
+      },
+      "height": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 512
+      },
+      "fps": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 30
+      },
+      "frames": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 60
+      },
+      "points": {
+        "type": "dict | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "shape_text",
+    "description": "Export one shaped text run as glyph IDs, clusters, positions, contours and SVG. Requires the licensed text extra. For paragraph bidi/fallback use compositions.",
+    "signature": "(project_id: str, font: str, text: str, size: float = 72, direction: Optional[Literal['ltr', 'rtl', 'ttb', 'btt']] = None, language: str = 'und', script: str | None = None, features: dict | None = None, variations: dict | None = None, radius: float | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "font": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "text": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "size": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 72
+      },
+      "direction": {
+        "type": "typing.Optional[typing.Literal['ltr', 'rtl', 'ttb', 'btt']]",
+        "required": false,
+        "default": null
+      },
+      "language": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "und"
+      },
+      "script": {
+        "type": "str | None",
+        "required": false,
+        "default": null
+      },
+      "features": {
+        "type": "dict | None",
+        "required": false,
+        "default": null
+      },
+      "variations": {
+        "type": "dict | None",
+        "required": false,
+        "default": null
+      },
+      "radius": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "edit_timeline",
+    "description": "Propose or atomically save RFC 6902 timeline operations against an exact revision. Default is a validated proposal. Whole-batch failure leaves the project unchanged.",
+    "signature": "(project_id: str, operations: list[dict], revision: str, save: bool = False) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "operations": {
+        "type": "list[dict]",
+        "required": true
+      },
+      "revision": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "save": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": false
+      }
+    }
+  },
+  {
+    "name": "import_hdr_media",
+    "description": "Keep an original HDR source and import an explicitly tone-mapped SDR editing proxy.\n\nReturns an HDR finishing document referencing the untouched source copy. Ordinary\nCanvas timelines use the proxy; render_hdr preserves source highlight precision.",
+    "signature": "(project_id: str, source: str, source_color: Optional[Literal['pq', 'hlg', 'bt709', 'srgb']] = None, fps: int = 30, start: float = 0, duration: float = 3, peak_nits: float = 1000, rights: str = 'review_pending') -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source_color": {
+        "type": "typing.Optional[typing.Literal['pq', 'hlg', 'bt709', 'srgb']]",
+        "required": false,
+        "default": null
+      },
+      "fps": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 30
+      },
+      "start": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0
+      },
+      "duration": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 3
+      },
+      "peak_nits": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 1000
+      },
+      "rights": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "review_pending"
+      }
+    }
+  },
+  {
+    "name": "render_hdr",
+    "description": "Finish HDR clips in float32 linear BT.2020; export 16-bit FFV1, 10-bit HEVC and SDR preview.\n\nUses the separate openkatana.hdr/1 contract (hdr guide). Supports trims, scaling,\nexposure, linear dissolves and explicit sRGB PNG overlays. Canvas effects are SDR.",
+    "signature": "(project_id: str, document: dict) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "document": {
+        "type": "<class 'dict'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "run_model_workflow",
+    "description": "Build, check, submit or collect an installed LOCAL model workflow with stable request ID.\n\nassets must bind every returned build_workflow asset port to a project-relative file.\nRepeating identical arguments collects the original job; it never resubmits failures\nor uncertain outcomes. Outputs still need visual/identity review and explicit import.",
+    "signature": "(project_id: str, kind: str, parameters: dict, assets: dict[str, str], request_id: str, endpoint: str = 'http://127.0.0.1:8189', native_endpoint: str = 'http://127.0.0.1:8000') -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "kind": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "parameters": {
+        "type": "<class 'dict'>",
+        "required": true
+      },
+      "assets": {
+        "type": "dict[str, str]",
+        "required": true
+      },
+      "request_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "endpoint": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "http://127.0.0.1:8189"
+      },
+      "native_endpoint": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "http://127.0.0.1:8000"
+      }
+    }
+  },
+  {
+    "name": "create_composition",
+    "description": "Create an original responsive composition. Use for CSS layout and fully shaped multilingual text.",
+    "signature": "(project_id: str, name: str = 'composition', width: int = 1280, height: int = 720, fps: int = 30, frames: int = 90) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "name": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "composition"
+      },
+      "width": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 1280
+      },
+      "height": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 720
+      },
+      "fps": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 30
+      },
+      "frames": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 90
+      }
+    }
+  },
+  {
+    "name": "save_composition",
+    "description": "Validate/save a composition with a revision guard and history. Null revision means create only.",
+    "signature": "(project_id: str, path: str, document: dict, revision: str | None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "path": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "document": {
+        "type": "<class 'dict'>",
+        "required": true
+      },
+      "revision": {
+        "type": "str | None",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "inspect_composition",
+    "description": "Preview actual layout, font loading, grapheme ranges and overflow at a viewport size. Runs trusted declared plugins.",
+    "signature": "(project_id: str, path: str, frame: int = 0, width: int | None = None, height: int | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "path": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "frame": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 0
+      },
+      "width": {
+        "type": "int | None",
+        "required": false,
+        "default": null
+      },
+      "height": {
+        "type": "int | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "render_composition",
+    "description": "Render a responsive composition offline with deterministic seeking checks. Returns a normal timeline clip.",
+    "signature": "(project_id: str, path: str, width: int | None = None, height: int | None = None, video: bool = True) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "path": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "width": {
+        "type": "int | None",
+        "required": false,
+        "default": null
+      },
+      "height": {
+        "type": "int | None",
+        "required": false,
+        "default": null
+      },
+      "video": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": true
+      }
+    }
+  },
+  {
+    "name": "list_plugins",
+    "description": "Load trusted project plugin manifests; list actual components, effects, operators and parameter contracts.",
+    "signature": "(project_id: str, manifests: list[str] | None = None) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "manifests": {
+        "type": "list[str] | None",
+        "required": false,
+        "default": null
+      }
+    }
+  },
+  {
+    "name": "run_plugin_operator",
+    "description": "Run an original plugin operation as a validated, deterministic proposal; never saves. core/batch supports atomic do/ops-style document changes. Save with the returned before_revision through save_composition/save_timeline.",
+    "signature": "(project_id: str, operator: str, document: dict, parameters: dict | None = None, manifests: list[str] | None = None, kind: Literal['composition', 'timeline'] = 'composition') -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "operator": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "document": {
+        "type": "<class 'dict'>",
+        "required": true
+      },
+      "parameters": {
+        "type": "dict | None",
+        "required": false,
+        "default": null
+      },
+      "manifests": {
+        "type": "list[str] | None",
+        "required": false,
+        "default": null
+      },
+      "kind": {
+        "type": "typing.Literal['composition', 'timeline']",
+        "required": false,
+        "default": "composition"
+      }
+    }
+  },
+  {
+    "name": "create_animation_kit",
+    "description": "Create an editable original Blender animation starter and display atlas. No render/download. Existing paths are never overwritten. Read the animation guide; customize the scene for the brief.",
+    "signature": "(project_id: str, directory: str = 'animation', width: int = 640, height: int = 360, fps: int = 30, frames: int = 60) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "directory": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "animation"
+      },
+      "width": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 640
+      },
+      "height": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 360
+      },
+      "fps": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 30
+      },
+      "frames": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 60
+      }
+    }
+  },
+  {
+    "name": "build_display_atlas",
+    "description": "Create frame-indexed RGB LED masks from text cues (animation guide). Returns atlas/tiles/receipt. Limited original dot glyphs; use compositions for shaped multilingual text.",
+    "signature": "(project_id: str, document: dict) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "document": {
+        "type": "<class 'dict'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "synthesize_score",
+    "description": "Render an original deterministic local oscillator/noise score from explicit notes. No AI model or paid service. Returns WAV plus reproducible recipe and preview_audio.",
+    "signature": "(project_id: str, document: dict) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "document": {
+        "type": "<class 'dict'>",
+        "required": true
+      }
+    }
+  },
+  {
+    "name": "assemble_blender_clips",
+    "description": "Validate ordered project-relative Blender receipts and return a timeline proposal with frame hashes. Reject missing frames, dimensions/fps drift and (by default) source-range gaps. Does not save the project timeline.",
+    "signature": "(project_id: str, receipts: list[str], contiguous: bool = True) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "receipts": {
+        "type": "list[str]",
+        "required": true
+      },
+      "contiguous": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": true
+      }
+    }
+  },
+  {
+    "name": "analyze_render_motion",
+    "description": "Measure decoded-frame optical flow and candidate judder/stalls, excluding planned cuts. source is a local video; thresholds use source pixels/frame. Requires vision extra. Analysis only; never interpolates or revises the video.",
+    "signature": "(project_id: str, source: str, cuts: list[int] | None = None, work_width: int = 480, moving: float = 1.5, ratio: float = 2.2, stall: float = 0.25) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "cuts": {
+        "type": "list[int] | None",
+        "required": false,
+        "default": null
+      },
+      "work_width": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 480
+      },
+      "moving": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 1.5
+      },
+      "ratio": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 2.2
+      },
+      "stall": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0.25
+      }
+    }
+  },
+  {
+    "name": "analyze_camera_motion",
+    "description": "Analyze evaluated camera_samples from blender_helpers: speed, aim jolts and rotational shutter streak estimates. Includes constraints; not a full image-space blur or aesthetic verdict.",
+    "signature": "(project_id: str, document: dict, jolt_threshold: float = 2500, jolt_ratio: float = 3) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "document": {
+        "type": "<class 'dict'>",
+        "required": true
+      },
+      "jolt_threshold": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 2500
+      },
+      "jolt_ratio": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 3
+      }
+    }
+  },
+  {
+    "name": "create_webgl_kit",
+    "description": "Create an original editable JavaScript/Three.js scene, cut-safe camera schedule and animated display atlas. No render or download; existing paths preserved. Read webgl guide and customize for the brief. Uses the bundled WebGL renderer instead of Blender.",
+    "signature": "(project_id: str, directory: str = 'webgl', width: int = 640, height: int = 360, fps: int = 30, frames: int = 60) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "directory": {
+        "type": "<class 'str'>",
+        "required": false,
+        "default": "webgl"
+      },
+      "width": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 640
+      },
+      "height": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 360
+      },
+      "fps": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 30
+      },
+      "frames": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 60
+      }
+    }
+  },
+  {
+    "name": "assemble_render_clips",
+    "description": "Assemble ordered WebGL or Blender receipt paths into a validated timeline proposal. Checks frame files, dimensions/fps, source/renderer hashes and contiguous ranges. Set contiguous=false for independent shots or mixed renderers. Does not save the timeline.",
+    "signature": "(project_id: str, receipts: list[str], contiguous: bool = True) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "receipts": {
+        "type": "list[str]",
+        "required": true
+      },
+      "contiguous": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": true
+      }
+    }
+  }
+]

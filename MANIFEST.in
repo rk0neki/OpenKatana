@@ -3,7 +3,7 @@ recursive-include licenses *.txt
 include AGENTS.md mcp.example.json
 recursive-include openkatana/web *.js *.html *.css *.jpg
 recursive-include openkatana/web/vendor3d *
-recursive-include comfy_nodes *.py
+recursive-include comfy_nodes *.py *.js *.json
 recursive-include workflows *.json
 recursive-include docs *.md *.json
 recursive-include tests *.py

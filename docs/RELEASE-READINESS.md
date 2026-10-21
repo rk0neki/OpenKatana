@@ -5,6 +5,11 @@
 licensed browser/font/model assets. FFmpeg, Chromium, optional Blender and
 generative weights are separate installations.
 
+The local [ComfyUI Apps integration](COMFY_APPS.md) exposes the same 72 operations
+through 79 nodes and four saved Apps. It runs on the user's machine and needs no
+paid hosting. Studio, CLI and MCP share its project files. Installed model/node
+requirements still apply; exposing a tool does not bundle every model.
+
 An authenticated hosted pilot is prepared separately; see [hosting](HOSTING.md)
 and the [pre-deployment budget](HOSTING-COSTS.md). Its image includes the CPU
 rendering runtimes, and its browser/MCP queue shares the local tool implementations.

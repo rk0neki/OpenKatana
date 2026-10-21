@@ -54,6 +54,16 @@ Studio follows **Brief & media → Preview & refine → Render & review**.
 Tool cards open their Markdown guides; **Copy**, **Download .md** and **Close**
 stay visible while reading.
 
+## ComfyUI Apps — local, no hosting bill
+
+Use the same tools from ComfyUI's Apps panel. After ordinary setup, run
+`python scripts/install_comfy_nodes.py --comfy-root PATH_TO_COMFYUI` with
+OpenKatana's Python, then restart ComfyUI. Four saved Apps provide **Open Studio**,
+**All tools**, **Make a 3D scene** and **Background job**. All 72 shared tools also
+have searchable nodes. Studio and your agent keep using the same projects.
+See [ComfyUI Apps](docs/COMFY_APPS.md) for installation and model prerequisites.
+This uses the user's local machine; it does not provision a cloud service.
+
 ## Hosted pilot
 
 For a browser service without a visitor checkout, see the [hosted pilot](docs/HOSTING.md)
