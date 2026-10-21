@@ -8,10 +8,10 @@ import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
 TOP={'LICENSE','NOTICE','README.md','THIRD_PARTY_NOTICES.md','CLAUDE.md','AGENTS.md','MANIFEST.in',
-     'pyproject.toml','requirements-lock.txt','mcp.example.json','.gitignore','.gitattributes','CONTRIBUTING.md'}
-DIRS={'openkatana','comfy_nodes','workflows','docs','scripts','tests','examples','.github','skills','licenses'}
+     'pyproject.toml','requirements-lock.txt','mcp.example.json','.gitignore','.gitattributes','.dockerignore','CONTRIBUTING.md'}
+DIRS={'openkatana','comfy_nodes','workflows','docs','scripts','tests','examples','.github','skills','licenses','deploy'}
 EXCLUDED={'docs/SESSION_HANDOFF.md','docs/NEXT_SESSION_CONTEXT.md'}
-EXTENSIONS={'.py','.js','.html','.css','.jpg','.json','.md','.txt','.ttf','.otf','.onnx','.toml','.yml','.yaml','.png','.svg'}
+EXTENSIONS={'.py','.js','.html','.css','.jpg','.json','.md','.txt','.ttf','.otf','.onnx','.toml','.yml','.yaml','.png','.svg','.service','.worker'}
 
 
 def entries():
@@ -24,7 +24,7 @@ def entries():
             rel=p.relative_to(ROOT).as_posix()
             if p.is_symlink():raise ValueError('Release contains a symlink: '+rel)
             if not p.is_file() or '__pycache__' in p.parts or rel in EXCLUDED:continue
-            if name in DIRS and p.suffix.lower() not in EXTENSIONS and p.name not in {'LICENSE','NOTICE','COPYING','AUTHORS'}:raise ValueError('Unreviewed release file type: '+rel)
+            if name in DIRS and p.suffix.lower() not in EXTENSIONS and p.name not in {'LICENSE','NOTICE','COPYING','AUTHORS','Caddyfile'}:raise ValueError('Unreviewed release file type: '+rel)
             if p.name.startswith('.env') or p.name=='.mcp.json':raise ValueError('Private configuration in release: '+rel)
             data=p.read_bytes()
             if p.suffix in {'.py','.js','.md','.json','.toml','.yml','.yaml'}:

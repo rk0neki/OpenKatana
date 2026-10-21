@@ -25,7 +25,7 @@ jobs:
         if: runner.os == 'Windows'
         run: choco install ffmpeg --no-progress -y
       - name: Install package and test dependencies
-        run: python -m pip install '.[vision,mcp,text]' build
+        run: python -m pip install '.[vision,mcp,text,hosted]' build
       - name: Explicit test-browser installation
         run: python -m playwright install --with-deps chromium
       - name: Select test browser

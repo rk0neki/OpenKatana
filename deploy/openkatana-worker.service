@@ -1,0 +1,21 @@
+[Unit]
+Description=OpenKatana isolated rendering worker
+After=docker.service network.target
+Requires=docker.service
+
+[Service]
+User=openkatana-worker
+Group=openkatana
+SupplementaryGroups=docker
+WorkingDirectory=/opt/openkatana
+ExecStart=/opt/openkatana/.venv/bin/openkatana-hosted --config /etc/openkatana/hosting.json worker
+Restart=on-failure
+UMask=0007
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/openkatana
+
+[Install]
+WantedBy=multi-user.target

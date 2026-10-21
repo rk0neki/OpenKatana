@@ -1,0 +1,19 @@
+FROM python:3.11-slim-bookworm
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg chromium blender xvfb xauth libgl1-mesa-dri fonts-dejavu-core ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /opt/openkatana
+COPY . .
+RUN python -m pip install --no-cache-dir '.[hosted,vision,text]' \
+    && useradd --uid 1000 --create-home editor \
+    && dpkg-query -W > /opt/system-packages.txt
+ENV OPENKATANA_CHROME=/usr/bin/chromium \
+    LIBGL_ALWAYS_SOFTWARE=1 \
+    HOME=/tmp/editor \
+    XDG_CACHE_HOME=/tmp/cache \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+USER 1000:1000
+WORKDIR /workspace
+ENTRYPOINT ["xvfb-run", "-a"]
+CMD ["python", "-m", "openkatana.hosted.executor"]
