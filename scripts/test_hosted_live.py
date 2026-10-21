@@ -19,7 +19,7 @@ from openkatana.hosted.store import Store
 
 
 def browser_check(address, invite, root):
-    from playwright.sync_api import sync_playwright
+    from playwright.sync_api import sync_playwright, expect
     from openkatana.render import chrome_path
     errors = []
     with sync_playwright() as pw:
@@ -39,7 +39,7 @@ def browser_check(address, invite, root):
         assert card.count() == 1
         card.get_by_role('button', name='Run tool →', exact=True).click()
         page.locator('.hosted-dialog').get_by_role('button', name='Run tool →', exact=True).click()
-        page.wait_for_function("document.querySelector('.hosted-dialog').textContent.includes('\"ffmpeg\"')", timeout=120000)
+        expect(page.locator('.hosted-dialog')).to_contain_text('"ffmpeg"', timeout=120000)
         page.keyboard.press('Escape')
         page.get_by_role('button', name='Connect AI', exact=True).click()
         page.wait_for_selector('.hosted-dialog pre')
@@ -48,12 +48,12 @@ def browser_check(address, invite, root):
         page.locator('.hosted-dialog').screenshot(path=str(root/'hosted-connect.png'))
         page.keyboard.press('Escape')
         page.locator('.main-nav [data-view="studio"]').click()
-        page.wait_for_function("document.getElementById('output').width===96", timeout=120000)
+        expect(page.locator('#output')).to_have_attribute('width', '96', timeout=120000)
         page.screenshot(path=str(root/'hosted-studio.png'), full_page=True)
         page.locator('.main-nav [data-view="review"]').click()
         page.wait_for_selector('#jobs video')
         page.locator('#jobs video').evaluate('(v)=>v.load()')
-        page.wait_for_function("document.querySelector('#jobs video').readyState>=1")
+        expect(page.locator('#jobs video')).to_have_js_property('readyState', 4, timeout=30000)
         page.set_viewport_size({'width':390, 'height':844})
         assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth')
         page.screenshot(path=str(root/'hosted-mobile.png'), full_page=True)

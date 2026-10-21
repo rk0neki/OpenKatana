@@ -73,6 +73,7 @@ keys into authored-code workers. A listed tool does not mean every model is onli
 
 See [deployment](../deploy/README.md) and [budget](HOSTING-COSTS.md). Hosting CI
 builds the real worker and exercises HTTP/MCP, editing, WebGL, downloads and the
-browser. Check its result for the deployment commit. Fixtures do not validate
+browser, plus Blender Cycles and the reusable animation kit. Check its result
+for the deployment commit. Fixtures do not validate
 production load or every model/provider. Do not expose local Studio publicly;
 use this authenticated entry point. Local setup remains in [SETUP.md](SETUP.md).

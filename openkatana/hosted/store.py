@@ -61,6 +61,17 @@ class Store:
         user = self.ensure_user(uuid.uuid4().hex, label)
         return {'user': user, 'access_key': self.issue(user, 'login', 7 * 86400)}
 
+    def renew_invitation(self, user):
+        token = secrets.token_urlsafe(32)
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            if not db.execute('SELECT 1 FROM users WHERE id=?', (user,)).fetchone():
+                raise ValueError('Account not found; list the saved invitation account ID')
+            db.execute("DELETE FROM tokens WHERE user=? AND kind='login'", (user,))
+            db.execute('INSERT INTO tokens VALUES(?,?,?,?)',
+                       (fingerprint(token), user, 'login', time.time() + 7 * 86400))
+        return {'user': user, 'access_key': token}
+
     def issue(self, user, kind, lifetime):
         token = secrets.token_urlsafe(32)
         with self.connect() as db:

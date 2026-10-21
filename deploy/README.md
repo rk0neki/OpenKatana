@@ -60,13 +60,25 @@ sudo -u openkatana /opt/openkatana/.venv/bin/openkatana-hosted \
 
 Deliver `access_key` privately. It is single-use and expires in seven days.
 Sessions last twelve hours; Connect AI manages seven-day MCP keys. Returning
-users need a fresh invitation or OAuth.
+users need a fresh invitation or OAuth. To preserve an existing invite account,
+use `invite --user ACCOUNT_ID --out NEW_PRIVATE_FILE` instead of `--name`.
+This invalidates that account's earlier unused invitations. Keep the account ID
+from its original invitation. OAuth and invite accounts are separate identities;
+automatic linking/migration between them is not implemented.
 
 OAuth requires issuer/JWKS/authorization/token URLs and a public PKCE browser
 client ID. Register `PUBLIC_URL/auth/callback`, audience `PUBLIC_URL/mcp`, RS256
 and scope `openkatana`. Allow the browser origin at the token endpoint. MCP
 clients require their own compatible registration/discovery; a browser client
 ID does not register every AI client. Verify actual target clients.
+
+Auth0 is one candidate with a free pilot tier. When using it, configure the API
+identifier as the exact `PUBLIC_URL/mcp` audience and enable its RFC 8707 Resource
+Parameter Compatibility Profile. Our browser and MCP clients send `resource`;
+an opaque token without the correct audience is rejected. Decide between
+pre-registered clients and dynamic client registration, with provider abuse
+controls. See [Auth0's MCP authorization guidance](https://auth0.com/blog/adding-ui-auth0-secured-mcp-server-skybridge/).
+No Auth0 tenant or client has been created or verified by this preparation.
 
 ## Optional model services
 
@@ -86,6 +98,12 @@ directories. GPU allocation, model lifecycle, reviewed nodes and licensed weight
 remain operator work. Missing services fail clearly. Remote GPU providers need
 a private gateway and validation. Paid cloud jobs are disabled; never inject
 provider credentials into authored-code workers.
+
+For package-local inference such as transcription, build a separate reviewed
+image with the optional package and licensed cached weights. Its cache must be
+readable in the image; the worker does not inherit the operator's home directory.
+Run `get_capabilities` and a real fixture in that image. Generic workflow schemas
+are not evidence that weights, nodes, VRAM capacity or provider access are ready.
 
 ## Validation and operations
 

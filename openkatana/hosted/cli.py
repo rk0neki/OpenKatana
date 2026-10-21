@@ -13,7 +13,10 @@ def main():
     web = sub.add_parser('web'); web.add_argument('--port', type=int, default=8090)
     sub.add_parser('worker')
     sub.add_parser('check')
-    account = sub.add_parser('invite'); account.add_argument('--name', required=True)
+    account = sub.add_parser('invite')
+    identity = account.add_mutually_exclusive_group(required=True)
+    identity.add_argument('--name', help='Create a new account with this label')
+    identity.add_argument('--user', help='Renew access to an existing account ID, preserving its workspace')
     account.add_argument('--out', type=Path, required=True, help='Write the single-use credential to a private new file')
     args = parser.parse_args(); settings = Settings.load(args.config)
     if args.command == 'web':
@@ -32,7 +35,8 @@ def main():
     elif args.command == 'invite':
         if args.out.exists():
             parser.error('Credential output already exists')
-        value = Store(settings).add_user(args.name)
+        store = Store(settings)
+        value = store.renew_invitation(args.user) if args.user else store.add_user(args.name)
         with args.out.open('x', encoding='utf-8') as f:
             json.dump(value, f)
         args.out.chmod(0o600)
