@@ -1,6 +1,6 @@
 # External dependencies
 
-The optional rc2 interpolation/upscaling checks used separately installed RIFE
+The optional 0.1.0 interpolation/upscaling checks used separately installed RIFE
 4.26 weights (MIT, including trained-model terms from Practical-RIFE) and
 Real-ESRGAN general x4v3 weights (BSD-3-Clause). These weights are not included in
 the source archive or wheel. Their pinned license URLs, file hashes and source
@@ -137,7 +137,7 @@ and license files when redistributing dependencies. Tested versions: uharfbuzz
 https://github.com/fonttools/fonttools. Glyph output retains the input font hash.
 
 
-HDR/model adapters added in rc2 are original OpenKatana code. HDR transforms call
+HDR/model adapters in 0.1.0 are original OpenKatana code. HDR transforms call
 separately installed FFmpeg/libzimg; no FFmpeg binary is distributed. The model
 adapters call public ComfyUI node interfaces through the existing official SDK.
 ComfyUI core (GPL-3.0) and its model weights remain separate user installations;

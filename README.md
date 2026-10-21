@@ -147,7 +147,8 @@ browser fallback. Studio is not a full graphical 3D scene editor.
 OpenKatana is inspired by Higgsfield's Katana and is not affiliated with,
 endorsed by, or sponsored by Higgsfield AI. It does not connect to Higgsfield's
 services. Those names identify the inspiration; their use does not imply
-endorsement or trademark rights. The project and its bundled dependencies have
+endorsement or trademark rights. It contains no Higgsfield code, prompts,
+presets or assets. The project and its bundled dependencies have
 the licenses and source records linked below.
 
 ## License
