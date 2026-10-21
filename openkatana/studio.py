@@ -6,7 +6,7 @@ import sys
 import threading
 import uuid
 from functools import partial
-from http.server import ThreadingHTTPServer
+from .http_runtime import LocalHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit,unquote,parse_qs
 from .render import Handler,write_json
@@ -110,7 +110,7 @@ class Studio(Handler):
 
 def serve(root,port=0):
     root=root.resolve();projects.state(root)
-    server=ThreadingHTTPServer(('127.0.0.1',port),partial(Studio,project=root))
+    server=LocalHTTPServer(('127.0.0.1',port),partial(Studio,project=root))
     server.processes={};server.mutation_lock=threading.Lock()
     print(json.dumps({'studio':f'http://127.0.0.1:{server.server_port}','project':str(root)}),flush=True)
     try:server.serve_forever()

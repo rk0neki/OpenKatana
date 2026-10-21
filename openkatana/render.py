@@ -8,7 +8,8 @@ import shutil
 import subprocess
 import threading
 from functools import partial
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from http.server import SimpleHTTPRequestHandler
+from .http_runtime import LocalHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
@@ -210,7 +211,7 @@ def render(timeline: Path, output_dir: Path) -> dict:
     package = Path(__file__).parent
     implementation = {str(p.relative_to(package)): digest(p) for p in package.rglob('*') if p.suffix in ('.py', '.js', '.html')}
     write_json(output_dir / 'implementation-manifest.json', implementation)
-    server = ThreadingHTTPServer(('127.0.0.1', 0), partial(Handler, project=root))
+    server = LocalHTTPServer(('127.0.0.1', 0), partial(Handler, project=root))
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     trace = []
