@@ -1,13 +1,20 @@
 FROM python:3.11-slim-bookworm
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg chromium blender xvfb xauth libgl1-mesa-dri fonts-dejavu-core ca-certificates \
+    ffmpeg chromium xvfb xauth libgl1-mesa-dri fonts-dejavu-core ca-certificates curl xz-utils \
+    libegl1 libxkbcommon0 libxi6 libxxf86vm1 libxfixes3 libxrender1 libsm6 libice6 \
     && rm -rf /var/lib/apt/lists/*
+RUN curl --fail --location --retry 2 --user-agent 'Mozilla/5.0' \
+    https://download.blender.org/release/Blender4.5/blender-4.5.14-linux-x64.tar.xz -o /tmp/blender.tar.xz \
+    && echo '9ba871ff2ecd36526b77432745980b7e6664ecd0c7ca11c48849073dcfe06da3  /tmp/blender.tar.xz' | sha256sum --check \
+    && mkdir /opt/blender && tar -xJf /tmp/blender.tar.xz --strip-components=1 -C /opt/blender \
+    && rm /tmp/blender.tar.xz && ln -s /opt/blender/blender /usr/local/bin/blender
 WORKDIR /opt/openkatana
 COPY . .
 RUN python -m pip install --no-cache-dir '.[hosted,vision,text]' \
     && useradd --uid 1000 --create-home editor \
     && dpkg-query -W > /opt/system-packages.txt
 ENV OPENKATANA_CHROME=/usr/bin/chromium \
+    OPENKATANA_BLENDER=/opt/blender/blender \
     LIBGL_ALWAYS_SOFTWARE=1 \
     HOME=/tmp/editor \
     XDG_CACHE_HOME=/tmp/cache \

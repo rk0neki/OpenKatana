@@ -13,7 +13,10 @@ scene.frame_start=0;scene.frame_end=C['frames']-1
 scene.render.fps=C['fps'];scene.render.fps_base=1
 scene.render.resolution_x=C['width'];scene.render.resolution_y=C['height']
 scene.render.resolution_percentage=100
-scene.render.engine='BLENDER_EEVEE'
+try:
+    scene.render.engine='BLENDER_EEVEE'
+except TypeError:
+    scene.render.engine='BLENDER_EEVEE_NEXT'
 scene.render.use_motion_blur=True;scene.render.motion_blur_shutter=C['shutter']
 scene.render.motion_blur_position='CENTER'
 scene.world.color=(.16,.16,.16)

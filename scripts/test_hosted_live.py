@@ -151,6 +151,11 @@ s.cycles.samples=1
             checks['blender_in_sandbox'] = blender['frames'] == 2 and bool(blender['video'])
             picture = client.get('/files/' + blender['preview_images'][0].removeprefix('workspace://'))
             picture.raise_for_status(); (root/'blender.png').write_bytes(picture.content)
+            kit = call('create_animation_kit', {'project_id': 'film', 'width': 96, 'height': 64, 'frames': 6, 'fps': 3})
+            scene_script = kit['script']
+            animated = call('render_blender', {'project_id': 'film', 'source': scene_script,
+                                             'start': 0, 'end': 1, 'trusted_script': True})
+            checks['reusable_animation_kit_in_sandbox'] = animated['frames'] == 2
             headers = {'Accept': 'application/json, text/event-stream'}
             mcp = client.post('/mcp', headers=headers, json={'jsonrpc': '2.0', 'id': 1, 'method': 'tools/list'}); mcp.raise_for_status()
             checks['real_http_mcp_catalog'] = len(mcp.json()['result']['tools']) == 78
