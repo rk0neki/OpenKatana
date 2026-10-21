@@ -57,7 +57,10 @@ def unpack(source, root, limit):
             if item.size < 0 or total > limit or count > 100000:
                 raise ValueError('Snapshot exceeds the storage quota')
             target.parent.mkdir(parents=True, exist_ok=True)
-            with archive.extractfile(item) as src, target.open('xb') as dst:
-                while chunk := src.read(1024 * 1024):
-                    dst.write(chunk)
+            try:
+                with archive.extractfile(item) as src, target.open('xb') as dst:
+                    while chunk := src.read(1024 * 1024):
+                        dst.write(chunk)
+            except tarfile.ReadError as exc:
+                raise ValueError(f'Incomplete snapshot member {item.name!r} ({item.size} bytes)') from exc
     return total

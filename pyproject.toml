@@ -44,7 +44,7 @@ openkatana = ["templates/*.py", "templates/*.js", "web/*.js", "web/*.html", "web
 
 "share/openkatana/licenses" = ["licenses/OpenKatana-MIT.txt"]
 
-"share/openkatana/deploy" = ["deploy/README.md", "deploy/Dockerfile.worker", "deploy/Caddyfile", "deploy/hosting.example.json", "deploy/openkatana-web.service", "deploy/openkatana-worker.service"]
+"share/openkatana/deploy" = ["deploy/README.md", "deploy/Dockerfile.worker", "deploy/Caddyfile", "deploy/hosting.example.json", "deploy/runtime-sources.json", "deploy/openkatana-web.service", "deploy/openkatana-worker.service"]
 
 [tool.setuptools.packages.find]
 include = ["openkatana*"]

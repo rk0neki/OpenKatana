@@ -23,9 +23,9 @@ class Service:
             if not self.settings.comfy_proxy:
                 raise ValueError('This tool needs the operator to configure a Comfy model service and installed models')
             proxy, native, _ = self.settings.models_for(user)
-            if tool in ('submit_workflow', 'run_model_workflow'):
+            if tool in ('submit_workflow', 'run_model_workflow', 'process_clip'):
                 arguments['endpoint'] = proxy
-            if tool in ('submit_workflow', 'run_model_workflow', 'check_workflow'):
+            if tool in ('submit_workflow', 'run_model_workflow', 'check_workflow', 'process_clip'):
                 arguments['native_endpoint'] = native
         inventory(self.store.workspace(user), self.settings.workspace_bytes)
         return self.store.submit(user, tool, arguments, request_id or uuid.uuid4().hex)

@@ -42,6 +42,7 @@ def browser_check(address, invite, root):
         page.wait_for_function("document.querySelector('.hosted-dialog').textContent.includes('\"ffmpeg\"')", timeout=120000)
         page.keyboard.press('Escape')
         page.get_by_role('button', name='Connect AI', exact=True).click()
+        page.wait_for_selector('.hosted-dialog pre')
         assert '/mcp' in page.locator('.hosted-dialog').text_content()
         assert 'No clone or local runtime' in page.locator('.hosted-dialog').text_content()
         page.locator('.hosted-dialog').screenshot(path=str(root/'hosted-connect.png'))
