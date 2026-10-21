@@ -71,7 +71,9 @@ class ColorTagTests(unittest.TestCase):
             movies[name] = self.root / f'{name}.mp4'
             module.encode(self.frames, CANVAS, movies[name])
         module.VIDEO_ENCODE = new
-        self.assertEqual(self.probe_tags(movies['old'])['color_primaries'], None)   # the defect this guards against
+        # Some FFmpeg builds infer BT.709 even without setparams. The contract
+        # is explicit output tags with unchanged pixels, not missing old tags.
+        self.assertEqual(self.probe_tags(movies['new']), BT709)
         decoded = {k: ffmpeg('-i', m, '-map', '0:v:0', '-f', 'framemd5', '-') for k, m in movies.items()}
         self.assertEqual(decoded['old'], decoded['new'])
         coded = {k: ffmpeg('-i', m, '-map', '0:v:0', '-c', 'copy', '-f', 'md5', '-') for k, m in movies.items()}

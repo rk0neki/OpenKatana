@@ -40,7 +40,7 @@ class OnboardingTests(unittest.TestCase):
                 self.assertEqual(second['skill_status'],'existing skill preserved')
                 self.assertTrue(second['core_runtime_ready'])
                 self.assertFalse(second['agent_connected'])
-                self.assertEqual(second['workspace'],str(root.parent))
+                self.assertEqual(Path(second['workspace']),root.parent.resolve())
 
     def test_existing_unrelated_folder_is_not_overwritten(self):
         with TemporaryDirectory() as folder:

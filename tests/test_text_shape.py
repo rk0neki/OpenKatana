@@ -63,5 +63,5 @@ class TextShapeTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):export_text(font,'OPEN',root/'export')
             api=AgentAPI(root);api.create_project('Glyphs','glyphs')
             r=api.shape_text('glyphs',str(font),'OPEN')
-            self.assertTrue(Path(r['svg_file']).is_relative_to(root/'glyphs'))
+            self.assertTrue(Path(r['svg_file']).resolve().is_relative_to((root/'glyphs').resolve()))
             with self.assertRaises(ContractError):api.shape_text('missing',str(font),'OPEN')

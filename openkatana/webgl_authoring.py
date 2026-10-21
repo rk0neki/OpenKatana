@@ -55,6 +55,7 @@ def camera_schedule(value, canvas):
 def create_kit(root, directory='webgl', width=640, height=360, fps=30, frames=60):
     from .production import display_atlas
     from .scene3d import starter, num, validate
+    root = Path(root).resolve()
     for v, name, lo, hi in ((width,'width',64,4096),(height,'height',64,4096),
                             (fps,'fps',1,120),(frames,'frames',6,36000)):
         num(v, name, lo, hi, True)
