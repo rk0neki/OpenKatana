@@ -2,13 +2,14 @@ from dataclasses import dataclass
 import json
 from pathlib import Path
 from urllib.parse import urlsplit
+from .. import __version__
 
 
 @dataclass(frozen=True)
 class Settings:
     data: Path
     public_url: str
-    worker_image: str = 'openkatana-worker:0.1.0rc2'
+    worker_image: str = 'openkatana-worker:' + __version__
     runtime: str = 'runsc'
     workspace_bytes: int = 2 * 1024**3
     upload_bytes: int = 256 * 1024**2
