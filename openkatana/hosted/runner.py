@@ -25,10 +25,11 @@ def command(settings, job, source):
             '--shm-size', '256m', '--mount', f'type=bind,src={source},dst=/input,readonly']
     if settings.runtime:
         args += ['--runtime', settings.runtime]
-    network = settings.model_network if job['tool'] in MODEL_TOOLS else 'none'
+    proxy, native, model_network = settings.models_for(job.get('user', ''))
+    network = model_network if job['tool'] in MODEL_TOOLS else 'none'
     args += ['--network', network]
     if network != 'none':
-        args += ['--env', 'OPENKATANA_PRIVATE_COMFY_ENDPOINTS=' + json.dumps([settings.comfy_proxy, settings.comfy_native])]
+        args += ['--env', 'OPENKATANA_PRIVATE_COMFY_ENDPOINTS=' + json.dumps([proxy, native])]
     return args + [settings.worker_image, 'python', '-m', 'openkatana.hosted.executor']
 
 
@@ -45,7 +46,7 @@ def check_runtime(settings):
         raise RuntimeError('Hosted workers require the Linux Docker engine')
     if settings.runtime and settings.runtime not in info.get('Runtimes', {}):
         raise RuntimeError(f'Install the configured sandbox runtime: {settings.runtime}')
-    if settings.model_network:
+    if settings.model_network and '{user}' not in settings.model_network:
         network = json.loads(docker(['network', 'inspect', settings.model_network]))[0]
         if not network.get('Internal'):
             raise RuntimeError('The Comfy network must be internal, with no public internet route')
@@ -63,6 +64,11 @@ def run_one(settings, store, job):
         subprocess.run(['docker', 'rm', '--force', name], capture_output=True, timeout=30)
     watchdog = None
     try:
+        if job['tool'] in MODEL_TOOLS:
+            _, _, network_name = settings.models_for(job['user'])
+            network = json.loads(docker(['network', 'inspect', network_name]))[0]
+            if not network.get('Internal'):
+                raise RuntimeError('This account needs a private, internal model network')
         # Reserve space for input, a new snapshot and the current workspace.
         if shutil.disk_usage(work).free < settings.workspace_bytes * 3:
             raise RuntimeError('Insufficient temporary storage for an isolated job')
@@ -120,19 +126,22 @@ def run_one(settings, store, job):
                 unpack(src, candidate, settings.workspace_bytes)
             if expired.is_set():
                 raise TimeoutError('Job exceeded its runtime limit; it was stopped and will not be retried')
-            if store.job(job['user'], job['id'])['state'] == 'cancelled':
-                return
-            backup = temp / 'previous'
-            root.rename(backup)
-            try:
-                candidate.rename(root)
-            except BaseException:
-                backup.rename(root)
-                raise
-            if response['ok']:
-                store.finish(job['id'], result=response)
-            else:
-                store.finish(job['id'], error=response.get('error', 'Tool failed'))
+            # Serialize the final swap with uploads and cancellation. A cancelled
+            # job must never overwrite an upload made after cancellation.
+            with store.connect() as db:
+                db.execute('BEGIN IMMEDIATE')
+                current = db.execute('SELECT state FROM jobs WHERE id=?', (job['id'],)).fetchone()
+                if current['state'] != 'running':
+                    return
+                backup = temp / 'previous'
+                root.rename(backup)
+                try:
+                    candidate.rename(root)
+                except BaseException:
+                    backup.rename(root)
+                    raise
+                store.finish(job['id'], result=response if response['ok'] else None,
+                             error=None if response['ok'] else response.get('error', 'Tool failed'), db=db)
     except Exception as e:
         store.finish(job['id'], error=f'{type(e).__name__}: {e}')
     finally:

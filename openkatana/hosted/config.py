@@ -50,6 +50,12 @@ class Settings:
                 raise ValueError('Configure the identity provider’s public PKCE client ID')
         if bool(self.comfy_proxy) != bool(self.comfy_native) or bool(self.comfy_proxy) != bool(self.model_network):
             raise ValueError('Configure both Comfy endpoints and a private model network together')
+        if self.comfy_proxy and self.max_users > 1:
+            if not all('{user}' in v for v in (self.comfy_proxy, self.comfy_native, self.model_network)):
+                raise ValueError('Multi-user model services require separate {user} endpoints and networks')
+
+    def models_for(self, user):
+        return tuple(v.replace('{user}', user) for v in (self.comfy_proxy, self.comfy_native, self.model_network))
 
     @classmethod
     def load(cls, path):

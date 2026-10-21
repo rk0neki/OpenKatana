@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import tarfile
 import tempfile
+import time
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -50,6 +52,43 @@ class HostedTests(unittest.TestCase):
         self.store.revoke_api_keys(self.a['user']); self.assertIsNone(self.store.authenticate(token, {'api'}))
         expired = self.store.issue(self.a['user'], 'api', -1)
         self.assertIsNone(self.store.authenticate(expired, {'api'}))
+        invite = self.a['access_key']
+        self.assertEqual(self.store.authenticate(invite, {'login'}, consume=True), self.a['user'])
+        self.assertIsNone(self.store.authenticate(invite, {'login'}, consume=True))
+
+    def test_oauth_signature_issuer_audience_expiry_and_scope(self):
+        import jwt
+        from cryptography.hazmat.primitives.asymmetric import rsa
+        from openkatana.hosted.auth import Identity
+        private = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+        config = Settings(Path(self.tmp.name), 'https://studio.example.org',
+                          issuer='https://identity.example.org', jwks_url='https://identity.example.org/jwks',
+                          client_id='browser', authorize_url='https://identity.example.org/authorize',
+                          token_url='https://identity.example.org/token')
+        identity = Identity(config, self.store)
+        identity.jwks = SimpleNamespace(get_signing_key_from_jwt=lambda _: SimpleNamespace(key=private.public_key()))
+        claims = dict(exp=time.time()+60, iat=time.time(), sub='one', iss=config.issuer,
+                      aud=config.audience, scope='openid openkatana')
+        encode = lambda data: jwt.encode(data, private, algorithm='RS256')
+        first = identity.jwt_user(encode(claims))
+        self.assertEqual(first, identity.jwt_user(encode(claims)))
+        self.assertNotEqual(first, identity.jwt_user(encode({**claims, 'sub': 'two'})))
+        for changed in ({'exp': time.time()-60}, {'aud': 'another-api'}, {'iss': 'https://wrong.example.org'}, {'scope': 'openid'}):
+            with self.subTest(changed=changed), self.assertRaises((jwt.PyJWTError, ValueError)):
+                identity.jwt_user(encode({**claims, **changed}))
+        other = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+        with self.assertRaises(jwt.InvalidSignatureError):
+            identity.jwt_user(jwt.encode(claims, other, algorithm='RS256'))
+
+    def test_models_cannot_share_tenant_networks(self):
+        from dataclasses import replace
+        with self.assertRaisesRegex(ValueError, 'separate'):
+            replace(self.config, comfy_proxy='http://comfy:8000', comfy_native='http://comfy:8188', model_network='shared')
+        config = replace(self.config, comfy_proxy='http://comfy-{user}:8000', comfy_native='http://comfy-{user}:8188', model_network='models-{user}')
+        a = command(config, {'id': 'a', 'user': self.a['user'], 'tool': 'submit_workflow'}, Path(self.tmp.name))
+        b = command(config, {'id': 'b', 'user': self.b['user'], 'tool': 'submit_workflow'}, Path(self.tmp.name))
+        self.assertNotEqual(a[a.index('--network')+1], b[b.index('--network')+1])
+        self.assertNotIn(self.b['user'], ' '.join(a))
 
     def test_archive_roundtrip_and_escape_rejection(self):
         root = Path(self.tmp.name) / 'source'; root.mkdir(); (root / 'asset.txt').write_text('mine')

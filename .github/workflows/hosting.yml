@@ -18,13 +18,16 @@ jobs:
       - run: python -m pip install '.[hosted,vision,text]'
       - name: Install the gVisor sandbox on the disposable runner
         run: |
-          curl -fsSLO https://storage.googleapis.com/gvisor/releases/release/latest/x86_64/runsc
-          curl -fsSLO https://storage.googleapis.com/gvisor/releases/release/latest/x86_64/runsc.sha512
-          sha512sum -c runsc.sha512
-          chmod +x runsc
-          sudo mv runsc /usr/local/bin/runsc
+          curl -fsSLO https://storage.googleapis.com/gvisor/releases/release/latest/x86_64/gvisor.tar.bz2
+          curl -fsSLO https://storage.googleapis.com/gvisor/releases/release/latest/x86_64/gvisor.tar.bz2.sha512
+          sha512sum -c gvisor.tar.bz2.sha512
+          sudo tar -xjf gvisor.tar.bz2 -C /usr/local/bin
           sudo runsc install
           sudo systemctl restart docker
+      - name: Install test browser
+        run: |
+          python -m playwright install --with-deps chromium
+          python -c "from playwright.sync_api import sync_playwright; import os; p=sync_playwright().start(); open(os.environ['GITHUB_ENV'],'a').write('OPENKATANA_CHROME='+p.chromium.executable_path+'\n'); p.stop()"
       - name: Build the rendering worker (no model weights)
         run: docker build -f deploy/Dockerfile.worker -t openkatana-worker:0.1.0rc2 .
       - name: Exercise real hosted tools, files, render and MCP
@@ -37,3 +40,4 @@ jobs:
             work/hosted-check/result.json
             work/hosted-check/server.log
             work/hosted-check/video.mp4
+            work/hosted-check/*.png
