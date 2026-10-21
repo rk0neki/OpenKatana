@@ -16,7 +16,12 @@ def main():
         sys.path.insert(0, str(source.parent))
         runpy.run_path(str(source),run_name='__main__')
     scene=bpy.context.scene
-    scene.render.engine=spec['engine']
+    try:
+        scene.render.engine=spec['engine']
+    except TypeError:
+        if spec['engine'] != 'BLENDER_EEVEE':
+            raise
+        scene.render.engine='BLENDER_EEVEE_NEXT'
     # Relative asset references resolve against the loaded .blend, or script directory.
     dependencies={}
     for image in bpy.data.images:

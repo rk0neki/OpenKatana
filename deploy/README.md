@@ -20,8 +20,11 @@ python3 -m venv .venv
 docker build -f deploy/Dockerfile.worker -t openkatana-worker:0.1.0rc2 .
 ```
 
-The image installs Debian Chromium, FFmpeg and Blender, retaining their separate
-licences under `/usr/share/doc`. No generation weights are downloaded. Retain
+The image installs Debian Chromium/FFmpeg and the complete official Blender
+4.5.14 LTS runtime, verified against its published SHA-256. Their licences remain
+under `/usr/share/doc` and `/opt/blender`. The Debian Blender build lacks the
+Cycles denoiser and does not match the reusable material helpers. No generation
+weights are downloaded. Retain
 OpenKatana notices and record the tested image digest/package inventory. Use that
 digest in `worker_image` for deployment instead of a mutable tag.
 

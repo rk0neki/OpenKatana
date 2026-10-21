@@ -30,7 +30,8 @@ class HostedAPI(AgentAPI):
         """Read hosted editing instructions and the exact supported contracts before choosing tool arguments."""
         if topic == 'hosted':
             import sys
-            for base in (Path(__file__).resolve().parents[2] / 'docs', Path(sys.prefix) / 'share/openkatana/docs'):
+            for base in (Path(__file__).resolve().parents[2] / 'docs', Path(sys.prefix) / 'share/openkatana/docs',
+                         Path(__file__).resolve().parents[2] / 'share/openkatana/docs'):
                 path = base / 'HOSTING.md'
                 if path.is_file():
                     return {'topic': topic, 'markdown': path.read_text(encoding='utf-8')}

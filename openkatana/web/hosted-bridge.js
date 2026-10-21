@@ -6,6 +6,9 @@ window.hostedRequest=async(path,body,method)=>{const response=await fetch(path,{
 window.hostedWait=async job=>{while(['queued','running'].includes(job.state)){status('Hosted tool: '+job.tool+' · '+job.state);await new Promise(resolve=>setTimeout(resolve,700));job=await hostedRequest('/api/tool-jobs/'+job.id);}if(job.state!=='succeeded')throw Error(job.error||'Job '+job.state);return job.result.result;};
 window.hostedPreview=async(edit,f)=>{const result=await api('preview-edit',{timeline:edit,frames:[f]});const picture=new Image();picture.src=hostedFileUrl(result.preview_images[0]);await picture.decode();const canvas=document.getElementById('output');canvas.width=edit.canvas.w;canvas.height=edit.canvas.h;canvas.getContext('2d').drawImage(picture,0,0,canvas.width,canvas.height);};
 document.addEventListener('DOMContentLoaded',async()=>{
+document.querySelector('.hero-copy .micro').textContent='Your private workspace. No local installation.';
+document.querySelector('.local-pill').textContent='Hosted workspace';
+document.querySelector('.workflow-strip small').textContent='Connect with MCP. Keep your own AI.';
 const dialog=(title)=>{const d=document.createElement('dialog');d.className='hosted-dialog';const h=document.createElement('header'),label=document.createElement('h2'),close=document.createElement('button');label.textContent=title;close.textContent='×';close.setAttribute('aria-label','Close '+title);close.onclick=()=>d.close();h.append(label,close);d.append(h);d.addEventListener('close',()=>d.remove(),{once:true});document.body.append(d);d.showModal();return d;};
 const button=(text,fn)=>{const b=document.createElement('button');b.textContent=text;b.onclick=async()=>{b.disabled=true;try{await fn();}catch(e){status(e.message,true);}finally{b.disabled=false;}};return b;};
 const text=(parent,value,tag='p')=>{const el=document.createElement(tag);el.textContent=value;parent.append(el);return el;};
