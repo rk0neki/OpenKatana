@@ -40,7 +40,19 @@ def inventory(root, limit):
 
 def pack(root, output, limit):
     rows = inventory(root, limit)
-    with tarfile.open(fileobj=output, mode='w|') as archive:
+    class CompleteWrites:
+        # tarfile's stream writer assumes write() accepts the whole block.
+        # Unbuffered container stdout may legitimately make a short pipe write.
+        def write(self, data):
+            remaining = memoryview(data)
+            total = len(remaining)
+            while remaining:
+                written = output.write(remaining)
+                if not written or written < 0 or written > len(remaining):
+                    raise OSError('Snapshot destination stopped accepting data')
+                remaining = remaining[written:]
+            return total
+    with tarfile.open(fileobj=CompleteWrites(), mode='w|') as archive:
         for name, _ in rows:
             archive.add(safe_path(root, name), arcname=name, recursive=False)
 

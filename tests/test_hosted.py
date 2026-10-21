@@ -128,6 +128,19 @@ class HostedTests(unittest.TestCase):
         self.assertEqual(cmd[cmd.index('--network')+1], 'models-' + user)
         self.assertNotIn('untrusted', ' '.join(cmd))
 
+    def test_snapshot_survives_short_pipe_writes(self):
+        class ShortPipe(io.BytesIO):
+            def write(self, value):
+                return super().write(value[:31])
+        root = Path(self.tmp.name) / 'pipe-source'; root.mkdir()
+        payload = bytes(range(256)) * 5000
+        (root / 'scene.blend').write_bytes(payload)
+        stream = ShortPipe(); pack(root, stream, len(payload))
+        stream.seek(0)
+        dest = Path(self.tmp.name) / 'pipe-dest'
+        unpack(stream, dest, len(payload))
+        self.assertEqual((dest / 'scene.blend').read_bytes(), payload)
+
     def test_all_local_tools_have_hosted_schemas(self):
         catalog = {row['name']: row for row in schemas()}
         self.assertTrue(set(TOOLS).issubset(catalog))
