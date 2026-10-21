@@ -1,5 +1,6 @@
 """Authenticated hosted UI, file transfer and shared MCP/API tool queue."""
 import base64
+from collections import OrderedDict
 from contextlib import asynccontextmanager
 import json
 import mimetypes
@@ -29,6 +30,8 @@ COOKIE = 'openkatana_session'
 class Gate:
     def __init__(self, app, service, identity):
         self.app, self.service, self.identity = app, service, identity
+        self.rates = OrderedDict()
+        self.uploads = 0
 
     async def __call__(self, scope, receive, send):
         if scope['type'] != 'http':
@@ -41,6 +44,8 @@ class Gate:
         if origin and origin != config.public_url:
             return await JSONResponse({'error': 'Invalid origin'}, 403)(scope, receive, send)
         path = scope['path']
+        if path == '/auth/session' and not self.allow('login', 20, 60):
+            return await JSONResponse({'error': 'Sign-in rate limit; try again shortly'}, 429)(scope, receive, send)
         public = path in ('/healthz', '/login', '/auth/callback', '/auth/config', '/auth/session',
                           '/.well-known/oauth-protected-resource/mcp') or path.startswith('/app/')
         auth = request.headers.get('authorization', '')
@@ -49,6 +54,11 @@ class Gate:
         if not public and not user:
             response = RedirectResponse('/login', 303) if path == '/' else JSONResponse({'error': 'Authentication required'}, 401, headers={'WWW-Authenticate': self.identity.challenge()})
             return await response(scope, receive, send)
+        if user and not self.allow(user, 300, 60):
+            return await JSONResponse({'error': 'Request rate limit; try again shortly'}, 429)(scope, receive, send)
+        uploading = path == '/api/upload'
+        if uploading and self.uploads >= 4:
+            return await JSONResponse({'error': 'Upload capacity is busy; retry shortly'}, 429)(scope, receive, send)
         if request.method not in ('GET', 'HEAD', 'OPTIONS') and not bearer and origin != config.public_url:
             return await JSONResponse({'error': 'Same-origin browser request required'}, 403)(scope, receive, send)
         # Bound bodies before JSON parsing and enforce the bound while receiving.
@@ -79,10 +89,24 @@ class Gate:
             await send(message)
         scope['state'] = {'user': user, 'browser_session': bool(user and not bearer)}
         token = current_user.set(user)
+        if uploading:
+            self.uploads += 1
         try:
             await self.app(scope, bounded, headers)
         finally:
+            if uploading:
+                self.uploads -= 1
             current_user.reset(token)
+
+    def allow(self, key, capacity, seconds):
+        now = time.monotonic()
+        tokens, last = self.rates.pop(key, (float(capacity), now))
+        tokens = min(capacity, tokens + (now - last) * capacity / seconds)
+        accepted = tokens >= 1
+        self.rates[key] = (tokens - 1 if accepted else tokens, now)
+        while len(self.rates) > 1024:
+            self.rates.popitem(last=False)
+        return accepted
 
 
 def create_app(settings):
@@ -116,11 +140,9 @@ def create_app(settings):
     async def session(request):
         body = await json_body(request)
         key = body.get('access_key', '')
-        user = store.authenticate(key, {'login'}) if key else await identity.bearer(body.get('access_token', ''))
+        user = store.authenticate(key, {'login'}, consume=True) if key else await identity.bearer(body.get('access_token', ''))
         if not user:
             return JSONResponse({'error': 'Invalid or expired sign-in credential'}, 401)
-        if key:
-            store.revoke(key)  # invitation is single use
         session_token = store.issue(user, 'session', 12 * 3600)
         response = JSONResponse({'ready': True})
         response.set_cookie(COOKIE, session_token, httponly=True, secure=not settings.development, samesite='strict', max_age=12 * 3600)

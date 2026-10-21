@@ -67,11 +67,15 @@ class Store:
             db.execute('INSERT INTO tokens VALUES(?,?,?,?)', (fingerprint(token), user, kind, time.time() + lifetime))
         return token
 
-    def authenticate(self, token, kinds):
+    def authenticate(self, token, kinds, consume=False):
         if not isinstance(token, str) or len(token) > 8192:
             return None
         with self.connect() as db:
+            if consume:
+                db.execute('BEGIN IMMEDIATE')
             row = db.execute('SELECT * FROM tokens WHERE digest=? AND expires>?', (fingerprint(token), time.time())).fetchone()
+            if consume and row and row['kind'] in kinds:
+                db.execute('DELETE FROM tokens WHERE digest=?', (fingerprint(token),))
         return row['user'] if row and row['kind'] in kinds else None
 
     def revoke(self, token):
@@ -154,9 +158,11 @@ class Store:
                 db.execute("UPDATE jobs SET state='running',updated=? WHERE id=?", (time.time(), row['id']))
                 return dict(row)
 
-    def finish(self, key, result=None, error=None):
-        with self.connect() as db:
-            db.execute("UPDATE jobs SET state=?,result=?,error=?,updated=? WHERE id=? AND state='running'",
+    def finish(self, key, result=None, error=None, db=None):
+        if db is None:
+            with self.connect() as connection:
+                return self.finish(key, result, error, db=connection)
+        db.execute("UPDATE jobs SET state=?,result=?,error=?,updated=? WHERE id=? AND state='running'",
                        ('failed' if error else 'succeeded', json.dumps(result, allow_nan=False) if result is not None else None,
                         str(error)[:2000] if error else None, time.time(), key))
 

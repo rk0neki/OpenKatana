@@ -18,8 +18,12 @@ class HostedAPI(AgentAPI):
     def preview_edit(self, project_id: str, timeline: dict, frames: list[int]) -> dict:
         """Render proposed timeline frames in the worker without saving the human's draft."""
         from ..preview import timeline_frames
+        from ..gates import record_preview
+        from ..projects import fingerprint
         root = self._project(project_id)
-        return timeline_frames(timeline, root, self._output(root, 'hosted-previews'), frames)
+        result = timeline_frames(timeline, root, self._output(root, 'hosted-previews'), frames)
+        record_preview(root, fingerprint(timeline), frames)
+        return result
 
     def _source(self, source):
         p = super()._source(source)

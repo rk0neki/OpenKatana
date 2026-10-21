@@ -18,6 +18,48 @@ from openkatana.hosted.runner import check_runtime, run_one
 from openkatana.hosted.store import Store
 
 
+def browser_check(address, invite, root):
+    from playwright.sync_api import sync_playwright
+    from openkatana.render import chrome_path
+    errors = []
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch(executable_path=chrome_path(), headless=True, args=['--disable-gpu'])
+        page = browser.new_page(viewport={'width': 1440, 'height': 1000})
+        page.on('pageerror', lambda error: errors.append(str(error)))
+        page.goto(address)
+        page.get_by_label('Single-use invitation').fill(invite)
+        page.get_by_role('button', name='Open my workspace →').click()
+        page.wait_for_selector('.hosted-toolbar')
+        page.wait_for_selector('#projectName:has-text("Hosted render")', state='attached')
+        page.locator('.main-nav [data-view="tools"]').click()
+        page.wait_for_selector('.tool-actions button:has-text("Run tool")')
+        assert page.locator('.tool-card').count() == 76
+        page.locator('#toolSearch').fill('get_capabilities')
+        assert page.locator('.tool-card').count() == 1
+        page.get_by_role('button', name='Run tool →', exact=True).click()
+        page.locator('.hosted-dialog').get_by_role('button', name='Run tool →', exact=True).click()
+        page.wait_for_function("document.querySelector('.hosted-dialog').textContent.includes('\"ffmpeg\"')", timeout=120000)
+        page.keyboard.press('Escape')
+        page.get_by_role('button', name='Connect AI', exact=True).click()
+        assert '/mcp' in page.locator('.hosted-dialog').text_content()
+        assert 'No clone or local runtime' in page.locator('.hosted-dialog').text_content()
+        page.locator('.hosted-dialog').screenshot(path=str(root/'hosted-connect.png'))
+        page.keyboard.press('Escape')
+        page.locator('.main-nav [data-view="studio"]').click()
+        page.wait_for_function("document.getElementById('output').width===96", timeout=120000)
+        page.screenshot(path=str(root/'hosted-studio.png'), full_page=True)
+        page.locator('.main-nav [data-view="review"]').click()
+        page.wait_for_selector('#jobs video')
+        page.locator('#jobs video').evaluate('(v)=>v.load()')
+        page.wait_for_function("document.querySelector('#jobs video').readyState>=1")
+        page.set_viewport_size({'width':390, 'height':844})
+        assert page.evaluate('document.documentElement.scrollWidth<=window.innerWidth')
+        page.screenshot(path=str(root/'hosted-mobile.png'), full_page=True)
+        browser.close()
+    assert not errors, errors
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(); parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--runtime', default='runsc'); args = parser.parse_args()
@@ -102,6 +144,7 @@ def main():
                 response = client.post('/mcp', headers=headers, json={'jsonrpc': '2.0', 'id': 3, 'method': 'tools/call', 'params': {'name': 'get_tool_job', 'arguments': {'job_id': mcp_job['id']}}})
                 response.raise_for_status(); mcp_job = response.json()['result']['structuredContent']
             checks['mcp_executes_same_workspace'] = mcp_job['state'] == 'succeeded' and mcp_job['result']['project_id'] == 'film'
+            checks['browser_login_tools_preview_download_mcp_setup'] = browser_check(config.public_url, account['access_key'], root)
             report = {'passed': all(checks.values()), 'checks': checks, 'runtime': args.runtime, 'credits_used': 0, 'deployed': False}
             (root / 'result.json').write_text(json.dumps(report, indent=2) + '\n')
             print(json.dumps(report, indent=2)); return 0 if report['passed'] else 1
