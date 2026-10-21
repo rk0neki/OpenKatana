@@ -341,7 +341,7 @@
     "tests/test_bundled_assets.py": "ce274ec18707b1c558350e30bef888f9b58350dfd9f349c86c94e375557eee7d",
     "tests/test_camera_tracking.py": "c6878053c365aa9bd6ed00ff27c95bae6d4ed69c2876cfe0d5c46b481f549f54",
     "tests/test_captions.py": "372281487b46f8697c772a12a88e7810d2c5a42060a1a533473497dee862df32",
-    "tests/test_comfy_apps.py": "0315de3caf975757f3f87d0c81b71449a943ce6097e8440a4cb2f176b4d8d692",
+    "tests/test_comfy_apps.py": "e5fd280678e80610b75d23dca52d65be041b3a57b62b05c81f4f073069da6a38",
     "tests/test_comfy_cloud.py": "9f3ab3234323c2f6a84eabc97f6b9ee092365793cea926287915aad8db613dd3",
     "tests/test_comfy_custom_workflow.py": "ad76930cef80fca75429442c24d9d5f93e8c957c1933f8ba5eb80ac28229a3f2",
     "tests/test_comfy_preflight.py": "551df96bbd929541b30be596f33df67fcfc93b4b0e16b7d5c71e91afdfef1c34",

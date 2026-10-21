@@ -1,6 +1,7 @@
 import importlib.util
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import time
@@ -64,14 +65,30 @@ class ComfyAppsTests(unittest.TestCase):
             call(self.root, 'collect_workflow', {'project_id': 'film', 'directory': 'model-job'})
 
     def test_background_job_process_finishes_and_does_not_repeat(self):
-        result = start_background(self.root, 'create_project', {'project_id': 'film', 'name': 'Background'})
-        deadline = time.monotonic() + 20
-        while result['state'] == 'running' and time.monotonic() < deadline:
-            time.sleep(.1)
-            result = job_status(self.root, result['job_id'])
-        self.assertEqual(result['state'], 'succeeded', result)
-        self.assertEqual(result, job_status(self.root, result['job_id']))
-        self.assertEqual(AgentAPI(self.root).get_project('film')['name'], 'Background')
+        processes = []
+        popen = subprocess.Popen
+
+        def spawn(*args, **kwargs):
+            process = popen(*args, **kwargs)
+            processes.append(process)
+            return process
+
+        try:
+            with patch('openkatana.comfy_apps.subprocess.Popen', side_effect=spawn):
+                result = start_background(self.root, 'create_project', {'project_id': 'film', 'name': 'Background'})
+                deadline = time.monotonic() + 20
+                while result['state'] == 'running' and time.monotonic() < deadline:
+                    time.sleep(.1)
+                    result = job_status(self.root, result['job_id'])
+                self.assertEqual(result['state'], 'succeeded', result)
+                self.assertEqual(result, job_status(self.root, result['job_id']))
+                self.assertEqual(AgentAPI(self.root).get_project('film')['name'], 'Background')
+                self.assertEqual(len(processes), 1)
+        finally:
+            # The terminal receipt precedes interpreter shutdown. Windows keeps
+            # log.txt locked until that child exits; join before temp cleanup.
+            for process in processes:
+                process.wait(timeout=20)
 
     def test_queue_blocking_model_operations_are_dispatched_in_background(self):
         for tool in ('process_clip', 'run_model_workflow', 'collect_workflow'):
