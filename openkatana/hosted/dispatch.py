@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import time
+from typing import Literal
 
 from ..agent_api import AgentAPI, TOOLS
 from .files import inventory, safe_path
@@ -15,6 +16,21 @@ MODEL_TOOLS = {'submit_workflow', 'collect_workflow', 'run_model_workflow', 'che
 
 
 class HostedAPI(AgentAPI):
+    def read_guide(self, topic: Literal['agent','timeline','effects','compatibility','tool-audit','comfy-models','scene3d','composition','release-tools','hdr','animation','webgl','hosted']='agent') -> dict:
+        """Read hosted editing instructions and the exact supported contracts before choosing tool arguments."""
+        if topic == 'hosted':
+            import sys
+            for base in (Path(__file__).resolve().parents[2] / 'docs', Path(sys.prefix) / 'share/openkatana/docs'):
+                path = base / 'HOSTING.md'
+                if path.is_file():
+                    return {'topic': topic, 'markdown': path.read_text(encoding='utf-8')}
+            raise ValueError('Hosted guide is not installed')
+        result = super().read_guide(topic)
+        result['markdown'] = ('# Hosted session\n\nUse the connected remote MCP tools; skip local installation, cloning and stdio setup below. '
+                              'Read the hosted guide for account files and queue semantics. Upload media in Studio, author files with '
+                              'write_project_file, and poll get_tool_job until completion. Never treat queued as success.\n\n' + result['markdown'])
+        return result
+
     def preview_edit(self, project_id: str, timeline: dict, frames: list[int]) -> dict:
         """Render proposed timeline frames in the worker without saving the human's draft."""
         from ..preview import timeline_frames

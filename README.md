@@ -54,6 +54,13 @@ Studio follows **Brief & media → Preview & refine → Render & review**.
 Tool cards open their Markdown guides; **Copy**, **Download .md** and **Close**
 stay visible while reading.
 
+## Hosted pilot
+
+For a browser service without a visitor checkout, see the [hosted pilot](docs/HOSTING.md)
+and [hosting budget](docs/HOSTING-COSTS.md). Preparation includes account workspaces,
+queued rendering and remote MCP. No public service is deployed; models and
+identity-provider setup remain deployment steps.
+
 ## Try local 3D
 
 With the environment created by setup activated:

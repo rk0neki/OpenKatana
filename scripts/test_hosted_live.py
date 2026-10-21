@@ -35,8 +35,9 @@ def browser_check(address, invite, root):
         page.wait_for_selector('.tool-actions button:has-text("Run tool")')
         assert page.locator('.tool-card').count() == 76
         page.locator('#toolSearch').fill('get_capabilities')
-        assert page.locator('.tool-card').count() == 1
-        page.get_by_role('button', name='Run tool →', exact=True).click()
+        card = page.locator('.tool-card').filter(has=page.get_by_text('Get capabilities', exact=True))
+        assert card.count() == 1
+        card.get_by_role('button', name='Run tool →', exact=True).click()
         page.locator('.hosted-dialog').get_by_role('button', name='Run tool →', exact=True).click()
         page.wait_for_function("document.querySelector('.hosted-dialog').textContent.includes('\"ffmpeg\"')", timeout=120000)
         page.keyboard.press('Escape')
@@ -132,6 +133,18 @@ def main():
             authored = call('write_project_file', {'project_id': 'film', 'path': 'notes.txt', 'text': 'Hosted authored asset'})
             read = call('read_project_file', {'project_id': 'film', 'path': 'notes.txt'})
             checks['author_without_checkout'] = read['text'] == 'Hosted authored asset' and read['sha256'] == authored['sha256']
+            call('write_project_file', {'project_id': 'film', 'path': 'cube.py', 'text': '''import bpy
+s=bpy.context.scene
+s.render.resolution_x=96
+s.render.resolution_y=64
+s.render.resolution_percentage=100
+s.render.fps=2
+s.frame_start=1
+s.frame_end=2
+s.cycles.samples=1
+'''})
+            blender = call('render_blender', {'project_id': 'film', 'source': 'cube.py', 'engine': 'CYCLES', 'trusted_script': True})
+            checks['blender_in_sandbox'] = blender['frames'] == 2 and bool(blender['video'])
             headers = {'Accept': 'application/json, text/event-stream'}
             mcp = client.post('/mcp', headers=headers, json={'jsonrpc': '2.0', 'id': 1, 'method': 'tools/list'}); mcp.raise_for_status()
             checks['real_http_mcp_catalog'] = len(mcp.json()['result']['tools']) == 78
