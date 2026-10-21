@@ -80,6 +80,17 @@ class HostedTests(unittest.TestCase):
         with self.assertRaises(jwt.InvalidSignatureError):
             identity.jwt_user(jwt.encode(claims, other, algorithm='RS256'))
 
+    def test_invitation_renewal_preserves_existing_workspace(self):
+        user = self.a['user']; root = self.store.workspace(user)
+        root.mkdir(parents=True); (root / 'saved.txt').write_text('existing work')
+        renewed = self.store.renew_invitation(user)
+        self.assertEqual(renewed['user'], user)
+        self.assertIsNone(self.store.authenticate(self.a['access_key'], {'login'}))
+        self.assertEqual(self.store.authenticate(renewed['access_key'], {'login'}, consume=True), user)
+        self.assertEqual((root / 'saved.txt').read_text(), 'existing work')
+        with self.assertRaisesRegex(ValueError, 'not found'):
+            self.store.renew_invitation('0' * 32)
+
     def test_models_cannot_share_tenant_networks(self):
         from dataclasses import replace
         with self.assertRaisesRegex(ValueError, 'separate'):
