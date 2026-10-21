@@ -177,9 +177,12 @@ def main():
                 except importlib.metadata.PackageNotFoundError: versions[name] = None
             try: chrome = chrome_path()
             except RuntimeError: chrome = None
-            missing = [k for k, v in {'ffmpeg': shutil.which('ffmpeg'), 'ffprobe': shutil.which('ffprobe'), 'chrome': chrome, **versions}.items() if not v]
+            optional = {'opencv-python-headless', 'mcp'}
+            missing = [k for k, v in {'ffmpeg': shutil.which('ffmpeg'), 'ffprobe': shutil.which('ffprobe'), 'chrome': chrome, **versions}.items() if not v and k not in optional]
             result = {'version': __version__, 'ffmpeg': shutil.which('ffmpeg'), 'ffprobe': shutil.which('ffprobe'),
-                      'chrome': chrome, 'dependencies': versions, 'missing': missing, 'ready_to_render': not ({'ffmpeg', 'ffprobe', 'chrome', 'playwright'} & set(missing)),
+                      'chrome': chrome, 'dependencies': versions, 'missing': missing,
+                      'optional_missing': [k for k in sorted(optional) if not versions[k]],
+                      'ready_to_render': not ({'ffmpeg', 'ffprobe', 'chrome', 'playwright', 'Pillow', 'numpy'} & set(missing)),
                       'comfy_live_connection': 'not_tested'}
         elif args.command == 'validate':
             from .contracts import validate

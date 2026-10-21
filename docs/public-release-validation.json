@@ -3,10 +3,14 @@
   "version": "0.1.0rc2",
   "platform": "Windows, Python 3.11",
   "unit_tests": {
-    "run": 242,
-    "passed": 241,
+    "run": 243,
+    "passed": 242,
     "skipped": 1,
-    "source_and_staged_source": true
+    "staged_source_prior_to_optional_mcp_reporting_fix": {
+      "run": 242,
+      "passed": 241,
+      "skipped": 1
+    }
   },
   "studio": {
     "passed": true,
@@ -55,6 +59,37 @@
     "credits_used": 0
   },
   "skill_frontmatter_validation": true,
+  "fresh_git_install": {
+    "source_files_verified": 312,
+    "setup_script_completed": true,
+    "new_virtual_environment": true,
+    "cli_without_mcp": true,
+    "studio": {
+      "passed": true,
+      "browser_errors": [],
+      "import_plan_edit_save_render": true,
+      "onboarding_and_tool_discovery": true,
+      "setup_clipboard": true,
+      "fixed_guide_toolbar_and_clipboard": true,
+      "tool_count": 72,
+      "external_agent_sync": true,
+      "unsaved_human_edit_protected": true,
+      "mobile_views_without_overflow": true,
+      "stale_save_rejected": true,
+      "cross_origin_write_rejected": true,
+      "render_frames": 30,
+      "human_visual_approval": false
+    },
+    "render_checks": {
+      "svg_outline_renders": true,
+      "temporal_blur_broadens_motion": true,
+      "blur_deterministic": true,
+      "clamped_exposure_edges": true,
+      "static_exposure_preserves_pixels": true,
+      "physics_blur_seek_stable": true
+    },
+    "system_dependencies": "Previously installed Chrome and FFmpeg"
+  },
   "license": "Apache-2.0; separate dependency licenses retained",
   "limits": [
     "Existing installed dependency environment, not a clean operating system",
@@ -74,7 +109,7 @@
     "openkatana/bundled_fonts.py": "08cb43ed93a2fba56ecc69edaa393b477431b21fd9a720b813a4a92e2ca832ed",
     "openkatana/camera_path.py": "0f69841dc096e39de05178e2e4b5464f4fe2328231238a70e296b3beb3b74948",
     "openkatana/captions.py": "f53e23a838b113ea790b16e46cd249e40944d7b407cf4fd85c211444d1a2bc47",
-    "openkatana/cli.py": "888134397a8d00b04f271cbddbf1181dee039819c0503b06f7d94f245dd401e4",
+    "openkatana/cli.py": "24bacdf76b632a897df466cd0d5716b9f544af7e36d00c9d339b7e35506850b5",
     "openkatana/comfy.py": "653f989bf0386ed88d10c6692b335cc3678ac4bdbeed8b46266ad7b08ab71150",
     "openkatana/comfy_assets.py": "2646e66ddbc1da4c7d3305450edf759f7e0850a4a331fd5a2c1c6f9d9187cec8",
     "openkatana/comfy_sequence.py": "a8209896dc11d972c7f21de06e61c4ea0830ae465ed45c328e4a38a7bde59fd8",

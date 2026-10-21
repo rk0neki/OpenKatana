@@ -1,5 +1,9 @@
 """Project setup must be repeatable and preserve existing user work."""
 from pathlib import Path
+from contextlib import redirect_stdout
+import importlib.metadata
+import io
+import json
 from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
@@ -9,6 +13,19 @@ from openkatana.projects import state
 
 
 class OnboardingTests(unittest.TestCase):
+    def test_cli_doctor_does_not_require_mcp(self):
+        from openkatana.cli import main
+        def version(name):
+            if name=='mcp':raise importlib.metadata.PackageNotFoundError(name)
+            return 'test-version'
+        out=io.StringIO()
+        with patch('sys.argv',['openkatana','doctor']), patch('openkatana.cli.importlib.metadata.version',side_effect=version), patch('openkatana.cli.shutil.which',side_effect=lambda name:name), patch('openkatana.render.chrome_path',return_value='chrome'), redirect_stdout(out):
+            main()
+        result=json.loads(out.getvalue())
+        self.assertEqual(result['missing'],[])
+        self.assertEqual(result['optional_missing'],['mcp'])
+        self.assertTrue(result['ready_to_render'])
+
     def test_repeat_setup_preserves_project_and_custom_skill(self):
         with TemporaryDirectory() as folder:
             root=Path(folder)/'my-film'
