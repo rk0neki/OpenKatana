@@ -8,11 +8,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
-    (ROOT / 'comfy_nodes/catalog.json').write_text(json.dumps(catalog(), indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+    # Always write LF so the source manifest hashes match on every platform.
+    (ROOT / 'comfy_nodes/catalog.json').write_text(json.dumps(catalog(), indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
     folder = ROOT / 'comfy_nodes/example_workflows'
     folder.mkdir(exist_ok=True)
     for name, data in templates().items():
-        (folder / name).write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+        (folder / name).write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
     print(json.dumps({'tools': len(catalog()), 'apps': len(templates())}))
 
 
