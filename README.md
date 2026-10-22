@@ -31,7 +31,7 @@ tools; you set the direction and refine the result in Studio.
 - **Finishing:** frame previews, motion checks, HDR workflows and video export.
   Restoration and generation adapters use separately installed or authorized models.
 
-OpenKatana offers **72 CLI/MCP tools**. Your agent supplies the creative
+OpenKatana offers **72 CLI/MCP tools** ([see them all](docs/TOOLS.md)). Your agent supplies the creative
 decisions; OpenKatana executes them and keeps an editable project on your machine.
 
 ## How it works
@@ -134,7 +134,7 @@ Its source clip is bundled, so repeating the local edit costs no credits.
 
 ## Documentation and compatibility
 
-- [Setup](docs/SETUP.md) · [Studio](docs/STUDIO.md) · [Agent guide](docs/AGENT_INTERFACE.md)
+- [Setup](docs/SETUP.md) · [Studio](docs/STUDIO.md) · [Agent guide](docs/AGENT_INTERFACE.md) · [All tools](docs/TOOLS.md)
 - [Timeline](docs/TIMELINE.md) · [Editor tools](docs/EDITOR_TOOLS.md) · [Effects](docs/EXPANSION.md)
 - [3D](docs/SCENE3D.md) · [WebGL](docs/WEBGL.md) · [Blender](docs/ANIMATION.md)
 - [Compositions](docs/COMPOSITIONS.md) · [HDR](docs/HDR.md) · [Models](docs/COMFY_MODELS.md)

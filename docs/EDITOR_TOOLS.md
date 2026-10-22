@@ -1,7 +1,8 @@
 # Editor tools and reference matching
 
-OpenKatana has 72 shared MCP/CLI operations. Use the CLI catalog for exact
-signatures and check runtime readiness before invoking optional workflows.
+OpenKatana has 72 shared MCP/CLI operations; [TOOLS.md](TOOLS.md) lists all of
+them by area. Use the CLI catalog for exact signatures and check runtime
+readiness before invoking optional workflows.
 
 | Editor need | Available surface | Important limit |
 |---|---|---|

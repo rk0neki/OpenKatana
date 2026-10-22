@@ -14,9 +14,17 @@ def read(rel):
 class DocLintTests(unittest.TestCase):
     def test_tool_counts_match(self):
         from openkatana.agent_api import TOOLS
-        for rel in ('README.md', 'docs/ROADMAP.md', 'docs/EDITOR_TOOLS.md', 'docs/VALIDATION.md', 'docs/AGENT_INTERFACE.md'):
+        for rel in ('README.md', 'docs/ROADMAP.md', 'docs/EDITOR_TOOLS.md', 'docs/VALIDATION.md', 'docs/AGENT_INTERFACE.md', 'docs/TOOLS.md'):
             for n in re.findall(r'(\d+)(?:-tool| tools| shared MCP| named operations)', read(rel)):
                 self.assertEqual(int(n), len(TOOLS), f'{rel} states {n} tools; code has {len(TOOLS)}')
+
+    def test_tool_reference_is_generated_and_current(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('build_tools_doc', ROOT / 'scripts/build_tools_doc.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        self.assertEqual(read('docs/TOOLS.md').replace('\r\n', '\n'), module.render(),
+                         'docs/TOOLS.md is stale; run python scripts/build_tools_doc.py')
 
     def test_every_tool_is_documented(self):
         from openkatana.agent_api import TOOLS
