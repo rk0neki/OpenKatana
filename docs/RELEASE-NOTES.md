@@ -11,12 +11,14 @@ ComfyUI Apps. This release provides 72 shared tools, five Apps and 82 Comfy node
 - A bundled eight-second example produces a real edit without an agent or models.
 - A real LTX-2.5 Cloud sample, exact MIT-licensed generation graph and local
   ramp/freeze editing example are included. Repeating the edit needs no credits.
+- A generated [tool reference](TOOLS.md) lists all 72 tools by area.
 - Font sources are pinned upstream; public validation receipts omit local paths.
 - The hosted pilot remains experimental and undeployed. No hosting or model
   generation is started by installation.
 
 See [validation](VALIDATION.md), [setup](SETUP.md) and [limits](CAPABILITY-GAPS.md).
 Generative weights, FFmpeg and Chromium are not bundled. macOS is untested.
-LTX-2.5 inference and the subsequent local edit were tested as separate stages;
-local LTX inference and Cloud SDK submission were not tested by that run.
+LTX-2.5 inference and the subsequent local edit were tested as separate stages.
+OpenKatana's own Comfy Cloud submission (`comfy-submit`, then `comfy-collect`)
+was tested separately with the LTX-2.5 graph; local LTX inference was not tested.
 This functional smoke test does not establish competition bonus eligibility.
