@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "description": "README artwork and demonstration media. Concept illustrations are not screenshots or evidence of rendered output.",
+  "illustrations": [
+    {
+      "file": "openkatana-capabilities.png",
+      "kind": "AI-generated concept illustration",
+      "generator": "Built-in image generation tool",
+      "prompt": "Use case: infographic-diagram. Create one polished wide landscape 16:9 editorial illustration for OpenKatana's GitHub README, at least 1536 pixels wide. This is a conceptual product explanation, not a screenshot or a proof of rendered output. Visual identity: sophisticated minimalist monochrome, charcoal #171719 background, panels #202023, warm ivory #f4f2ec lettering, soft gray lines, silver/chrome and matte ivory objects. No blue, orange, neon or saturated accents. Very sharp readable typography, generous negative space, flat-on graphic layout with beautiful tangible 3D specimen imagery. No fuzzy tiny text.\nTop small wordmark text: \"OpenKatana\". Main large title exact: \"Made with code. Directed by you.\"\nBelow, three equal spacious specimen panels:\n1: a chrome torus smoothly transforming toward a rounded solid, with a subtle camera orbit arc; label exact \"3D & MORPHS\".\n2: sculptural warm-white typographic letterforms A and a with a thin layout grid, no garbled extra words; label exact \"TYPE & GRAPHICS\".\n3: a clean visual filmstrip of three abstract product shots aligned with an audio waveform, obvious editing cuts; label exact \"EDIT & SOUND\".\nBottom one clear sentence exact: \"Your agent writes. OpenKatana renders. You refine.\"\nKeep every label legible at 800px display width. Restrained, precise design, clearly separate the three capabilities. Do not invent UI controls or include any other company logo. No code gibberish. Do not draw a replacement logo symbol. Use text wordmark only; the real logo is separately displayed in README.",
+      "sha256": "77a4e8d49a1fac591cbdd4ca0cce159ce30f39cb7928baf5087bb7038e879e0a"
+    },
+    {
+      "file": "openkatana-workflow.png",
+      "kind": "AI-generated workflow illustration",
+      "generator": "Built-in image generation tool",
+      "prompt": "Use case: infographic-diagram. Generate a sharp, minimalist 16:9 landscape infographic for OpenKatana's GitHub README, at least 1536px wide. Match its visual identity: charcoal #171719 background, warm ivory #f4f2ec text, fine gray strokes, satin silver/chrome and ivory specimen objects. Elegant editorial serif headline, clean highly legible supporting text. No saturated color. Spacious, clear at 800px displayed width. This explains a workflow, not an actual UI screenshot.\nTop small text \"OpenKatana\". Large title exact \"From a brief to a finished film.\"\nThe middle is four equal panels with large numbers and clear arrows left to right:\n\"01 / BRING YOUR IDEA\" — illustration of a short brief sheet, photo/filmstrip cards and an audio waveform; small subtitle \"Brief + media\".\n\"02 / YOUR AGENT AUTHORS\" — illustration of a clean code sheet and small arranged storyboard; small subtitle \"Plan + code\".\n\"03 / OPENKATANA RENDERS\" — illustration of a chrome object in a camera frame above a simple edit timeline; small subtitle \"Tools + local render\".\n\"04 / YOU REVIEW\" — illustration of a finished film frame with a play triangle and a person-controlled adjustment slider; small subtitle \"Refine + export\".\nA single thin loop arrow beneath the four panels returns from step 04 to step 02, with exact label \"Feedback improves the next cut\". Keep arrows unambiguous; no crossed lines.\nFooter single line exact \"Studio · ComfyUI Apps · CLI / MCP — one shared project\"\nMake all typography accurate and readable, no tiny paragraphs. No other company brands, no invented OAuth connectors, no suggestion that a model or hosted service is bundled. No additional slogans or gibberish. Do not redraw a logo symbol; text wordmark only.",
+      "sha256": "f0c99cf2d2f0a3653dd8a5dcd1cd5f35ce9e1a82a5d42f5060b2a45a9b706fed"
+    }
+  ],
+  "logo": {
+    "file": "openkatana-wordmark.png",
+    "source": "Existing user-supplied OpenKatana logo badge from the MOTIF project. Copied without modification.",
+    "original_brand_file": "../../openkatana/web/openkatana-logo.jpg",
+    "sha256": "1c881dcaa5c99370775f46d330437d9904cbb3ef1a607ea30a124da82d4fe1be"
+  },
+  "motif": {
+    "file": "motif-1080p60.mp4",
+    "source": "User-selected final MOTIF export, copied byte-for-byte with authorization to include in the README.",
+    "seconds": 24,
+    "width": 1920,
+    "height": 1080,
+    "fps": 60,
+    "audio": true,
+    "preview": "motif-preview.gif",
+    "preview_settings": "First eight seconds; 640x360, 10 fps, 96-color GIF; silent. Original MP4 unchanged.",
+    "production": "Original procedural 3D geometry, materials, lighting, rigs and camera paths rendered in separately installed Blender 5.1.2; assembled and finished with OpenKatana. Original synthesized music and deterministic OpenKatana sound effects.",
+    "fonts": "Unbounded, Fira Sans Extra Condensed and JetBrains Mono (SIL OFL 1.1); original 5x7 LED dot typography.",
+    "models": "Local Qwen Image 2.1 generated six style references during development. No generated model pixels are present in the final film. No video-generation model or model-based interpolation was used.",
+    "scope": "These are source records, not a guarantee of legal clearance. OpenKatana software licensing does not override third-party rights.",
+    "sha256": "86f3625c7359ea1ac4b47fbff6213741c590bdeeca3e90895637a1c51c202fef",
+    "preview_sha256": "f0b05d3971338521eae54abf55871bcc41b1a2cc6fea6eed32765b4b3aef35e6"
+  }
+}
