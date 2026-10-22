@@ -1,7 +1,7 @@
 # Security
 
 OpenKatana Studio and its ComfyUI adapter are intended for a trusted, single-user
-local machine. Do not expose their loopback ports through a public tunnel.
+local machine. Do not make their loopback ports accessible through a public tunnel.
 Authored JavaScript, Blender scripts and custom nodes are executable code;
 review them before running them. Browser network restrictions are not an OS sandbox.
 

@@ -19,12 +19,12 @@ authored animation. They are building blocks, not a universal creative template.
 
 The Blender route uses a **separately installed Blender**, not an OpenKatana-owned
 3D renderer or a remote machine. The recorded local tests used Blender 5.1.2 EEVEE.
-The bridge exposes this installed OpenKatana package to Blender's Python, so
+The bridge offers Blender's Python access to this installed OpenKatana package, so
 `from openkatana import blender_helpers` works without personal path edits.
 Blender installation is optional and never downloaded automatically. Arbitrary
 trusted authoring scripts execute with local process permissions, not a sandbox.
 
-## Six shared CLI/MCP operations
+## Six CLI/MCP operations
 
 Discover exact signatures with `openkatana tools`. Submit UTF-8 JSON arguments via
 `openkatana call TOOL --workspace work/projects --arguments arguments.json`.

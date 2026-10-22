@@ -47,7 +47,7 @@ all models or real clients.
 
 Review/install the supplied systemd units and substitute the Caddy domain. Start
 them only after deployment approval. The app binds 127.0.0.1:8090 and checks the
-public Host/Origin preserved by Caddy. Expose HTTPS/HTTP and restricted SSH only,
+public Host/Origin preserved by Caddy. Allow inbound HTTPS/HTTP and restricted SSH only,
 never Docker, app or Comfy ports. One web process and one runner are supported.
 The default pilot limits are ten accounts, one active job, 2 GiB workspaces and
 256 MiB uploads. Add edge abuse controls before unrestricted registration.

@@ -49,7 +49,7 @@ and [gVisor production guidance](https://gvisor.dev/docs/user_guide/production/)
 Streamable HTTP transport. Pilot clients can use revocable seven-day bearer
 keys in private Authorization-header configuration. Never publish keys.
 
-OAuth-only clients require an external authorization server. OpenKatana exposes
+OAuth-only clients require an external authorization server. OpenKatana offers
 resource metadata and verifies RS256 tokens against issuer, JWKS, audience and
 `openkatana` scope. Browser sign-in uses PKCE. Configure and test the provider's
 client registration/discovery, callbacks and audience with the actual AI clients;
@@ -64,7 +64,7 @@ their packages/weights. The base image downloads no generation weights.
 
 Private Comfy services use separate `{user}` endpoints/internal networks for
 multiple accounts. Shared unauthenticated Comfy is not a tenant boundary. The
-operator provisions reviewed nodes and licensed models. Never expose raw ports.
+operator provisions reviewed nodes and licensed models. Never allow public access to raw ports.
 
 **Paid cloud execution is disabled in this hosted pilot.** Its local CLI option
 is unchanged. Online paid providers still require a credential broker, explicit
@@ -75,5 +75,5 @@ See [deployment](../deploy/README.md) and [budget](HOSTING-COSTS.md). Hosting CI
 builds the real worker and exercises HTTP/MCP, editing, WebGL, downloads and the
 browser, plus Blender Cycles and the reusable animation kit. Check its result
 for the deployment commit. Fixtures do not validate
-production load or every model/provider. Do not expose local Studio publicly;
+production load or every model/provider. Do not make local Studio publicly accessible;
 use this authenticated entry point. Local setup remains in [SETUP.md](SETUP.md).

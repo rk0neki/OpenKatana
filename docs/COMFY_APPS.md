@@ -1,6 +1,6 @@
 # OpenKatana in ComfyUI Apps
 
-Run OpenKatana locally from ComfyUI's Apps panel. The integration exposes every
+Run OpenKatana locally from ComfyUI's Apps panel. The integration offers every
 shared AgentAPI tool (currently 72), plus the existing three tensor utilities and
 seven convenience/media nodes (82 nodes total). Studio, CLI and MCP continue to use the same project
 files and revision checks. ComfyUI Apps is an additional entry point.

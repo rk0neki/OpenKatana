@@ -31,7 +31,7 @@ tools; you set the direction and refine the result in Studio.
 - **Finishing:** frame previews, motion checks, HDR workflows and video export.
   Restoration and generation adapters use separately installed or authorized models.
 
-OpenKatana exposes **72 shared CLI/MCP tools**. Your agent supplies the creative
+OpenKatana offers **72 CLI/MCP tools**. Your agent supplies the creative
 decisions; OpenKatana executes them and keeps an editable project on your machine.
 
 ## How it works
@@ -58,9 +58,11 @@ The two illustrations explain the workflow; MOTIF below is an actual rendered fi
 **[Watch or download MOTIF — 1080p, 60 fps, with sound](docs/assets/motif-1080p60.mp4)**
 
 A 24-second product film with procedural 3D objects, choreographed cameras,
-animated displays, typography and an original soundtrack. Blender renders the
-3D scenes; OpenKatana assembles and finishes the film. No video-generation model
-was used. The GIF shows an eight-second preview at reduced resolution and frame rate;
+animated displays, typography and an original soundtrack. OpenKatana offers
+code-authored WebGL rendering for 3D scenes, with a Blender option available too.
+This MOTIF export used the Blender option; OpenKatana assembles and finishes the
+film. No video-generation model was used. The GIF shows an eight-second preview
+at reduced resolution and frame rate;
 the MP4 preserves the original 1080p/60fps export and audio.
 [Artwork and film credits](docs/assets/readme-visuals.json).
 
@@ -116,8 +118,8 @@ This renders an eight-second edit from bundled images and original music.
 ## Use it in ComfyUI
 
 OpenKatana includes five saved Apps: **Open Studio**, **All tools**, **Make a 3D
-scene**, **Background job** and **Video to edit**. Its 82 nodes expose the shared
-tools plus project, job and media helpers.
+scene**, **Background job** and **Video to edit**. The integration offers 82 nodes
+for its tools plus project, job and media helpers.
 
 Connect a local model's image frames or video output to **Import media → Make edit
 → Render to video**, then open the same project in Studio to refine it.

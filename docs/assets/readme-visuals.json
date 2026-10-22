@@ -7,7 +7,13 @@
       "kind": "AI-generated concept illustration",
       "generator": "Built-in image generation tool",
       "prompt": "Use case: infographic-diagram. Create one polished wide landscape 16:9 editorial illustration for OpenKatana's GitHub README, at least 1536 pixels wide. This is a conceptual product explanation, not a screenshot or a proof of rendered output. Visual identity: sophisticated minimalist monochrome, charcoal #171719 background, panels #202023, warm ivory #f4f2ec lettering, soft gray lines, silver/chrome and matte ivory objects. No blue, orange, neon or saturated accents. Very sharp readable typography, generous negative space, flat-on graphic layout with beautiful tangible 3D specimen imagery. No fuzzy tiny text.\nTop small wordmark text: \"OpenKatana\". Main large title exact: \"Made with code. Directed by you.\"\nBelow, three equal spacious specimen panels:\n1: a chrome torus smoothly transforming toward a rounded solid, with a subtle camera orbit arc; label exact \"3D & MORPHS\".\n2: sculptural warm-white typographic letterforms A and a with a thin layout grid, no garbled extra words; label exact \"TYPE & GRAPHICS\".\n3: a clean visual filmstrip of three abstract product shots aligned with an audio waveform, obvious editing cuts; label exact \"EDIT & SOUND\".\nBottom one clear sentence exact: \"Your agent writes. OpenKatana renders. You refine.\"\nKeep every label legible at 800px display width. Restrained, precise design, clearly separate the three capabilities. Do not invent UI controls or include any other company logo. No code gibberish. Do not draw a replacement logo symbol. Use text wordmark only; the real logo is separately displayed in README.",
-      "sha256": "77a4e8d49a1fac591cbdd4ca0cce159ce30f39cb7928baf5087bb7038e879e0a"
+      "sha256": "721b38be21ac3a405918c41550fcac6c9b70421a8c2364b9482efd53383c0ee7",
+      "edits": [
+        {
+          "generator": "Built-in image generation tool",
+          "prompt": "Edit the provided OpenKatana capabilities illustration. Change ONLY the bottom caption from 'Your agent writes. OpenKatana renders. You refine.' to the exact text 'Create & Edit Videos With Code'. Preserve the entire remaining design: same wordmark, title, three specimen panels, objects, filmstrip, waveform, labels, charcoal background, ivory and silver palette, typography style and aspect ratio. Center the new caption in the same bottom area, large, sharp and legible. No other changes."
+        }
+      ]
     },
     {
       "file": "openkatana-workflow.png",

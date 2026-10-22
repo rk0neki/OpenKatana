@@ -5,7 +5,7 @@ and Studio supports human direction, adjustment and review.
 
 Start with [SETUP.md](SETUP.md) and `python scripts/setup.py`. The same prompt
 and CLI workflow apply to every agent. Studio’s Brief & media step exports briefs
-with project context; Tools exposes the operation catalog and guides. External
+with project context; Tools offers the operation catalog and guides. External
 saves refresh when the human has no unsaved edits. Read the latest revision
 before saving. See [Studio](STUDIO.md).
 
@@ -106,7 +106,7 @@ adds full project inspection, revision-aware saves, previews and persistent jobs
 
 ## Analysis and Comfy
 
-`analyze_clip` exposes local masks, face detection and optical flow. Outputs stay
+`analyze_clip` offers local masks, face detection and optical flow. Outputs stay
 inside the project, including nested directories. `apply:false` returns an update
 for inspection; `apply:true` saves a new timeline revision. Face detections can
 miss glasses/profiles and produce false positives; visually inspect the track.
@@ -175,7 +175,7 @@ choose the composition route for those text runs.
 `edit_timeline` validates atomic revision-guarded timeline operation batches.
 Read [release tools](RELEASE-TOOLS.md) for parameters and limits.
 
-HDR and models: `import_hdr_media`, `render_hdr`, and `run_model_workflow` are shared CLI/MCP operations. Read `hdr` and `comfy-models` before using them. Inspect clipping and media before approving an HDR export; never describe an SDR proxy as the HDR original.
+HDR and models: `import_hdr_media`, `render_hdr`, and `run_model_workflow` are CLI/MCP operations. Read `hdr` and `comfy-models` before using them. Inspect clipping and media before approving an HDR export; never describe an SDR proxy as the HDR original.
 
 ## Reusable authored-animation workflow
 
@@ -193,6 +193,6 @@ cut-safe camera schedules and inclusive `start`/`end` chunks. Use
 validated proposal, never replaces the current timeline, and rejects gaps and
 source/renderer mismatches by default. Choose installed Blender for its own
 scene features/Cycles rather than assuming all 3D needs it. Both routes are local.
-They share this CLI/MCP interface. The existing render_blender bridge exposes
+They use this CLI/MCP interface. The existing render_blender bridge offers
 OpenKatana helpers to the installed Blender Python. These tools use original
 project code with declared local dependencies.

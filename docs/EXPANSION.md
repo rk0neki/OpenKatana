@@ -34,7 +34,7 @@ interpret unrestricted natural-language briefs. An agent can author a full timel
 through the documented JSON contract and use the same render/review loop.
 
 Timeline saves retain prior versions in `history/` and reject stale revisions.
-Renders use saved snapshots, preserve outputs and expose success/failure. Reviews
+Renders use saved snapshots, preserve outputs and report success/failure. Reviews
 bind to the timeline, source hashes and output. A review is not a publication action.
 The server listens only on loopback and rejects foreign-host/origin writes.
 
@@ -187,6 +187,6 @@ installed components. Its builder follows ComfyUI's official Qwen 2.1 template
 (25 steps, Euler/simple, CFG 1), with no prompt-enhancer model or downloads. The
 local SDK -> Qwen -> image collection -> project import path passed with a 512-square
 integration sample. CLI dimensions and steps are configurable; defaults are
-1024-square and 25 steps. The editor exposes all three component filenames. Model and output
+1024-square and 25 steps. The editor offers all three component filenames. Model and output
 license review remains specific to the chosen model. Hosted developer-platform
 deployment, billing and credentials remain a separate explicit setup step.

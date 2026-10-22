@@ -10,8 +10,8 @@ def main():
     spec=json.loads(Path(sys.argv[sys.argv.index('--')+1]).read_text(encoding='utf-8'))
     source=Path(spec['source']);out=Path(spec['output'])
     if source.suffix.lower()=='.py':
-        # The separately installed Blender has its own Python. Expose this installed
-        # OpenKatana package to trusted authors without machine-specific sys.path edits.
+        # The separately installed Blender has its own Python. Make this installed
+        # OpenKatana package available to trusted authors without machine-specific sys.path edits.
         sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
         sys.path.insert(0, str(source.parent))
         runpy.run_path(str(source),run_name='__main__')

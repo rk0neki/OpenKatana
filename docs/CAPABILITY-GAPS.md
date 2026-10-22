@@ -26,7 +26,7 @@ text and model-workflow integration. The following limits remain explicit:
   rewrites or guaranteed reference reconstruction.
 - **Tracking/mattes:** fast motion, occlusion, multiple faces and complex edges
   need visual checks. Some semantic workflows require additional weights.
-- **Usability:** Studio exposes all tools through its library, but advanced
+- **Usability:** Studio offers all tools through its library, but advanced
   scene/composition authoring still uses an agent or CLI. It is a loopback-only,
   single-user app, with no cloud account, sync service or bundled general AI.
 - **Platforms:** Windows is locally tested. Consult the actual CI result before

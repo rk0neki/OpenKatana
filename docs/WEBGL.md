@@ -21,7 +21,7 @@ The browser and FFmpeg still need to be installed (`openkatana doctor`).
 
 ## Agent workflow
 
-1. Read `read_guide(topic="webgl")`. Use CLI or MCP; they expose identical tools.
+1. Read `read_guide(topic="webgl")`. Use CLI or MCP; each offers identical tools.
 2. `create_webgl_kit(project_id, directory="webgl", width=640, height=360,
    fps=30, frames=60)` creates a new editable folder. It never overwrites one.
 3. Customize `scene.json`, `scene.js` and `display.json` for the brief. The starter
