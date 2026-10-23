@@ -73,4 +73,45 @@ class CustomWorkflowTests(unittest.TestCase):
             submit.assert_called_once()
 
 
+# Input contract served at /object_info by ComfyUI 0.42.0 for the core ReferenceMultiLatent node
+# (comfy_extras/nodes_edit_model.py). Its autogrow template lists the image port as optional.
+REFERENCE_MULTI_LATENT={'input':{
+    'required':{'positive':['CONDITIONING',{}],'resolution':['COMFY_DYNAMICCOMBO_V3',{'options':[
+        {'key':'keep resolution','inputs':{'required':{}}},
+        {'key':'resize','inputs':{'required':{'megapixels':['FLOAT',{'default':1.0,'min':0.01,'max':16.0,'step':0.01}]}}}]}]},
+    'optional':{'negative':['CONDITIONING',{}],'vae':['VAE',{}],
+        'images':['COMFY_AUTOGROW_V3',{'template':{'input':{'required':{},'optional':{'image':['IMAGE',{}]}},
+                                                   'prefix':'image','min':1,'max':100}}]}},
+    'output':['CONDITIONING','CONDITIONING','LATENT']}
+
+
+class OptionalTemplatePortTests(unittest.TestCase):
+    """Multi-reference edits connect images.imageN ports whose template input is optional."""
+    def setUp(self):
+        self.info={'ReferenceMultiLatent':REFERENCE_MULTI_LATENT,'Conditioning':{'input':{},'output':['CONDITIONING']},
+                   'VAELoader':{'input':{'required':{'vae_name':[['flux2-vae.safetensors']]}},'output':['VAE']},
+                   'LoadImage':{'input':{'required':{'image':[['first.png','second.png'],{'image_upload':True}]}},'output':['IMAGE','MASK']}}
+        self.node={'positive':['10',0],'vae':['12',0],'resolution':'keep resolution','images.image0':['20',0],'images.image1':['21',0]}
+        self.graph={'10':{'class_type':'Conditioning','inputs':{}},
+                    '12':{'class_type':'VAELoader','inputs':{'vae_name':'flux2-vae.safetensors'}},
+                    '20':{'class_type':'LoadImage','inputs':{'image':'first.png'}},
+                    '21':{'class_type':'LoadImage','inputs':{'image':'second.png'}},
+                    '11':{'class_type':'ReferenceMultiLatent','inputs':self.node}}
+
+    def errors(self):
+        with patch('openkatana.workflows.capabilities',return_value=self.info):
+            return preflight(self.graph,'local',['ReferenceMultiLatent'])['errors']
+
+    def test_reference_ports_use_the_optional_template_input(self):
+        self.assertEqual(self.errors(),[])
+        self.node['images.image1']=['21',1]
+        self.assertEqual(self.errors(),['11.images.image1: MASK output cannot feed IMAGE'])
+        del self.node['images.image1'];self.node['images.image100']=['21',0]
+        self.assertIn('11.images.image100: invalid reference port',self.errors())
+
+    def test_optional_template_still_needs_one_reference(self):
+        for port in ('images.image0','images.image1'):del self.node[port]
+        self.assertEqual(self.errors(),['11.images: too few references'])
+
+
 if __name__=='__main__':unittest.main()
