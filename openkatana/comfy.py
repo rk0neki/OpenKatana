@@ -114,6 +114,10 @@ def validate_workflow(path, execution='local', reviewed_local_nodes=None):
 
 def submit(workflow: Path, directory: Path, endpoint: str, assets=(), native_endpoint=None, execution='local', allow_paid=False, reviewed_local_nodes=None):
     authorize_execution(endpoint, execution, allow_paid)
+    # Partner (API) nodes on Comfy Cloud authenticate with this key, which the SDK sends as
+    # extra_data.api_key_comfy_org. Never send it for local execution: the local proxy passes
+    # extra_data on to ComfyUI. The key is never written to job.json or workflow.json.
+    partner_auth = {'api_key': os.environ['COMFY_API_KEY'].strip()} if execution == 'cloud' else {}
     graph=validate_workflow(workflow, execution, reviewed_local_nodes)
     advanced=any(n['class_type'] not in BASE_NODES for n in graph.values())
     if advanced and execution == 'local':
@@ -140,7 +144,7 @@ def submit(workflow: Path, directory: Path, endpoint: str, assets=(), native_end
         receipt['state'] = 'submitting'
         write_json(directory / 'job.json', receipt)
         try:
-            job = client.submit(wf, idempotency_key=receipt['idempotency_key'])
+            job = client.submit(wf, idempotency_key=receipt['idempotency_key'], **partner_auth)
         except Exception:
             receipt['state'] = 'submission_unknown'
             write_json(directory / 'job.json', receipt)
