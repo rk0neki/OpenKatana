@@ -12,7 +12,10 @@ model quality and workflow compatibility still require testing.
 - Cloud (explicit): an API-format workflow supported by Comfy Cloud, including
   supported partner model nodes. Requires a Comfy account with API access, credits
   as applicable and COMFY_API_KEY configured in the environment of the MCP/CLI process.
-  No credential is requested as a tool argument or written to a receipt by the bridge.
+  Each cloud submission passes this key to the SDK for partner (API) nodes; without it
+  they fail with "Unauthorized: Please login first to use this node". Local submissions
+  never pass it. No credential is requested as a tool argument or written to a receipt
+  by the bridge.
 
 This release supports https://cloud.comfy.org only for cloud jobs. Direct provider APIs,
 Comfy Router, paid partner nodes executed on local ComfyUI and custom hosted deployment
@@ -123,6 +126,14 @@ tests and six documentation checks also passed. Paid submission, collection, env
 protection and output import are covered with fake SDK jobs. No real paid job was run,
 no credits spent, and no cloud output quality or individual partner model is certified.
 A live job with an approved workflow and spending authorization is still required.
+
+Partner-node authentication, 2026-10-23: `comfy-submit --execution cloud` did not pass
+the key with the submission, so four FLUX 3 Max and LTX-2.5 partner-node jobs failed at
+their first upload with "Unauthorized: Please login first to use this node" and generated
+nothing. The same SDK call with the key, sent from a separate script, rendered all four.
+Fake SDK client tests now check that cloud submissions (CLI and `submit_workflow`) pass the
+key, that local submissions never do, and that no receipt, request record or workflow copy
+contains it. The fixed `comfy-submit` has not yet run a partner-node job on Comfy Cloud.
 
 Official interface reference (checked 2026-10-18):
 https://docs.comfy.org/development/api-development/sdks
