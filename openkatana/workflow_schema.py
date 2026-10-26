@@ -11,13 +11,15 @@ def expanded_inputs(spec, inputs):
                 name=prefix+key;typ=rule[0];options=rule[1] if len(rule)>1 else {}
                 if typ=='COMFY_AUTOGROW_V3':
                     template=options.get('template',{});matched=[]
+                    # The template's one input may be listed as required or optional
+                    # (core ReferenceMultiLatent lists it as optional).
+                    port=template.get('input',{});nested={**port.get('optional',{}),**port.get('required',{})}
                     for field in inputs:
                         if not field.startswith(name+'.'):continue
                         suffix=field[len(name)+1:]
                         names=template.get('names',[]);stem=template.get('prefix','')
                         valid=suffix in names if names else bool(stem and suffix.startswith(stem) and suffix[len(stem):].isdigit() and int(suffix[len(stem):])<template.get('max',1000))
                         if not valid:errors.append(f'{field}: invalid reference port');continue
-                        nested=template.get('input',{}).get('required',{})
                         if len(nested)==1:rules[field]=next(iter(nested.values()));matched.append(field)
                     if len(matched)<template.get('min',0):errors.append(f'{name}: too few references')
                     continue
