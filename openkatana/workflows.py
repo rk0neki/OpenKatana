@@ -48,8 +48,9 @@ def preflight(graph,endpoint,reviewed_local_nodes=None):
         optional=spec.get('input',{}).get('optional',{})
         for key,rule in {**optional,**required}.items():
             if key not in required and key not in node['inputs']:continue
-            # V3 autogrow containers expand into named ports; min=0 permits none.
-            if rule[0]=='COMFY_AUTOGROW_V3' and rule[1].get('template',{}).get('min')==0:continue
+            # A V3 autogrow container never appears under its own key: the workflow carries its flattened ports
+            # (images.image0, ...). check_graph validates those ports and the template's minimum count.
+            if rule[0]=='COMFY_AUTOGROW_V3':continue
             if key not in node['inputs']:errors.append(f'{node_id}.{key}: missing required input');continue
             value=node['inputs'][key]
             choices=rule[0] if isinstance(rule[0],list) else (rule[1].get('options') if rule[0]=='COMBO' and len(rule)>1 else None)
