@@ -139,7 +139,8 @@ to rediscover the catalog.
 See [COMFY_MODELS.md](COMFY_MODELS.md). `submit_workflow` now accepts
 `execution="local"` (default) or `execution="cloud"`. Cloud requires
 `endpoint="https://cloud.comfy.org"`, `allow_paid=true` and an environment
-`COMFY_API_KEY`. Obtain the user's authorization for the job and source upload
+`COMFY_API_KEY`. Cloud submissions pass that key to partner (API) nodes; local
+submissions never do. Obtain the user's authorization for the job and source upload
 before setting allow_paid; the flag records authorization, it does not obtain it.
 Never invent a price or promise a spending cap: this integration does not enforce
 one. Check the selected provider's current pricing before proposing a paid job.
