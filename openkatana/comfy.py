@@ -61,15 +61,29 @@ def require_reachable(url, role='Comfy API proxy'):
         raise ConnectionError(f'{role} not reachable at {url} ({err.__class__.__name__}: {err.strerror or err}). Nothing was submitted; {hint}') from None
 
 
+def _new_client(execution):
+    from comfy_sdk import Comfy
+    if execution == 'cloud':
+        return Comfy(api_key=os.environ.get('COMFY_API_KEY', ''), client_info='openkatana', timeout=15)
+    # Local and private endpoints get no credentials. The SDK falls back to COMFY_API_KEY
+    # when no key is passed (a blank one counts as none) and sends it as a bearer token,
+    # so hide the variable while the client is built; the SDK reads it only then.
+    key = os.environ.pop('COMFY_API_KEY', None)
+    try:
+        return Comfy(client_info='openkatana', timeout=15)
+    finally:
+        if key is not None:
+            os.environ['COMFY_API_KEY'] = key
+
+
 @contextmanager
 def client_at(endpoint, execution='local'):
     # SDK 0.5 takes its base URL from the environment. This CLI is single-process,
     # single-job; do not use this context concurrently in a web server.
-    from comfy_sdk import Comfy
     old = os.environ.get('COMFY_BASE_URL')
     os.environ['COMFY_BASE_URL'] = execution_endpoint(endpoint, execution)
     try:
-        with Comfy(api_key=os.environ.get('COMFY_API_KEY', '') if execution == 'cloud' else '', client_info='openkatana', timeout=15) as client:
+        with _new_client(execution) as client:
             yield client
     finally:
         if old is None:

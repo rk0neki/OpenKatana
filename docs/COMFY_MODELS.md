@@ -8,7 +8,8 @@ model quality and workflow compatibility still require testing.
 
 - Local (default): installed models/nodes through the local Comfy API proxy.
   Existing workflow builders, model checks, segmentation and clip processing remain local.
-  No automatic model downloads or fallback to a paid service.
+  No automatic model downloads or fallback to a paid service. The SDK client for local
+  endpoints is built without credentials; COMFY_API_KEY is used only for cloud jobs.
 - Cloud (explicit): an API-format workflow supported by Comfy Cloud, including
   supported partner model nodes. Requires a Comfy account with API access, credits
   as applicable and COMFY_API_KEY configured in the environment of the MCP/CLI process.

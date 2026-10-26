@@ -86,7 +86,7 @@ class CloudTests(unittest.TestCase):
             with patch('comfy_sdk.Comfy') as factory:
                 with comfy.client_at('http://127.0.0.1:8189'):
                     self.assertEqual(os.environ['COMFY_BASE_URL'],'http://127.0.0.1:8189')
-                self.assertEqual(factory.call_args.kwargs['api_key'],'')
+                self.assertNotIn('api_key',factory.call_args.kwargs)
                 with self.assertRaises(RuntimeError):
                     with comfy.client_at('https://cloud.comfy.org','cloud'):
                         self.assertEqual(factory.call_args.kwargs['api_key'],'test-only-not-a-real-key')
