@@ -25,7 +25,7 @@ function setupText(){return `Set up OpenKatana so we can create and edit videos 
    python scripts/setup.py
    Use python3 if that is the Python 3.11+ command on my system.
 
-2. Load the openkatana-video skill installed in the project's .agents/skills folder. Use the environment and project reported by setup. Run the doctor and get_capabilities commands, and tell me about any missing dependencies.
+2. Load the openkatana-video skill installed in the project's .agents/skills folder, and read docs/MUST-USE-EFFECTS.md in the checkout: it is required before any edit (analyse references at 60 fps, ask me for the fonts, textures, sounds and effects you need, and build with eased keyframes, slow motion and the core effects). Use the environment and project reported by setup. Run the doctor and get_capabilities commands, and tell me about any missing dependencies.
 
 3. Open Studio for that project. Use the CLI to inspect media, create edits and render previews; let me review the result in the app.
 

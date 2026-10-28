@@ -11,6 +11,39 @@ project. Resume the reported project using its Python environment; do not create
 a new project for every session. No account or platform-specific connector is
 required. CLI is the default; MCP is optional.
 
+## Before any edit: must read
+
+Read `docs/MUST-USE-EFFECTS.md` in the OpenKatana checkout before planning an edit. It
+is required reading. Its rules come from the user and apply to every edit:
+
+1. **Analyse every reference video at 60 fps**, never at 24. This captures the full
+   motion and shows what each scene says and how the edit lands it.
+2. **Then ask the user for what the edit needs**, alongside their photos and videos:
+   fonts, textures, sounds, effects, overlays, stock and brand assets. Do not
+   substitute generated stand-ins for material the user can supply.
+3. **Work as in After Effects.**
+   - Use eased keyframes (easy ease) on every animated value, speed ramps, and
+     optical-flow slow motion.
+   - Use the core eight effects:
+     1. turbulence and displacement
+     2. glow and deep glow, placed with care, especially around buttons
+     3. 3D camera and object blur
+     4. opacity for every element, varying by scene
+     5. colour invert
+     6. textures, for depth
+     7. noise, grain and colour grading
+     8. flicker
+
+The same file lists what else to watch:
+- the story and the shot order;
+- the soundtrack before the picture, with cuts on beats;
+- few words;
+- no stretched or repeated footage;
+- one brand colour;
+- sharp interfaces;
+- real material over generated material;
+- licences and the final encode.
+
 When the user works inside **ComfyUI Apps**, read `docs/COMFY_APPS.md` (or
 `read_guide(topic="comfy-apps")`). The installed Apps share the same AgentAPI and
 workspace as Studio/CLI/MCP. Use the project and interpreter returned by **Open
