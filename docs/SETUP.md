@@ -61,6 +61,14 @@ quality of arbitrary scenes or readiness of every optional model workflow.
 Open the project in your agent and tell it to read the installed
 `.agents/skills/openkatana-video/SKILL.md`. Agents with project-local skill
 discovery can find it automatically; others can read that file explicitly.
+
+Before it plans any edit, the agent must also read
+[MUST-USE-EFFECTS.md](MUST-USE-EFFECTS.md) in this checkout. The rules there come
+from the user:
+- analyse reference videos at 60 fps;
+- then ask the user for the fonts, textures, sounds and effects the edit needs;
+- build as in After Effects, with eased keyframes, slow motion and the core eight
+  effects.
 Use the environment and workspace reported by setup. Studio's **Agent setup**
 dialog contains the same portable instructions for everyone.
 
