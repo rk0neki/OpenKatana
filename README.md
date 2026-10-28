@@ -79,7 +79,9 @@ Set up OpenKatana so you can create and edit videos for me with code.
 2. Open the downloaded OpenKatana folder, read docs/SETUP.md,
    and run python scripts/setup.py.
 3. Read the openkatana-video skill that setup installs for my first project.
-4. Check the required tools, open Studio, and tell me when it is ready.
+4. If I use ComfyUI, install the OpenKatana nodes (docs/COMFY_APPS.md) and
+   open the 00 Full workflow App first. Then check the required tools,
+   open Studio, and tell me when it is ready.
 
 Use the local CLI by default. Ask before downloading models, spending credits,
 uploading files or publishing. Do not generate a video during setup.

@@ -17,6 +17,12 @@ fallback, paid jobs, model downloads or credential collection. Existing explicit
 user authorization applies. Preserve submitted job IDs; an unknown submission
 result must not be blindly retried.
 
+On first launch, show the ComfyUI workflow before anything else. If the user has
+ComfyUI, install the integration (`python scripts/install_comfy_nodes.py --comfy-root
+PATH_TO_COMFYUI`, see docs/COMFY_APPS.md), restart ComfyUI and open Apps → OpenKatana
+→ **00 Full workflow**: show its App form, then its node graph. Open Studio and the
+other Apps after that. Never commit the user's media, keys or local paths.
+
 Use the user's current agent session. Do not launch additional agents or logins
 as part of normal editing. Record receipts and review actual output; publication
 and human approval must not be inferred from a passing technical check.

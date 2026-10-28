@@ -45,7 +45,8 @@ The same file lists what else to watch:
 - licences and the final encode.
 
 When the user works inside **ComfyUI Apps**, read `docs/COMFY_APPS.md` (or
-`read_guide(topic="comfy-apps")`). The installed Apps share the same AgentAPI and
+`read_guide(topic="comfy-apps")`). On first launch, open **00 Full workflow**
+first: it shows every App in one graph. The installed Apps share the same AgentAPI and
 workspace as Studio/CLI/MCP. Use the project and interpreter returned by **Open
 Studio**, not a new parallel project. Local Apps reject paid/cloud execution.
 Model operations may return an adapter background job: inspect its result and
