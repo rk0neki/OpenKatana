@@ -79,7 +79,9 @@ Set up OpenKatana so you can create and edit videos for me with code.
 2. Open the downloaded OpenKatana folder, read docs/SETUP.md,
    and run python scripts/setup.py.
 3. Read the openkatana-video skill that setup installs for my first project.
-4. Check the required tools, open Studio, and tell me when it is ready.
+4. If I use ComfyUI, install the OpenKatana nodes (docs/COMFY_APPS.md) and
+   open the 00 Full workflow App first. Then check the required tools,
+   open Studio, and tell me when it is ready.
 
 Use the local CLI by default. Ask before downloading models, spending credits,
 uploading files or publishing. Do not generate a video during setup.
@@ -117,9 +119,10 @@ This renders an eight-second edit from bundled images and original music.
 
 ## Use it in ComfyUI
 
-OpenKatana includes five saved Apps: **Open Studio**, **All tools**, **Make a 3D
-scene**, **Background job** and **Video to edit**. The integration offers 82 nodes
-for its tools plus project, job and media helpers.
+OpenKatana includes six saved Apps: **Full workflow**, which puts every App in one
+graph, plus **Open Studio**, **All tools**, **Make a 3D scene**, **Background job**
+and **Video to edit**. The integration offers 82 nodes for its tools plus project,
+job and media helpers.
 
 Connect a local model's image frames or video output to **Import media → Make edit
 → Render to video**, then open the same project in Studio to refine it.

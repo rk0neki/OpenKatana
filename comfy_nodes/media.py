@@ -90,7 +90,7 @@ class OpenKatanaImportMedia(bridge.OpenKatanaTool):
 
 
 class OpenKatanaMakeEdit(bridge.OpenKatanaTool):
-    DESCRIPTION = ('Build and save an edit from a connected media ID; optional extra media IDs are a JSON list. '
+    DESCRIPTION = ('Build and save an edit from a connected media ID; optional extra media IDs are a JSON list or one connected ID. '
                    'Choose beat-montage with music, or a silent preset. Existing timelines require replace_existing.')
     CATEGORY = 'OpenKatana/Media'
 
@@ -109,9 +109,10 @@ class OpenKatanaMakeEdit(bridge.OpenKatanaTool):
 
     def execute(self, project_id, media_id, preset, seconds, width, height, fps,
                 replace_existing=False, music_asset_id='', extra_media_ids='[]'):
-        extra = json.loads(extra_media_ids)
+        text = extra_media_ids.strip()
+        extra = json.loads(text) if text.startswith('[') else [text] if text else []  # a connected Import media ID
         if not isinstance(extra, list) or not all(isinstance(x, str) for x in extra):
-            raise ValueError('extra_media_ids must be a JSON list of media IDs')
+            raise ValueError('extra_media_ids must be a JSON list of media IDs or one media ID')
         state = bridge.invoke('call', tool='get_project', arguments={'project_id': project_id})
         if state['timeline'] is not None and not replace_existing:
             raise ValueError('Project already has an edit; choose another project or enable replace_existing')

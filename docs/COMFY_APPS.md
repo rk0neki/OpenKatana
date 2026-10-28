@@ -24,7 +24,7 @@ python scripts/install_comfy_nodes.py --comfy-root PATH_TO_COMFYUI
 and `output`. `--python PATH_TO_OPENKATANA_PYTHON` selects another installed
 OpenKatana environment; `--workspace PATH_TO_PROJECTS` selects an existing shared
 workspace. The default is `ComfyUI/output/OpenKatana`. The script links the node
-pack, writes `user/openkatana/config.json`, and installs five App workflows under
+pack, writes `user/openkatana/config.json`, and installs six App workflows under
 `user/default/workflows/OpenKatana`. It does not pip-install into ComfyUI or
 download dependencies. Existing edited Apps and differing configuration are
 preserved. Stop active work, restart ComfyUI once and refresh its interface.
@@ -47,7 +47,17 @@ installed, explicitly run `python -m playwright install chromium` with OpenKatan
 Python, then run the installer again. The renderer also discovers installed
 Playwright Chromium automatically; it never downloads a browser at render time.
 
-## The five Apps
+## The six Apps
+
+**Full workflow** puts every App below into one graph. One **Project ID** node feeds
+every OpenKatana node, in five groups: *Your project and Studio*, *Your media* (a
+video, music and a photo, each imported as a project asset), *Make the edit* (**Make
+edit → Render to video**, with the photo as an extra media ID), *3D starter* and
+*Every tool*. Its App form shows all of their inputs. Choose your files, keep
+`seconds` within the video and music length, and Run: it opens Studio, renders the
+edit, starts a 3D scene and returns the tool result together. Bypass (Ctrl+B) the
+music or photo loader and its import if you do not use one. Switch to the node graph
+to see or rewire the whole workflow. The five single-purpose Apps:
 
 1. **Open Studio:** choose a simple project ID and display name; Run creates or
    reopens it and starts a loopback Studio. Open the returned URL. Its setup data
