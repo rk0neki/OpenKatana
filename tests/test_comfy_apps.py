@@ -132,9 +132,11 @@ class ComfyAppsTests(unittest.TestCase):
                 self.assertEqual(widget, workflow['id'] + ':1:' + field)
 
     def check_full_workflow(self, workflow):
-        """Every App in one graph: real nodes, consistent links, one project ID for every OpenKatana node."""
+        """Every App in one graph: real nodes, consistent links, one project ID for every OpenKatana node,
+        and video, music and photo imports that reach the edit."""
         nodes = {n['id']: n for n in workflow['nodes']}
-        core = {'PrimitiveString': ['value'], 'LoadVideo': ['file'], 'PreviewAny': []}
+        core = {'PrimitiveString': ['value'], 'LoadVideo': ['file'], 'LoadAudio': ['audio'],
+                'LoadImage': ['image'], 'PreviewAny': []}
         # media.py needs torch, so its classes and fields are checked against its source text
         media_source = (ROOT / 'comfy_nodes/media.py').read_text(encoding='utf-8')
         media = {'OpenKatanaImportMedia': ['project_id', 'fps', 'rights'],
@@ -161,8 +163,21 @@ class ComfyAppsTests(unittest.TestCase):
             self.assertIsNotNone(slot['link'])
         kinds = [nodes[i]['type'] for i in sorted(nodes)]
         for kind in ('OpenKatanaWorkspace', 'OpenKatanaImportMedia', 'OpenKatanaMakeEdit',
-                     'OpenKatanaRenderVideo', 'OpenKatanaScene', 'OpenKatanaTool'):
+                     'OpenKatanaRenderVideo', 'OpenKatanaScene', 'OpenKatanaTool', 'LoadVideo', 'LoadAudio', 'LoadImage'):
             self.assertIn(kind, kinds)
+        def source(node, name):
+            link = next(s for s in node['inputs'] if s['name'] == name)['link']
+            return None if link is None else nodes[workflow['links'][link - 1][1]]['type']
+        edit = next(n for n in nodes.values() if n['type'] == 'OpenKatanaMakeEdit')
+        sources = {}
+        for node in nodes.values():
+            if node['type'] == 'OpenKatanaImportMedia':  # exactly one IMAGE or VIDEO source per import
+                self.assertEqual((source(node, 'images') is None) + (source(node, 'video') is None), 1)
+                sources[source(node, 'images') or source(node, 'video')] = node
+        self.assertEqual(source(sources['LoadVideo'], 'audio'), 'LoadAudio')
+        self.assertEqual(source(edit, 'media_id'), 'OpenKatanaImportMedia')
+        photo = next(s for s in edit['inputs'] if s['name'] == 'extra_media_ids')['link']
+        self.assertEqual(workflow['links'][photo - 1][1], sources['LoadImage']['id'])
         data = workflow['extra']['linearData']
         for widget, field in data['inputs']:
             graph, node_id, name = widget.rsplit(':', 2)

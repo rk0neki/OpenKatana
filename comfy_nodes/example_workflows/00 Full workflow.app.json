@@ -1,8 +1,8 @@
 {
   "id": "cfab03df-9ac1-529e-8346-03dffa1cec1c",
   "revision": 0,
-  "last_node_id": 11,
-  "last_link_id": 13,
+  "last_node_id": 14,
+  "last_link_id": 17,
   "nodes": [
     {
       "id": 1,
@@ -40,7 +40,8 @@
             3,
             4,
             5,
-            6
+            6,
+            17
           ]
         }
       ],
@@ -133,11 +134,11 @@
       "title": "2 · Your video",
       "pos": [
         60,
-        440
+        460
       ],
       "size": [
         340,
-        400
+        360
       ],
       "flags": {},
       "order": 3,
@@ -162,10 +163,10 @@
     {
       "id": 5,
       "type": "OpenKatanaImportMedia",
-      "title": "3 · Import into OpenKatana",
+      "title": "3 · Import video and music",
       "pos": [
         440,
-        440
+        460
       ],
       "size": [
         340,
@@ -188,7 +189,7 @@
         {
           "name": "audio",
           "type": "AUDIO",
-          "link": null
+          "link": 14
         },
         {
           "name": "project_id",
@@ -234,12 +235,12 @@
       "type": "OpenKatanaMakeEdit",
       "title": "4 · Make your edit",
       "pos": [
-        820,
-        440
+        840,
+        460
       ],
       "size": [
         340,
-        380
+        420
       ],
       "flags": {},
       "order": 5,
@@ -262,6 +263,14 @@
             "name": "project_id"
           },
           "link": 3
+        },
+        {
+          "name": "extra_media_ids",
+          "type": "STRING",
+          "widget": {
+            "name": "extra_media_ids"
+          },
+          "link": 16
         }
       ],
       "outputs": [
@@ -292,11 +301,11 @@
       "type": "OpenKatanaRenderVideo",
       "title": "5 · Finished video",
       "pos": [
-        1200,
-        440
+        1220,
+        460
       ],
       "size": [
-        400,
+        380,
         420
       ],
       "flags": {},
@@ -347,12 +356,12 @@
       "type": "OpenKatanaScene",
       "title": "6 · 3D starter",
       "pos": [
-        60,
-        960
+        1660,
+        460
       ],
       "size": [
         340,
-        260
+        300
       ],
       "flags": {},
       "order": 7,
@@ -393,8 +402,8 @@
       "type": "PreviewAny",
       "title": "3D result · OpenKatana",
       "pos": [
-        440,
-        960
+        1660,
+        820
       ],
       "size": [
         440,
@@ -427,8 +436,8 @@
       "type": "OpenKatanaTool",
       "title": "7 · Any of the 72 tools",
       "pos": [
-        940,
-        960
+        1340,
+        80
       ],
       "size": [
         340,
@@ -475,8 +484,8 @@
       "type": "PreviewAny",
       "title": "Tool result · OpenKatana",
       "pos": [
-        1320,
-        960
+        1720,
+        80
       ],
       "size": [
         440,
@@ -503,6 +512,146 @@
         "Node name for S&R": "PreviewAny"
       },
       "widgets_values": []
+    },
+    {
+      "id": 12,
+      "type": "LoadAudio",
+      "title": "2 · Your music",
+      "pos": [
+        60,
+        860
+      ],
+      "size": [
+        340,
+        130
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            14
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadAudio"
+      },
+      "widgets_values": [
+        "",
+        null,
+        ""
+      ]
+    },
+    {
+      "id": 13,
+      "type": "LoadImage",
+      "title": "2 · Your photo",
+      "pos": [
+        60,
+        1030
+      ],
+      "size": [
+        340,
+        400
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            15
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "",
+        "image"
+      ]
+    },
+    {
+      "id": 14,
+      "type": "OpenKatanaImportMedia",
+      "title": "3 · Import your photo",
+      "pos": [
+        440,
+        1030
+      ],
+      "size": [
+        340,
+        260
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 15
+        },
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": null
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": null
+        },
+        {
+          "name": "project_id",
+          "type": "STRING",
+          "widget": {
+            "name": "project_id"
+          },
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "name": "media_id",
+          "type": "STRING",
+          "links": [
+            16
+          ]
+        },
+        {
+          "name": "music_asset_id",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "result_json",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "OpenKatanaImportMedia"
+      },
+      "widgets_values": [
+        "my-film",
+        24,
+        "review_pending"
+      ]
     }
   ],
   "links": [
@@ -609,6 +758,38 @@
       11,
       0,
       "STRING"
+    ],
+    [
+      14,
+      12,
+      0,
+      5,
+      2,
+      "AUDIO"
+    ],
+    [
+      15,
+      13,
+      0,
+      14,
+      0,
+      "IMAGE"
+    ],
+    [
+      16,
+      14,
+      0,
+      6,
+      3,
+      "STRING"
+    ],
+    [
+      17,
+      1,
+      0,
+      14,
+      3,
+      "STRING"
     ]
   ],
   "groups": [
@@ -627,12 +808,12 @@
     },
     {
       "id": 2,
-      "title": "Video to edit",
+      "title": "Your media: video, music and photos",
       "bounding": [
         40,
-        380,
-        1580,
-        500
+        400,
+        760,
+        1080
       ],
       "color": "#8A8",
       "font_size": 24,
@@ -640,25 +821,38 @@
     },
     {
       "id": 3,
+      "title": "Make the edit",
+      "bounding": [
+        820,
+        400,
+        800,
+        500
+      ],
+      "color": "#88A",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 4,
       "title": "3D starter",
       "bounding": [
-        40,
-        900,
-        860,
-        340
+        1640,
+        400,
+        540,
+        720
       ],
       "color": "#a1309b",
       "font_size": 24,
       "flags": {}
     },
     {
-      "id": 4,
+      "id": 5,
       "title": "Every tool",
       "bounding": [
-        920,
-        900,
+        1320,
+        20,
         860,
-        340
+        360
       ],
       "color": "#b58b2a",
       "font_size": 24,
@@ -669,7 +863,7 @@
   "version": 0.4,
   "extra": {
     "ds": {
-      "scale": 0.7,
+      "scale": 0.65,
       "offset": [
         0,
         0
@@ -689,6 +883,14 @@
         [
           "cfab03df-9ac1-529e-8346-03dffa1cec1c:4:file",
           "file"
+        ],
+        [
+          "cfab03df-9ac1-529e-8346-03dffa1cec1c:12:audio",
+          "audio"
+        ],
+        [
+          "cfab03df-9ac1-529e-8346-03dffa1cec1c:13:image",
+          "image"
         ],
         [
           "cfab03df-9ac1-529e-8346-03dffa1cec1c:5:rights",
@@ -727,7 +929,7 @@
       ]
     },
     "openkatana": {
-      "description": "Every App in one graph. One Project ID feeds every node: open Studio for your agent, turn an uploaded video into an edit, start a 3D scene and call any tool. Keep seconds within the video length. Model weights are separate.",
+      "description": "Every App in one graph. One Project ID feeds every node: open Studio for your agent, import your video, music and a photo, build and render the edit, start a 3D scene and call any tool. Keep seconds within the video and music length. Bypass (Ctrl+B) the music or photo loader and its import if you do not use it. Model weights are separate.",
       "local_only": true
     }
   }
