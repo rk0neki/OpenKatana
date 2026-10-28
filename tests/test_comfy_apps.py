@@ -113,6 +113,9 @@ class ComfyAppsTests(unittest.TestCase):
         for name, workflow in templates().items():
             self.assertTrue(name.endswith('.app.json'))
             self.assertTrue(workflow['extra']['linearMode'])
+            if name.startswith('00 '):
+                self.check_full_workflow(workflow)
+                continue
             if name.startswith('05 '):
                 self.assertEqual(workflow['extra']['linearData']['outputs'], [4])
                 self.assertEqual([n['type'] for n in workflow['nodes']],
@@ -127,6 +130,52 @@ class ComfyAppsTests(unittest.TestCase):
             for widget, field in workflow['extra']['linearData']['inputs']:
                 self.assertIn(field, fields)
                 self.assertEqual(widget, workflow['id'] + ':1:' + field)
+
+    def check_full_workflow(self, workflow):
+        """Every App in one graph: real nodes, consistent links, one project ID for every OpenKatana node."""
+        nodes = {n['id']: n for n in workflow['nodes']}
+        core = {'PrimitiveString': ['value'], 'LoadVideo': ['file'], 'PreviewAny': []}
+        # media.py needs torch, so its classes and fields are checked against its source text
+        media_source = (ROOT / 'comfy_nodes/media.py').read_text(encoding='utf-8')
+        media = {'OpenKatanaImportMedia': ['project_id', 'fps', 'rights'],
+                 'OpenKatanaMakeEdit': ['project_id', 'preset', 'seconds', 'width', 'height', 'fps', 'replace_existing'],
+                 'OpenKatanaRenderVideo': ['project_id', 'preview_frames']}
+        for kind, fields in media.items():
+            self.assertIn('class ' + kind + '(', media_source)
+            for field in fields:
+                self.assertIn("'" + field + "'", media_source)
+        for node in nodes.values():
+            self.assertTrue(node['type'] in bridge.NODE_CLASS_MAPPINGS or node['type'] in core
+                            or node['type'] in media, node['type'])
+        for link_id, source, slot, target, target_slot, kind in workflow['links']:
+            self.assertIn(link_id, nodes[source]['outputs'][slot]['links'])
+            self.assertEqual(nodes[target]['inputs'][target_slot]['link'], link_id)
+            self.assertEqual(nodes[source]['outputs'][slot]['type'], kind)
+        project = next(n for n in nodes.values() if n['type'] == 'PrimitiveString')
+        fed = {workflow['links'][i - 1][3] for i in project['outputs'][0]['links']}
+        katana = {i for i, n in nodes.items() if n['type'] in bridge.NODE_CLASS_MAPPINGS or n['type'] in media}
+        self.assertEqual(fed, katana)
+        for i in katana:
+            slot = next(s for s in nodes[i]['inputs'] if s['name'] == 'project_id')
+            self.assertEqual(slot['widget'], {'name': 'project_id'})
+            self.assertIsNotNone(slot['link'])
+        kinds = [nodes[i]['type'] for i in sorted(nodes)]
+        for kind in ('OpenKatanaWorkspace', 'OpenKatanaImportMedia', 'OpenKatanaMakeEdit',
+                     'OpenKatanaRenderVideo', 'OpenKatanaScene', 'OpenKatanaTool'):
+            self.assertIn(kind, kinds)
+        data = workflow['extra']['linearData']
+        for widget, field in data['inputs']:
+            graph, node_id, name = widget.rsplit(':', 2)
+            self.assertEqual(graph, workflow['id'])
+            self.assertEqual(name, field)
+            node = nodes[int(node_id)]
+            fields = (core.get(node['type']) or media.get(node['type'])
+                      or bridge.NODE_CLASS_MAPPINGS[node['type']].INPUT_TYPES()['required'])
+            self.assertIn(field, fields)
+        self.assertTrue(set(data['outputs']) <= set(nodes))
+        self.assertIn(next(i for i, n in nodes.items() if n['type'] == 'OpenKatanaRenderVideo'), data['outputs'])
+        for group in workflow['groups']:
+            self.assertEqual(len(group['bounding']), 4)
 
     def test_text_result_is_a_downloadable_app_output(self):
         import types

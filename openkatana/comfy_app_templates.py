@@ -24,6 +24,7 @@ def app_workflow(name, node_type, fields, values, description):
 
 def templates():
     return {
+        '00 Full workflow.app.json': full_workflow(),
         '01 Open Studio.app.json': app_workflow('OpenKatana · Open Studio', 'OpenKatanaWorkspace',
             ['project_id', 'name'], ['my-film', 'My film'],
             'Create or reopen your project, then follow the Studio link. Your agent uses the same project through CLI/MCP.'),
@@ -71,4 +72,66 @@ def video_edit_workflow():
             [graph_id+':3:preset','preset'], [graph_id+':3:seconds','seconds'],
             [graph_id+':3:replace_existing','replace_existing'], [graph_id+':4:project_id','project_id']], 'outputs': [4]},
             'openkatana': {'description': 'Set all three project IDs alike. Upload a video or replace LoadVideo with a model VIDEO output. IMAGE batches connect to Import media images. Model weights are separate.',
+                          'local_only': True}}}
+
+
+def full_workflow():
+    """Every App in one graph. One Project ID feeds every OpenKatana node, so Studio, the edit,
+    the 3D starter and the tool all work on the same project."""
+    graph_id = str(uuid.uuid5(uuid.NAMESPACE_URL, 'openkatana/app/full-workflow'))
+    def node(i, kind, title, pos, size, inputs, outputs, widgets):
+        return {'id': i, 'type': kind, 'title': title, 'pos': pos, 'size': size, 'flags': {},
+                'order': i-1, 'mode': 0, 'inputs': inputs, 'outputs': outputs,
+                'properties': {'Node name for S&R': kind}, 'widgets_values': widgets}
+    def inp(name, kind, link): return {'name': name, 'type': kind, 'link': link}
+    def project(link): return {'name': 'project_id', 'type': 'STRING', 'widget': {'name': 'project_id'}, 'link': link}
+    def out(name, kind, links): return {'name': name, 'type': kind, 'links': links}
+    def preview(i, title, pos, link):
+        return node(i, 'PreviewAny', title, pos, [440, 260], [inp('source', '*', link)], [out('STRING', 'STRING', None)], [])
+    def group(i, title, bounding, color):
+        return {'id': i, 'title': title, 'bounding': bounding, 'color': color, 'font_size': 24, 'flags': {}}
+    return {'id': graph_id, 'revision': 0, 'last_node_id': 11, 'last_link_id': 13,
+        'nodes': [
+            node(1, 'PrimitiveString', 'Project ID', [60, 160], [300, 90],
+                 [{'name': 'value', 'type': 'STRING', 'widget': {'name': 'value'}, 'link': None, 'label': 'project_id'}],
+                 [out('STRING', 'STRING', [1, 2, 3, 4, 5, 6])], ['my-film']),
+            node(2, 'OpenKatanaWorkspace', '1 · Open Studio', [420, 80], [360, 150], [project(1)],
+                 [out('result_json', 'STRING', [7])], ['my-film', 'My film']),
+            preview(3, 'Studio link · OpenKatana', [840, 80], 7),
+            node(4, 'LoadVideo', '2 · Your video', [60, 440], [340, 400], [], [out('VIDEO', 'VIDEO', [8])], ['']),
+            node(5, 'OpenKatanaImportMedia', '3 · Import into OpenKatana', [440, 440], [340, 260],
+                 [inp('images', 'IMAGE', None), inp('video', 'VIDEO', 8), inp('audio', 'AUDIO', None), project(2)],
+                 [out('media_id', 'STRING', [9]), out('music_asset_id', 'STRING', [10]), out('result_json', 'STRING', None)],
+                 ['my-film', 24, 'review_pending']),
+            node(6, 'OpenKatanaMakeEdit', '4 · Make your edit', [820, 440], [340, 380],
+                 [inp('media_id', 'STRING', 9), inp('music_asset_id', 'STRING', 10), project(3)],
+                 [out('result_json', 'STRING', [11])],
+                 ['my-film', 'ramp-freeze', 5, 1280, 720, 24, False, '[]']),
+            node(7, 'OpenKatanaRenderVideo', '5 · Finished video', [1200, 440], [400, 420],
+                 [inp('after', 'STRING', 11), project(4)],
+                 [out('video', 'VIDEO', None), out('preview_frames', 'IMAGE', None), out('result_json', 'STRING', None)],
+                 ['my-film', 16]),
+            node(8, 'OpenKatanaScene', '6 · 3D starter', [60, 960], [340, 260], [project(5)],
+                 [out('result_json', 'STRING', [12])], ['my-film', 'product', 640, 360, 60, 30]),
+            preview(9, '3D result · OpenKatana', [440, 960], 12),
+            node(10, 'OpenKatanaTool', '7 · Any of the 72 tools', [940, 960], [340, 220],
+                 [inp('after', 'STRING', None), project(6)],
+                 [out('result_json', 'STRING', [13])], ['get_capabilities', 'my-film', '{}']),
+            preview(11, 'Tool result · OpenKatana', [1320, 960], 13)],
+        'links': [[1, 1, 0, 2, 0, 'STRING'], [2, 1, 0, 5, 3, 'STRING'], [3, 1, 0, 6, 2, 'STRING'],
+                  [4, 1, 0, 7, 1, 'STRING'], [5, 1, 0, 8, 0, 'STRING'], [6, 1, 0, 10, 1, 'STRING'],
+                  [7, 2, 0, 3, 0, 'STRING'], [8, 4, 0, 5, 1, 'VIDEO'], [9, 5, 0, 6, 0, 'STRING'],
+                  [10, 5, 1, 6, 1, 'STRING'], [11, 6, 0, 7, 0, 'STRING'], [12, 8, 0, 9, 0, 'STRING'],
+                  [13, 10, 0, 11, 0, 'STRING']],
+        'groups': [group(1, 'Your project and Studio (your agent works here)', [40, 20, 1260, 360], '#3f789e'),
+                   group(2, 'Video to edit', [40, 380, 1580, 500], '#8A8'),
+                   group(3, '3D starter', [40, 900, 860, 340], '#a1309b'),
+                   group(4, 'Every tool', [920, 900, 860, 340], '#b58b2a')],
+        'config': {}, 'version': .4,
+        'extra': {'ds': {'scale': .7, 'offset': [0, 0]}, 'linearMode': True, 'linearData': {'inputs': [
+            [graph_id+':1:value', 'value'], [graph_id+':2:name', 'name'], [graph_id+':4:file', 'file'],
+            [graph_id+':5:rights', 'rights'], [graph_id+':6:preset', 'preset'], [graph_id+':6:seconds', 'seconds'],
+            [graph_id+':6:replace_existing', 'replace_existing'], [graph_id+':8:template', 'template'],
+            [graph_id+':10:tool', 'tool'], [graph_id+':10:arguments', 'arguments']], 'outputs': [7, 3, 9, 11]},
+            'openkatana': {'description': 'Every App in one graph. One Project ID feeds every node: open Studio for your agent, turn an uploaded video into an edit, start a 3D scene and call any tool. Keep seconds within the video length. Model weights are separate.',
                           'local_only': True}}}

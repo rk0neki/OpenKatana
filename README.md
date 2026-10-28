@@ -117,9 +117,10 @@ This renders an eight-second edit from bundled images and original music.
 
 ## Use it in ComfyUI
 
-OpenKatana includes five saved Apps: **Open Studio**, **All tools**, **Make a 3D
-scene**, **Background job** and **Video to edit**. The integration offers 82 nodes
-for its tools plus project, job and media helpers.
+OpenKatana includes six saved Apps: **Full workflow**, which puts every App in one
+graph, plus **Open Studio**, **All tools**, **Make a 3D scene**, **Background job**
+and **Video to edit**. The integration offers 82 nodes for its tools plus project,
+job and media helpers.
 
 Connect a local model's image frames or video output to **Import media → Make edit
 → Render to video**, then open the same project in Studio to refine it.
