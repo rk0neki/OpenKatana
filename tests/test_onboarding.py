@@ -33,11 +33,17 @@ class OnboardingTests(unittest.TestCase):
                 'ffmpeg':'ffmpeg','ffprobe':'ffprobe','chrome':'chrome','tools':['get_project']}):
                 first=setup_project(root,'My film');before=state(root)
                 skill=Path(first['skill']);self.assertTrue(skill.is_file())
+                preset=Path(first['optional_preset'])
+                self.assertEqual(preset.read_text(encoding='utf-8'),
+                                 (Path(first['resources'])/'docs/MUST-USE-EFFECTS.md').read_text(encoding='utf-8'))
+                preset.write_text('My preferred subtle animation',encoding='utf-8')
                 skill.write_text('My project-specific instructions',encoding='utf-8')
                 second=setup_project(root,'Do not rename')
                 self.assertEqual(state(root),before)
                 self.assertEqual(skill.read_text(),'My project-specific instructions')
                 self.assertEqual(second['skill_status'],'existing skill preserved')
+                self.assertEqual(second['preset_status'],'existing preset preserved')
+                self.assertEqual(preset.read_text(),'My preferred subtle animation')
                 self.assertTrue(second['core_runtime_ready'])
                 self.assertFalse(second['agent_connected'])
                 self.assertEqual(Path(second['workspace']),root.parent.resolve())

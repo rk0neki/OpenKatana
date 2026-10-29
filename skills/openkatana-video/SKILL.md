@@ -11,38 +11,26 @@ project. Resume the reported project using its Python environment; do not create
 a new project for every session. No account or platform-specific connector is
 required. CLI is the default; MCP is optional.
 
-## Before any edit: must read
+## Creative direction
 
-Read `docs/MUST-USE-EFFECTS.md` in the OpenKatana checkout before planning an edit. It
-is required reading. Its rules come from the user and apply to every edit:
+Follow the user's brief. Choose pacing, effects, fonts, sound, easing and slow
+motion to suit that brief; a quiet edit can use none of the high-energy effects.
+Inspect references at their native frame rate or a suitable sampling rate,
+increasing detail around fast motion and cuts. Duplicating frames to 60 fps does
+not recover motion absent from the source. Ask for missing assets only when they
+matter to the requested result. Respect accessibility and reduced-motion needs.
 
-1. **Analyse every reference video at 60 fps**, never at 24. This captures the full
-   motion and shows what each scene says and how the edit lands it.
-2. **Then ask the user for what the edit needs**, alongside their photos and videos:
-   fonts, textures, sounds, effects, overlays, stock and brand assets. Do not
-   substitute generated stand-ins for material the user can supply.
-3. **Work as in After Effects.**
-   - Use eased keyframes (easy ease) on every animated value, speed ramps, and
-     optical-flow slow motion.
-   - Use the core eight effects:
-     1. turbulence and displacement
-     2. glow and deep glow, placed with care, especially around buttons
-     3. 3D camera and object blur
-     4. opacity for every element, varying by scene
-     5. colour invert
-     6. textures, for depth
-     7. noise, grain and colour grading
-     8. flicker
+The **high-energy launch-film preset** is optional. Use it only when the user
+selects it, for example: "Use the high-energy launch-film preset for this edit."
+Then read `references/high-energy.md` beside this installed skill, or
+`docs/MUST-USE-EFFECTS.md` in the checkout. Treat its techniques as a palette;
+the user's brief takes precedence, and no effect or sampling rate is compulsory.
+Default editing needs no preset selection or extra confirmation.
 
-The same file lists what else to watch:
-- the story and the shot order;
-- the soundtrack before the picture, with cuts on beats;
-- few words;
-- no stretched or repeated footage;
-- one brand colour;
-- sharp interfaces;
-- real material over generated material;
-- licences and the final encode.
+With a wheel installation, guides and examples live in
+`<Python environment>/share/openkatana/`; setup reports this as `resources`.
+Use `openkatana setup --project projects/my-film` with the installed interpreter.
+There is no source checkout or `scripts/setup.py` requirement for this route.
 
 When the user works inside **ComfyUI Apps**, read `docs/COMFY_APPS.md` (or
 `read_guide(topic="comfy-apps")`). On first launch, open **00 Full workflow**

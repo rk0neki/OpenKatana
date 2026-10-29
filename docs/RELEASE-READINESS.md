@@ -1,6 +1,6 @@
 # Release readiness
 
-**0.1.0 is prepared for release; publication is a separate step.** The package includes the local Studio,
+**0.1.1 targets an early-access local release; publication is a separate step.** The package includes the local Studio,
 72 shared MCP/CLI operations, agent skill, editable rendering templates and
 licensed browser/font/model assets. FFmpeg, Chromium, optional Blender and
 generative weights are separate installations.

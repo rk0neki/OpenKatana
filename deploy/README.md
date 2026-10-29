@@ -17,7 +17,7 @@ Extract a verified source release into `/opt/openkatana`:
 cd /opt/openkatana
 python3 -m venv .venv
 .venv/bin/python -m pip install '.[hosted,vision,text]'
-docker build -f deploy/Dockerfile.worker -t openkatana-worker:0.1.0 .
+docker build -f deploy/Dockerfile.worker -t openkatana-worker:0.1.1 .
 ```
 
 The image installs Debian Chromium/FFmpeg and the complete official Blender

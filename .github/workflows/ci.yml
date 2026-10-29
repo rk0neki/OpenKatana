@@ -48,6 +48,9 @@ jobs:
         run: python scripts/test_studio_live.py --out work/studio-check
       - name: Build distributions
         run: python -m build
+      - name: Install and exercise the wheel outside the checkout
+        shell: bash
+        run: python scripts/test_wheel_install.py --wheel dist/openkatana-$(python -c 'import openkatana; print(openkatana.__version__)')-py3-none-any.whl --out "${{ runner.temp }}/openkatana-wheel-check"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -56,4 +59,7 @@ jobs:
             work/release-features/validation.json
             work/studio-check/result.json
             work/studio-check/*.png
+            ${{ runner.temp }}/openkatana-wheel-check/result.json
+            ${{ runner.temp }}/openkatana-wheel-check/logs/*
+            ${{ runner.temp }}/openkatana-wheel-check/studio/*.png
             dist/*

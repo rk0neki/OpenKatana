@@ -21,7 +21,10 @@ def setup_project(directory, name='My first film'):
     root=Path(directory).expanduser().resolve()
     if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{0,79}',root.name):
         raise ValueError('Choose a project folder name with letters, digits, hyphens or underscores.')
-    skill=skill_source().read_text(encoding='utf-8')
+    source=skill_source()
+    resources=source.parents[2]
+    skill=source.read_text(encoding='utf-8')
+    preset=(resources/'docs/MUST-USE-EFFECTS.md').read_text(encoding='utf-8')
     if (root/'project.json').is_file():
         projects.state(root)
     elif root.exists():
@@ -35,6 +38,12 @@ def setup_project(directory, name='My first film'):
         skill_status='current' if target.read_text(encoding='utf-8')==skill else 'existing skill preserved'
     else:
         target.write_text(skill,encoding='utf-8');skill_status='installed'
+    reference=target.parent/'references/high-energy.md'
+    reference.parent.mkdir(parents=True,exist_ok=True)
+    if reference.exists():
+        preset_status='current' if reference.read_text(encoding='utf-8')==preset else 'existing preset preserved'
+    else:
+        reference.write_text(preset,encoding='utf-8');preset_status='installed'
     arguments=root/'.openkatana/agent/project.json'
     arguments.parent.mkdir(parents=True,exist_ok=True)
     if not arguments.exists():write_json(arguments,{'project_id':root.name})
@@ -42,6 +51,7 @@ def setup_project(directory, name='My first film'):
     missing=[name for name in ('ffmpeg','ffprobe','chrome') if not capabilities[name]]
     return {'project':str(root),'workspace':str(root.parent),'project_id':root.name,
             'skill':str(target),'skill_status':skill_status,'project_arguments':str(arguments),
+            'resources':str(resources),'optional_preset':str(reference),'preset_status':preset_status,
             'tool_count':len(capabilities['tools']),'missing_runtime':missing,
             'core_runtime_ready':not missing,'agent_connected':False,
             'next_commands':[

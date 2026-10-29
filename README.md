@@ -12,7 +12,7 @@ with the Comfy Developer Platform for
 independent, open-source video editor for your AI agent: cuts, transitions, motion,
 typography and music in one shared project, all made with code. Built with the
 Comfy Developer Platform, with local open-weights workflows and optional authorized
-API models. **Version 0.1.0.**
+API models. **Version 0.1.1 — early access.**
 
 ![OpenKatana capabilities: 3D and morphs, type and graphics, editing and sound](docs/assets/openkatana-capabilities.png)
 

@@ -62,13 +62,11 @@ Open the project in your agent and tell it to read the installed
 `.agents/skills/openkatana-video/SKILL.md`. Agents with project-local skill
 discovery can find it automatically; others can read that file explicitly.
 
-Before it plans any edit, the agent must also read
-[MUST-USE-EFFECTS.md](MUST-USE-EFFECTS.md) in this checkout. The rules there come
-from the user:
-- analyse reference videos at 60 fps;
-- then ask the user for the fonts, textures, sounds and effects the edit needs;
-- build as in After Effects, with eased keyframes, slow motion and the core eight
-  effects.
+Creative choices follow your brief by default. The
+[high-energy launch-film preset](MUST-USE-EFFECTS.md) is optional: ask your agent
+to use it when that style fits. Setup places a copy beside the project skill in
+`references/high-energy.md`. Other edits do not need its effects or slow motion.
+Existing customized skill and preset files are preserved on repeat setup.
 Use the environment and workspace reported by setup. Studio's **Agent setup**
 dialog contains the same portable instructions for everyone.
 
@@ -77,3 +75,32 @@ prepares just the project and skill. For manual source installation, create a
 virtual environment and run `python -m pip install -e ".[text,vision]"` first.
 MCP is optional: install `.[mcp]` and see [the agent guide](AGENT_INTERFACE.md).
 CLI calls do not need MCP.
+
+## Install a release wheel without a checkout
+
+Download the wheel from the GitHub release. In an empty working folder, create
+an environment with `python -m venv .venv`, then activate it using the platform
+commands above. Run these commands, substituting the downloaded wheel's actual path:
+
+```sh
+python -m pip install "./openkatana-0.1.1-py3-none-any.whl[text,vision]"
+python -m openkatana doctor
+python -m openkatana setup --project projects/my-film
+python -m openkatana studio projects/my-film
+```
+
+FFmpeg/ffprobe and a browser remain separate runtime requirements; the wheel installs no models.
+Add the `mcp` extra only if your agent needs MCP.
+
+Find the installed guides, optional preset, Comfy installer and complete sample
+media with:
+
+```sh
+python -c "import pathlib,sys; print(pathlib.Path(sys.prefix)/'share/openkatana')"
+```
+
+Run `examples/quick-edit/render.py` or `examples/comfy/render_ltx_edit.py` under
+that printed directory with the environment's Python. Both use bundled media
+and make no model calls. The Comfy installer is `scripts/install_comfy_nodes.py`
+under that same directory; pass `--comfy-root` only for the ComfyUI installation
+you intend to connect. The Git checkout bootstrap is not needed for a wheel.
