@@ -1,0 +1,6 @@
+# Development-only files and large README demonstrations.
+# Keep deploy/: pyproject.toml explicitly includes it in the editor package.
+tests/
+.github/
+docs/assets/*.mp4
+docs/assets/*.gif
