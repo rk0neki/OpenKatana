@@ -11,21 +11,29 @@ project. Resume the reported project using its Python environment; do not create
 a new project for every session. No account or platform-specific connector is
 required. CLI is the default; MCP is optional.
 
-## Creative direction
+## Know your toolbox, then follow the brief
 
-Follow the user's brief. Choose pacing, effects, fonts, sound, easing and slow
-motion to suit that brief; a quiet edit can use none of the high-energy effects.
-Inspect references at their native frame rate or a suitable sampling rate,
-increasing detail around fast motion and cuts. Duplicating frames to 60 fps does
-not recover motion absent from the source. Ask for missing assets only when they
-matter to the requested result. Respect accessibility and reduced-motion needs.
+Before planning an edit, learn everything you can use:
 
-The **high-energy launch-film preset** is optional. Use it only when the user
-selects it, for example: "Use the high-energy launch-film preset for this edit."
-Then read `references/high-energy.md` beside this installed skill, or
-`docs/MUST-USE-EFFECTS.md` in the checkout. Treat its techniques as a palette;
-the user's brief takes precedence, and no effect or sampling rate is compulsory.
-Default editing needs no preset selection or extra confirmation.
+- `get_capabilities` (or `openkatana tools`) lists the installed tools.
+- The **effects playbook**, `references/effects-playbook.md` beside this skill
+  (or `docs/EFFECTS-PLAYBOOK.md` in the checkout), covers the full palette:
+  eased keyframes, speed ramps and optical-flow slow motion, camera moves,
+  turbulence and displacement, glow, 3D camera and object blur, opacity,
+  colour invert, textures, grain and grading, flicker, text and interface
+  scenes, with how a real launch film used each one.
+- The `timeline`, `composition`, `scene3d`, `webgl` and `animation` guides give
+  the exact fields.
+
+Then follow the user's brief. Choose pacing, effects, fonts, sound, easing and
+slow motion to suit it; nothing in the playbook is compulsory, and a quiet edit
+can use none of the high-energy effects. When the user asks for a high-energy,
+aura-farm or launch-film edit, use the playbook's launch-film style as the
+reference. Inspect references at their native frame rate or a suitable sampling
+rate, increasing detail around fast motion and cuts. Duplicating frames to 60 fps
+does not recover motion absent from the source. Ask for missing assets only when
+they matter to the requested result. Respect accessibility and reduced-motion
+needs.
 
 With a wheel installation, guides and examples live in
 `<Python environment>/share/openkatana/`; setup reports this as `resources`.

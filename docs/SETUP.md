@@ -62,11 +62,12 @@ Open the project in your agent and tell it to read the installed
 `.agents/skills/openkatana-video/SKILL.md`. Agents with project-local skill
 discovery can find it automatically; others can read that file explicitly.
 
-Creative choices follow your brief by default. The
-[high-energy launch-film preset](MUST-USE-EFFECTS.md) is optional: ask your agent
-to use it when that style fits. Setup places a copy beside the project skill in
-`references/high-energy.md`. Other edits do not need its effects or slow motion.
-Existing customized skill and preset files are preserved on repeat setup.
+Before planning, your agent reads the [effects playbook](EFFECTS-PLAYBOOK.md) so it
+knows every effect and technique OpenKatana offers. Creative choices still follow
+your brief; nothing in it is compulsory. Ask for a high-energy edit to get the
+playbook's full launch-film style. Setup places a copy beside the project skill in
+`references/effects-playbook.md`. Existing customized skill and playbook files are
+preserved on repeat setup.
 Use the environment and workspace reported by setup. Studio's **Agent setup**
 dialog contains the same portable instructions for everyone.
 

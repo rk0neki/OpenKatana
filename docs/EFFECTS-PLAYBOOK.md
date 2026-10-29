@@ -1,19 +1,23 @@
-# Optional high-energy launch-film preset
+# Effects playbook
 
-This is an opt-in creative reference, not OpenKatana's default editing policy.
-Select it by asking your agent to "use the high-energy launch-film preset."
-The historical filename is retained for existing links.
+Everything OpenKatana can do to make an edit feel finished: motion and camera,
+light, texture, colour, text and graphics, and interface scenes, with how a
+78-second launch film used each technique. Agents read this before planning an
+edit so they know every option they have.
 
-These notes came from a specific 78-second launch edit. All imperatives in the
-reference below describe that project's style, not requirements for every user.
-Choose only techniques that serve the current brief. The user's instructions,
-source frame rate and accessibility preferences take precedence. Slow motion,
-flicker, inverted colours and the full effects palette are always optional.
+None of it is compulsory. Choose what serves the user's brief, the source
+material and the user's accessibility preferences. A quiet edit may use almost
+none of it; a high-energy edit may use all of it. The user's instructions take
+precedence over anything here.
+
+The **high-energy launch-film style** is one way to combine everything below.
+Use the whole style when the user asks for a high-energy, aura-farm or
+launch-film edit, or says "use the high-energy launch-film preset."
 
 Frame numbers in the reference refer to the original 24 fps edit. Pixel values
 refer to a 1920×1080 canvas; brightness values use a 0–255 scale.
 
-## Suggested workflow when this preset is selected
+## Suggested workflow for a high-energy edit
 
 ### 1. Inspect the reference at an appropriate rate
 

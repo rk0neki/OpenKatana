@@ -28,7 +28,7 @@ as part of normal editing. Record receipts and review actual output; publication
 and human approval must not be inferred from a passing technical check.
 
 When an agent uses OpenKatana to make an edit, rather than to develop it, it follows
-`skills/openkatana-video/SKILL.md`. Follow the user's brief, source timing and
-accessibility preferences. `docs/MUST-USE-EFFECTS.md` is an optional high-energy
-launch-film preset, used only when the user selects it. Its effects, slow motion
-and reference sampling choices are not requirements for other edits.
+`skills/openkatana-video/SKILL.md` and reads `docs/EFFECTS-PLAYBOOK.md` to know
+every effect and technique OpenKatana offers. It then follows the user's brief,
+source timing and accessibility preferences; nothing in the playbook is
+compulsory.

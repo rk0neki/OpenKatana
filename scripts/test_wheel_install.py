@@ -56,7 +56,7 @@ def main():
             'assert pathlib.Path(openkatana.__file__).resolve().is_relative_to(pathlib.Path(sys.prefix).resolve()); '
             'print(json.dumps(dict(version=openkatana.__version__, module=openkatana.__file__, prefix=sys.prefix)))']))
         share = Path(identity['prefix']) / 'share/openkatana'
-        required = ['docs/MUST-USE-EFFECTS.md', 'docs/SETUP.md',
+        required = ['docs/EFFECTS-PLAYBOOK.md', 'docs/SETUP.md',
                     'skills/openkatana-video/SKILL.md', 'scripts/install_comfy_nodes.py']
         for folder in ('examples', 'docs/assets', 'comfy_nodes'):
             required.extend(p.relative_to(ROOT).as_posix() for p in (ROOT / folder).rglob('*')
@@ -72,7 +72,7 @@ def main():
                                        '--project', out / 'projects/first-film']))
         if Path(setup['resources']).resolve() != share.resolve():
             raise AssertionError('Setup used source checkout resources')
-        if Path(setup['optional_preset']).read_text(encoding='utf-8') != (share / 'docs/MUST-USE-EFFECTS.md').read_text(encoding='utf-8'):
+        if Path(setup['effects_playbook']).read_text(encoding='utf-8') != (share / 'docs/EFFECTS-PLAYBOOK.md').read_text(encoding='utf-8'):
             raise AssertionError('Project preset missing or different')
         run('quick-edit', [python, '-I', share / 'examples/quick-edit/render.py',
                            '--width', '320', '--height', '180'])

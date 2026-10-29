@@ -1,9 +1,12 @@
 # OpenKatana 0.1.1 — early access
 
-- Wheels include the optional creative preset, complete Comfy example script,
+- Wheels include the effects playbook, complete Comfy example script,
   source media and credits, README visuals, and Comfy installer.
-- Setup installs the optional preset beside the project skill and preserves
-  customized files. Creative choices follow the user brief by default.
+- Setup installs the effects playbook beside the project skill and preserves
+  customized files. Agents read it to know the full palette of effects;
+  creative choices follow the user's brief and nothing in it is compulsory.
+- The README opens with the competition demo, and the ComfyUI section and the
+  node installer point new users to the 00 Full workflow App.
 - A clean-wheel check creates a fresh environment, verifies installed resources,
   renders both bundled examples and exercises Studio outside the source checkout.
 - Competition hosting estimates distinguish a ten-reviewer CPU demo from optional
