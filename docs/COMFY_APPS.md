@@ -47,6 +47,43 @@ installed, explicitly run `python -m playwright install chromium` with OpenKatan
 Python, then run the installer again. The renderer also discovers installed
 Playwright Chromium automatically; it never downloads a browser at render time.
 
+## Comfy Registry and Manager
+
+The [Registry listing](https://registry.comfy.org/nodes/openkatana) is
+**OpenKatana**, node ID `openkatana`, publisher `rk0neki`.
+
+1. In Manager, search for OpenKatana and select an available version. A newly
+   uploaded version may still be pending Registry review; wait for availability
+   or use the source installation above if Manager cannot resolve it.
+2. Install and restart ComfyUI. The nodes load, but the editor still needs its
+   own environment. From `custom_nodes/openkatana`, run `python scripts/setup.py`
+   with Python 3.11 or newer. FFmpeg and Chrome/Chromium are still required.
+3. With the Python interpreter reported by setup, run
+   `scripts/install_comfy_nodes.py --comfy-root PATH_TO_COMFYUI`.
+   This configures the editor and installs the six Apps. It detects the Registry
+   root install and does not add a second node link.
+4. Restart ComfyUI. Open **Apps → OpenKatana → 00 Full workflow**, then Run.
+   Empty media slots are skipped; Studio becomes available through **Open Studio**.
+
+Use a separate ComfyUI instance if you already have an OpenKatana development
+link. Loading the Registry copy beside that link would register the same nodes
+twice. Setup preserves differing existing configuration rather than overwriting it.
+
+### Verified release installation
+
+On 2026-10-29, Manager installed the explicitly selected Registry version `0.1.1`
+into an empty ComfyUI data directory on Windows with ComfyUI 0.18.2. This reused
+the installed ComfyUI runtime and provisioned a fresh OpenKatana editor environment
+from the downloaded package. All 85 nodes loaded; missing configuration produced
+setup guidance; all six Apps were installed. The Full workflow ran with empty
+media and Studio opened in the browser. A separate typed-media test rendered
+video with audio, returned preview frames and successfully re-imported both video
+and audio. No models or paid services were used.
+
+At that verification time, the Registry API still marked `0.1.1` pending.
+The public listing and pinned-version Manager installation were verified;
+installation by the default/latest version remains unverified until review clears.
+
 ## The six Apps
 
 **Full workflow** puts every App below into one graph. One **Project ID** node feeds
