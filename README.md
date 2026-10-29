@@ -4,7 +4,9 @@
 
 # OpenKatana
 
-**Not a video generator. A real editing engine your AI agent drives: your photos, footage and music in, a finished edit out, made with code.**
+An independent, open-source **editing engine your AI agent drives: your photos, footage and music in, a finished edit out, made with code.** Inspired by Higgsfield's Katana, built with the Comfy Developer Platform for [#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield/).
+
+OpenKatana is an independent, open-source video editor for your AI agent: cuts, transitions, motion, typography and music in one shared project, all made with code. Built with the Comfy Developer Platform, with local open-weights workflows and optional authorized API models. **Version 0.1.1**
 
 [![Comfy Registry](https://img.shields.io/badge/Comfy_Registry-OpenKatana-00A67E)](https://registry.comfy.org/nodes/openkatana)
 [![Release v0.1.1](https://img.shields.io/badge/release-v0.1.1-blue)](https://github.com/rk0neki/OpenKatana/releases/tag/v0.1.1)
@@ -13,52 +15,18 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](docs/SETUP.md)
 [![Demo](https://img.shields.io/badge/%E2%96%B6-Demo-red)](https://youtu.be/sZys4qLAprw)
 
-An independent, open-source video editor inspired by Higgsfield's Katana, built
-with the Comfy Developer Platform for
-[#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield/).
-**Version 0.1.1 — early access.**
-
 [![Finished Koji anime edit made with OpenKatana: cuts, effects and motion](docs/assets/koji-edit.gif)](docs/assets/koji-edit.mp4)
 
 **[Watch the anime edit with sound](docs/assets/koji-edit.mp4)** — the finale from the OpenKatana launch film.
 Source animation: [“Koji” by Ammonite & Zean](https://www.youtube.com/watch?v=61zI4eE92xM) (CC BY); edited with OpenKatana.
 
-## Made with OpenKatana
+## See it in motion: MOTIF
 
-| MOTIF | Quick-edit · One home | LTX-2.5 → edit |
-| :---: | :---: | :---: |
-| [<img src="docs/assets/motif-preview.gif" alt="MOTIF: procedural product film" width="280">](docs/assets/motif-1080p60.mp4) | [<img src="docs/assets/quick-edit.gif" alt="Quick-edit: NASA imagery cut to original music" width="280">](examples/quick-edit/README.md) | [<img src="docs/assets/ltx25-edit.gif" alt="LTX-2.5 footage with speed ramp, freeze and typography" width="280">](examples/comfy/README.md) |
-| A 24-second product film: Blender 3D, finished in OpenKatana. | Photos, footage, titles and original music in an eight-second edit. | Generated footage, locally edited with speed ramp, freeze, type and audio. |
-| [Watch 1080p/60fps with sound](docs/assets/motif-1080p60.mp4) | [Reproduce this edit](#reproduce-the-example-edits) | [Reproduce this edit](#reproduce-the-example-edits) |
+[![Eight-second preview of MOTIF, made with OpenKatana and Blender; click for the full 24-second MP4](docs/assets/motif-preview.gif)](docs/assets/motif-1080p60.mp4)
 
-MOTIF used Blender for its procedural 3D and OpenKatana for assembly and finishing;
-no video-generation model was used. [Film and preview credits](docs/assets/readme-visuals.json).
+**[Watch or download MOTIF — 1080p, 60 fps, with sound](docs/assets/motif-1080p60.mp4)**
 
-**[▶ Watch the one-minute workflow demo on YouTube](https://youtu.be/sZys4qLAprw)**:
-open the Full workflow in ComfyUI, run it to start Studio, drop in your videos,
-photos and audio, then use **Copy brief for your agent** and send it to your agent.
-
-<details>
-<summary id="reproduce-the-example-edits">Reproduce the example edits</summary>
-
-After setup, run from the repository using OpenKatana's Python environment:
-
-**Quick-edit:**
-
-```sh
-python examples/quick-edit/render.py
-```
-
-**LTX-2.5 → edit:**
-
-```sh
-python examples/comfy/render_ltx_edit.py
-```
-
-Both examples include their source media. Repeating the LTX edit makes no model
-calls and costs no credits. MOTIF is the finished showcase film linked above.
-
-</details>
+A 24-second product film with procedural 3D objects, choreographed cameras, animated displays, typography and an original soundtrack. OpenKatana offers code-authored WebGL rendering for 3D scenes, with a Blender option available too. This MOTIF export used the Blender option; OpenKatana assembles and finishes the film. No video-generation model was used. The GIF shows an eight-second preview at reduced resolution and frame rate; the MP4 preserves the original 1080p/60fps export and audio. [Artwork and film credits](docs/assets/readme-visuals.json).
 
 ## Quick start
 
@@ -69,8 +37,7 @@ Registry review is pending for 0.1.1; if Manager cannot resolve it, use the sour
 
 **With your agent:** copy and send the existing setup prompt:
 
-<details>
-<summary><strong>Copy the setup prompt</strong></summary>
+**Copy the setup prompt**
 
 ```text
 Set up OpenKatana so you can create and edit videos for me with code.
@@ -87,8 +54,6 @@ Set up OpenKatana so you can create and edit videos for me with code.
 Use the local CLI by default. Ask before downloading models, spending credits,
 uploading files or publishing. Do not generate a video during setup.
 ```
-
-</details>
 
 **Manual:**
 
@@ -130,10 +95,6 @@ After setup, ask your agent to follow the [ComfyUI Apps installation guide](docs
 The Apps run locally; cloud and paid generation are disabled in that route.
 Authorized model calls are available separately through the CLI/agent workflow.
 
-For a tested model-to-edit example, see [LTX-2.5 → OpenKatana](examples/comfy/README.md):
-Cloud generation followed by local speed ramp, freeze, typography and audio editing.
-Its source clip is bundled, so repeating the local edit costs no credits.
-
 ## What can you make?
 
 Turn a folder of photos into a story, cut footage to music, animate typography,
@@ -152,6 +113,8 @@ tools; you set the direction and refine the result in Studio.
 OpenKatana offers **72 CLI/MCP tools** ([see them all](docs/TOOLS.md)). Your agent supplies the creative
 decisions; OpenKatana executes them and keeps an editable project on your machine.
 
+![OpenKatana capabilities: 3D and morphs, type and graphics, editing and sound](docs/assets/openkatana-capabilities.png)
+
 ## How it works
 
 1. **Bring a brief and media.** Describe the film, add footage, photos or music,
@@ -163,19 +126,11 @@ decisions; OpenKatana executes them and keeps an editable project on your machin
 4. **Review and refine.** Watch the result, give feedback, adjust it in Studio,
    and export when it is ready.
 
-Studio, ComfyUI Apps, CLI and optional MCP work with the same project. You can
-move between agent instructions and hands-on review without starting over.
-
-<details>
-<summary>Concept illustrations: capabilities and workflow</summary>
-
-These AI-generated illustrations explain the product; the gallery above shows actual rendered output.
-
-![OpenKatana capabilities: 3D and morphs, type and graphics, editing and sound](docs/assets/openkatana-capabilities.png)
-
 ![Four-step workflow: bring your idea, your agent authors, OpenKatana renders, you review](docs/assets/openkatana-workflow.png)
 
-</details>
+Studio, ComfyUI Apps, CLI and optional MCP work with the same project. You can
+move between agent instructions and hands-on review without starting over.
+The two AI-generated illustrations explain the product; the films above show actual rendered output.
 
 ## Documentation and compatibility
 
