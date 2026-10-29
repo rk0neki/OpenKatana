@@ -1,7 +1,9 @@
 # Publishing a reviewed release
 
-Build and test before publishing. The project version is 0.1.1; that does not
-mean a registry upload, public repository or GitHub release already exists.
+Build and test before publishing. Version 0.1.1 has been uploaded to the
+[Comfy Registry](https://registry.comfy.org/nodes/openkatana). On 2026-10-29,
+the Registry API still marked it pending review. This does not establish
+availability on PyPI or the existence of a GitHub release.
 
 ## Build and verify
 
@@ -62,8 +64,9 @@ Official guide: [Packaging Python projects](https://packaging.python.org/en/late
 
 The confirmed publisher is `rk0neki`, the permanent node ID is `openkatana`,
 and the display name is **OpenKatana**. The metadata lives in `pyproject.toml`.
-The icon is a 400 × 400 PNG derived from the existing logo; its public URL
-becomes available after the preparation PR merges into `main`.
+The icon is a public 400 × 400 PNG derived from the existing logo. Registry
+icons must be square and at most 400 × 400 pixels; an optional `Banner` uses
+a 21:9 image.
 
 Publishing is manual. Merging a PR or changing the version does not publish.
 
