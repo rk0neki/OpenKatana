@@ -71,9 +71,9 @@ Icon = "YOUR_PUBLIC_ICON_URL"
 ```
 
 These are documentation placeholders, not active package metadata. Supply a
-public PNG/JPG/GIF/SVG within the registry's 800 × 400 size limit. The repository
-root loads in Manager already; setup still provisions the separate editor
-environment. Confirm that behavior in the registry-installed version before
+public, square PNG/JPG/GIF/SVG icon of at most 400 × 400 pixels; an optional
+`Banner` uses a 21:9 image. The repository root loads in Manager already; setup
+still provisions the separate editor environment. Confirm that behavior in the registry-installed version before
 calling it a one-click runtime installation. Run `comfy node publish` only after
 the publisher and release are approved. See the official
 [publishing guide](https://docs.comfy.org/registry/publishing).
