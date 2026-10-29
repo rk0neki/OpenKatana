@@ -13,12 +13,16 @@ OpenKatana is an independent, open-source **editing engine your AI agent drives:
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](docs/SETUP.md)
 [![Demo](https://img.shields.io/badge/%E2%96%B6-Demo-red)](https://youtu.be/sZys4qLAprw)
 
+## See it in motion:
+
+### Aura Farm Koji
+
 [![Finished Koji anime edit made with OpenKatana: cuts, effects and motion](docs/assets/koji-edit.gif)](docs/assets/koji-edit.mp4)
 
 **[Watch the anime edit with sound](docs/assets/koji-edit.mp4)** — the finale from the OpenKatana launch film.
 Source animation: [“Koji” by Ammonite & Zean](https://www.youtube.com/watch?v=61zI4eE92xM) (CC BY); edited with OpenKatana.
 
-## See it in motion: MOTIF
+### Motif
 
 [![Eight-second preview of MOTIF, made with OpenKatana and Blender; click for the full 24-second MP4](docs/assets/motif-preview.gif)](docs/assets/motif-1080p60.mp4)
 
