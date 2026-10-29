@@ -2,7 +2,7 @@
 
 Run OpenKatana locally from ComfyUI's Apps panel. The integration offers every
 shared AgentAPI tool (currently 72), plus the existing three tensor utilities and
-seven convenience/media nodes (82 nodes total). Studio, CLI and MCP continue to use the same project
+ten convenience/media nodes (85 nodes total). Studio, CLI and MCP continue to use the same project
 files and revision checks. ComfyUI Apps is an additional entry point.
 
 No hosted server, account, cloud credits or model download is needed for editing
@@ -53,10 +53,11 @@ Playwright Chromium automatically; it never downloads a browser at render time.
 every OpenKatana node, in five groups: *Your project and Studio*, *Your media* (a
 video, music and a photo, each imported as a project asset), *Make the edit* (**Make
 edit → Render to video**, with the photo as an extra media ID), *3D starter* and
-*Every tool*. Its App form shows all of their inputs. Choose your files, keep
-`seconds` within the video and music length, and Run: it opens Studio, renders the
-edit, starts a 3D scene and returns the tool result together. Bypass (Ctrl+B) the
-music or photo loader and its import if you do not use one. Switch to the node graph
+*Every tool*. Its App form shows all of their inputs, including upload boxes for
+the video, music and photo. Leave any of them empty and Run still works: empty slots
+are skipped, so with no media it just opens Studio, starts a 3D scene and returns the
+tool result. With media, keep `seconds` within the video and music length and it
+also renders the edit. Switch to the node graph
 to see or rewire the whole workflow. The five single-purpose Apps:
 
 1. **Open Studio:** choose a simple project ID and display name; Run creates or

@@ -19,7 +19,7 @@ def main():
     local_endpoint(args.endpoint)
     out = args.out.resolve(); out.mkdir(parents=True, exist_ok=False)
     info = request(args.endpoint, '/object_info')
-    assert sum(n.startswith('OpenKatana') for n in info) == 82
+    assert sum(n.startswith('OpenKatana') for n in info) == 85
     project = 'typed-' + uuid.uuid4().hex[:10]
     graph = {
         '1': {'class_type': 'EmptyImage', 'inputs': {'width': 160, 'height': 96, 'batch_size': 4, 'color': 3407837}},
@@ -59,7 +59,7 @@ def main():
         assert any(s['codec_type']=='audio' for s in video['streams']), 'Soundtrack missing from VIDEO'
         assert imported['music_asset_id'] and imported['audio']['kind']=='audio', 'VIDEO audio was not re-imported'
     assert len(history['outputs']['7']['images'])==4
-    write_json(out/'validation.json',{'passed':True,'nodes':82,'project':project,'prompt_id':key,
+    write_json(out/'validation.json',{'passed':True,'nodes':85,'project':project,'prompt_id':key,
         'isolated_optical_flow':True,'image_import':True,'video_roundtrip':True,
         'typed_image_output':True,'audio_roundtrip':bool(args.audio),'timeline_render_frames':8,'video':result['video_path'],
         'model_inference_tested':False,'paid_calls':0})
