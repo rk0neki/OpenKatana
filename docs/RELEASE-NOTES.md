@@ -23,7 +23,7 @@ installable packages. Watch the [one-minute demo](https://youtu.be/sZys4qLAprw).
   previously failed with "Unauthorized: Please login first to use this node".
   The key is not written to job files.
 - The local Comfy SDK client is built without credentials, so local and private
-  endpoints never receive an Authorization header.
+  endpoints do not receive the cloud API key in an Authorization header.
 
 ## Agents
 
@@ -35,11 +35,16 @@ installable packages. Watch the [one-minute demo](https://youtu.be/sZys4qLAprw).
 
 ## Packaging and checks
 
+- Version 0.1.1 is published on the [Comfy Registry](https://registry.comfy.org/nodes/openkatana).
+  Installation of explicitly selected version 0.1.1 through Manager passed
+  with a fresh editor environment. Registry review was still pending on
+  2026-10-29; default/latest installation remains unverified. See the
+  [installation steps](COMFY_APPS.md#comfy-registry-and-manager).
 - Wheels include the effects playbook, the complete Comfy example script with
   its source media and credits, the README visuals and the ComfyUI node installer.
-- A clean-wheel check creates a fresh environment, verifies 44 installed
-  resources, renders both bundled examples and exercises Studio outside the
-  source checkout. It runs on the Windows and Linux CI matrix.
+- A clean-wheel check creates a fresh environment, verifies installed
+  resources against the source files, renders both bundled examples and exercises
+  Studio outside the source checkout. It runs on the Windows and Linux CI matrix.
 - The README opens with the demo, and the node installer points new users to
   00 Full workflow.
 - Hosting estimates separate a ten-reviewer CPU demo from optional model

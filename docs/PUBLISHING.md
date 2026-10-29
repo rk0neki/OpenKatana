@@ -1,7 +1,9 @@
 # Publishing a reviewed release
 
-Build and test before publishing. The project version is 0.1.1; that does not
-mean a registry upload, public repository or GitHub release already exists.
+Build and test before publishing. Version 0.1.1 has been uploaded to the
+[Comfy Registry](https://registry.comfy.org/nodes/openkatana). On 2026-10-29,
+the Registry API still marked it pending review. This does not establish
+availability on PyPI or the existence of a GitHub release.
 
 ## Build and verify
 
@@ -60,22 +62,54 @@ Official guide: [Packaging Python projects](https://packaging.python.org/en/late
 
 ## Comfy Registry
 
-A registry publisher ID belongs to the owner and cannot be inferred from the
-GitHub username. Create or choose it in the registry first. Then add:
+The confirmed publisher is `rk0neki`, the permanent node ID is `openkatana`,
+and the display name is **OpenKatana**. The metadata lives in `pyproject.toml`.
+The icon is a public 400 × 400 PNG derived from the existing logo. Registry
+icons must be square and at most 400 × 400 pixels; an optional `Banner` uses
+a 21:9 image.
 
-```toml
-[tool.comfy]
-PublisherId = "YOUR_CONFIRMED_PUBLISHER_ID"
-DisplayName = "OpenKatana"
-Icon = "YOUR_PUBLIC_ICON_URL"
-```
+Publishing is manual. Merging a PR or changing the version does not publish.
 
-These are documentation placeholders, not active package metadata. Supply a
-public, square PNG/JPG/GIF/SVG icon of at most 400 × 400 pixels; an optional
-`Banner` uses a 21:9 image. The repository root loads in Manager already; setup
-still provisions the separate editor environment. Confirm that behavior in the registry-installed version before
-calling it a one-click runtime installation. Run `comfy node publish` only after
-the publisher and release are approved. See the official
-[publishing guide](https://docs.comfy.org/registry/publishing).
+1. Create a publishing key for `rk0neki` in the Registry and store it privately
+   as the GitHub repository Actions secret `REGISTRY_ACCESS_TOKEN`. Never put
+   the key in source, issues, chat or command output.
+2. Finish the release checks for the commit on `main` and obtain the owner's
+   explicit approval to publish that version.
+3. Open Actions → **Publish to Comfy Registry** → Run workflow, choose `main`,
+   and enter the approved version (`0.1.1` for the initial release).
+   The workflow checks the publisher, node ID, version and source manifest
+   before uploading. It only runs from `main`.
+4. Record the Registry URL returned by the publisher and confirm the version
+   is available. If an upload has an uncertain result, check the Registry
+   before retrying.
+
+For later releases, increase the semantic version, regenerate the source
+manifest, merge the reviewed changes and repeat the manual publishing steps.
+See the official [publishing guide](https://docs.comfy.org/registry/publishing).
+
+### Archive contents and installation check
+
+`.comfyignore` excludes tests, GitHub workflow files and large README MP4/GIF
+demonstrations. Keep `deploy/`: the editor's Python package explicitly references
+those files and cannot build without them. Keep setup scripts, skills, examples,
+documentation, licensed assets and notices. The source manifest describes the
+full source release; a trimmed Registry archive is not expected to pass the
+full-source manifest check.
+
+The Manager install path inspected during preparation extracts the node archive
+under `custom_nodes/openkatana`, then handles `requirements.txt` and `install.py`.
+This repository has neither; the editor environment is provisioned separately
+with `python scripts/setup.py`. See the upstream
+[Manager implementation](https://github.com/Comfy-Org/ComfyUI-Manager/blob/main/glob/manager_core.py)
+and [setup instructions](COMFY_APPS.md). Confirm this with the actual published
+version before advertising a one-click runtime installation.
+
+After publishing, test Manager installation in a separate ComfyUI instance
+without the development OpenKatana link. Install the pack, restart, provision
+the editor environment, and run `scripts/install_comfy_nodes.py` using the
+Python reported by setup. Restart again and run **00 Full workflow** with empty
+media: the media steps should skip and Studio should open. Only claim Manager
+installation works after this test passes. Do not install a second copy beside
+an existing development link, because both copies register the same node classes.
 
 No npm wrapper or placeholder package is needed for this Python application.
