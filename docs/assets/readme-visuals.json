@@ -58,5 +58,26 @@
     "source": "Existing user-supplied OpenKatana logo; resized to 400 x 400 with FFmpeg Lanczos scaling.",
     "original_brand_file": "../../openkatana/web/openkatana-logo.jpg",
     "sha256": "e1bb724f99d3e5d1e297619327cb86c6355f6a1b000534676d468aefe876e96b"
+  },
+  "koji_edit": {
+    "file": "koji-edit.mp4",
+    "source": "User-selected OpenKatana launch film, 45.000–54.875 seconds; extracted for the README with user authorization.",
+    "animation": {
+      "title": "Koji",
+      "creators": "Ammonite & Zean",
+      "url": "https://www.youtube.com/watch?v=61zI4eE92xM",
+      "license": "Creative Commons Attribution (CC BY), as recorded in the downloaded source metadata."
+    },
+    "changes": "OpenKatana editing, timing, effects and soundtrack from the supplied launch export. README excerpt re-encoded as H.264/AAC; no new generated content.",
+    "seconds": 9.875,
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "audio": true,
+    "preview": "koji-edit.gif",
+    "preview_settings": "Finished-edit portion only (2.5–9.875 s of excerpt); 800x450, 10 fps, 96-color silent GIF; Bayer dithering.",
+    "sha256": "a1d6eda64bc49605ae84c96e4e5a2cb20defe5d31ea51af2946ee7bf340ec2cf",
+    "preview_sha256": "bdf6c0a717fec7a54144f0886a8e339df438d36af471c49c62ba3cadb20f6041",
+    "scope": "Source animation retains its own license; OpenKatana software licensing does not relicense it."
   }
 }
