@@ -125,6 +125,12 @@ This renders an eight-second edit from bundled images and original music.
 
 ## Use it in ComfyUI
 
+[OpenKatana on the Comfy Registry](https://registry.comfy.org/nodes/openkatana)
+uses node ID `openkatana` and publisher `rk0neki`. See the
+[Manager installation and editor setup steps](docs/COMFY_APPS.md#comfy-registry-and-manager).
+Registry review can delay version availability in Manager; the source installation
+above remains available.
+
 **Start with Apps → OpenKatana → 00 Full workflow.** It puts every App in one graph:
 one project ID feeds Open Studio, your video, music and photo uploads, Make edit →
 Render to video, a 3D starter and any of the 72 tools. Run it from App mode and
