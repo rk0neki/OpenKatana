@@ -4,9 +4,7 @@
 
 # OpenKatana
 
-An independent, open-source **editing engine your AI agent drives: your photos, footage and music in, a finished edit out, made with code.** Inspired by Higgsfield's Katana, built with the Comfy Developer Platform for [#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield/).
-
-OpenKatana is an independent, open-source video editor for your AI agent: cuts, transitions, motion, typography and music in one shared project, all made with code. Built with the Comfy Developer Platform, with local open-weights workflows and optional authorized API models. **Version 0.1.1**
+OpenKatana is an independent, open-source **editing engine your AI agent drives: your photos, footage and music in, a finished edit out; cuts, transitions, motion, typography and music in one shared project, all made with code.** Inspired by Higgsfield's Katana, built with the Comfy Developer Platform, with local open-weights workflows and optional authorized API models. **Version 0.1.1** [#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield/).
 
 [![Comfy Registry](https://img.shields.io/badge/Comfy_Registry-OpenKatana-00A67E)](https://registry.comfy.org/nodes/openkatana)
 [![Release v0.1.1](https://img.shields.io/badge/release-v0.1.1-blue)](https://github.com/rk0neki/OpenKatana/releases/tag/v0.1.1)
