@@ -1,0 +1,43 @@
+name: Publish to Comfy Registry
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Approved version to publish (must match pyproject.toml)'
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: comfy-registry-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify approved release
+        env:
+          APPROVED_VERSION: ${{ inputs.version }}
+          REGISTRY_ACCESS_TOKEN: ${{ secrets.REGISTRY_ACCESS_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os
+          import tomllib
+          from pathlib import Path
+          metadata = tomllib.loads(Path('pyproject.toml').read_text())
+          assert metadata['project']['name'] == 'openkatana', 'Unexpected node ID'
+          assert metadata['tool']['comfy']['PublisherId'] == 'rk0neki', 'Unexpected publisher'
+          assert metadata['project']['version'] == os.environ['APPROVED_VERSION'], 'Version does not match the approved release'
+          assert os.environ.get('REGISTRY_ACCESS_TOKEN'), 'Add the REGISTRY_ACCESS_TOKEN repository secret first'
+          PY
+          python scripts/release_bundle.py --check-manifest
+      - name: Publish approved version
+        uses: Comfy-Org/publish-node-action@d2366e7abb6ab16f3bb03e3520ae25c8cf749bc9
+        with:
+          skip_checkout: 'true'
+          personal_access_token: ${{ secrets.REGISTRY_ACCESS_TOKEN }}

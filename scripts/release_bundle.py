@@ -8,7 +8,7 @@ import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
 TOP={'LICENSE','NOTICE','README.md','THIRD_PARTY_NOTICES.md','AGENTS.md','MANIFEST.in','SECURITY.md','__init__.py',
-     'pyproject.toml','requirements-lock.txt','mcp.example.json','.gitignore','.gitattributes','.dockerignore','CONTRIBUTING.md'}
+     '.comfyignore','pyproject.toml','requirements-lock.txt','mcp.example.json','.gitignore','.gitattributes','.dockerignore','CONTRIBUTING.md'}
 DIRS={'openkatana','comfy_nodes','workflows','docs','scripts','tests','examples','.github','skills','licenses','deploy'}
 EXCLUDED={'docs/SESSION_HANDOFF.md','docs/NEXT_SESSION_CONTEXT.md'}
 EXTENSIONS={'.gif','.wav','.mp4','.py','.js','.html','.css','.jpg','.json','.md','.txt','.ttf','.otf','.onnx','.toml','.yml','.yaml','.png','.svg','.service','.worker'}

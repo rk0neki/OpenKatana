@@ -52,5 +52,11 @@
     "preview_settings": "Played 1.5x faster; 900 px wide, 10 fps, 128-color GIF with burned-in captions; silent.",
     "content": "OpenKatana and ComfyUI interface only. No generated, stock or third-party footage.",
     "sha256": "bda969bc155ef452bde5f18723e7a5b348492cbbed4d4d1f5692989ce7fa699b"
+  },
+  "registry_icon": {
+    "file": "registry-icon.png",
+    "source": "Existing user-supplied OpenKatana logo; resized to 400 x 400 with FFmpeg Lanczos scaling.",
+    "original_brand_file": "../../openkatana/web/openkatana-logo.jpg",
+    "sha256": "e1bb724f99d3e5d1e297619327cb86c6355f6a1b000534676d468aefe876e96b"
   }
 }

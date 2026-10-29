@@ -55,3 +55,8 @@ openkatana = ["templates/*.py", "templates/*.js", "web/*.js", "web/*.html", "web
 
 [tool.setuptools.packages.find]
 include = ["openkatana*"]
+
+[tool.comfy]
+PublisherId = "rk0neki"
+DisplayName = "OpenKatana"
+Icon = "https://raw.githubusercontent.com/rk0neki/OpenKatana/main/docs/assets/registry-icon.png"
