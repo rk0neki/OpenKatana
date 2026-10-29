@@ -1,37 +1,34 @@
-# Must-use effects
+# Effects playbook
 
-This list separates a finished, high-energy edit from an assembled one. It comes from
-rebuilding a 78-second professional launch edit (24 fps, 1,872 frames) frame by frame
-in OpenKatana, and recording everything the rebuild missed, version by version. Use it
-as a checklist. An edit in this style uses all of these effects, at measured strengths,
-in the right places.
+Everything OpenKatana can do to make an edit feel finished: motion and camera,
+light, texture, colour, text and graphics, and interface scenes, with how a
+78-second launch film used each technique. Agents read this before planning an
+edit so they know every option they have.
 
-Frame numbers refer to that reference edit. Pixel values are on a 1920×1080 canvas;
-brightness values are on a 0–255 scale.
+None of it is compulsory. Choose what serves the user's brief, the source
+material and the user's accessibility preferences. A quiet edit may use almost
+none of it; a high-energy edit may use all of it. The user's instructions take
+precedence over anything here.
 
-## Read this first: the rules for every edit
+The **high-energy launch-film style** is one way to combine everything below.
+Use the whole style when the user asks for a high-energy, aura-farm or
+launch-film edit, or says "use the high-energy launch-film preset."
 
-These come from the user who directed the rebuild. They apply to every edit made with
-OpenKatana, whether or not there is a reference.
+Frame numbers in the reference refer to the original 24 fps edit. Pixel values
+refer to a 1920×1080 canvas; brightness values use a 0–255 scale.
 
-### 1. Analyse every reference at 60 fps
+## Suggested workflow for a high-energy edit
 
-This rule matters most. Always extract and study each reference video at 60 frames per
-second; 24 fps is not acceptable. At 60 fps you capture the full motion: whips, flashes,
-one-frame cuts, shakes, blur trails, speed ramps and the shape of every ease.
+### 1. Inspect the reference at an appropriate rate
 
-- Study the frames at a readable size, never from thumbnails or half-second tiles.
-- If a source was shot at a lower rate, some frames repeat at 60 fps. Analyse them all
-  anyway, and never sample below 60.
-- Understand what the reference is before building:
-  - its story and its sections;
-  - what each scene is trying to say;
-  - how the edit makes it land (rhythm, words, light, texture, sound).
+Start at the source frame rate or a sampling rate suited to the edit. Inspect
+fast motion and cut boundaries frame by frame when useful. A 60 fps source may
+benefit from 60 fps inspection; resampling a 24 fps source to 60 fps repeats
+frames and does not reveal additional motion.
 
-### 2. Then ask the user for what the edit needs
+### 2. Identify assets the edit needs
 
-After the analysis, list everything the reference relies on that you do not have. Ask the
-user for it, together with their own photos and videos (the content):
+After the analysis, list everything the reference relies on that you do not have. Ask for missing material when it affects the brief:
 
 - fonts
 - textures and overlays (dust, scratches, light leaks, film burns, paper, grunge)
@@ -41,15 +38,14 @@ user for it, together with their own photos and videos (the content):
 - logos and brand colours
 - interface captures
 
-Do not swap in generated stand-ins (a drawn gauge, a synthesised whoosh, a generated
-voice) for material the user can supply.
+Use supplied or generated material according to the user's preferences and rights.
 
 ### 3. Work as in After Effects
 
 OpenKatana is an environment like After Effects. Edits in this style are built from:
 
 - **Easy ease and keyframes.**
-  - Every animated value moves between eased keyframes, never in linear ramps: position,
+  - Consider eased keyframes where appropriate for position,
     scale, rotation, opacity, blur, zoom and glow.
   - Camera zooms take eases (`in3`, `out3`, `inout3`, `outback`), plus crash, pulse and
     drift moves.
@@ -58,7 +54,7 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
   - Use speed ramps (`speed` to `speed1`) and freezes.
   - Use optical-flow slow motion (`analyze_clip` operation `retime`), which renders real
     in-between frames instead of blending. Keep it inside one take.
-- **The core eight effects.** An edit uses all of them, placed with intent:
+- **The core eight effects.** Choose from this palette; an edit need not use all eight:
   1. **Turbulence and displacement.** The imperfections of the original use them to bend
      objects and effects (section 21).
   2. **Glow and deep glow.** They sit around buttons and lights, and edits use them a
@@ -69,7 +65,7 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
   5. **Colour invert**, whether of a colour, a texture, an opacity or the whole frame.
      In one reference scene everything was inverted: what was light became dark, and what
      was dark became light (section 17).
-  6. **Textures.** They change the depth of an edit massively, so always layer them
+  6. **Textures.** They change the depth of an edit massively, so consider layering them
      (section 12).
   7. **Noise, grain and colour grading** (sections 11 and 16).
   8. **Flicker**, of lights, effects or anything else (section 9).

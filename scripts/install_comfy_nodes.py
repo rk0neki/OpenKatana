@@ -84,7 +84,7 @@ def install(root, python, workspace=None):
             installed.append(name)
     return {'link': str(link), 'config': str(config), 'workspace': value['workspace'],
             'apps': str(apps), 'installed': installed, 'preserved': preserved,
-            'tool_count': len(installed_catalog), 'next': 'Restart ComfyUI, then open Apps → OpenKatana → 01 Open Studio.'}
+            'tool_count': len(installed_catalog), 'next': 'Restart ComfyUI, then open Apps → OpenKatana → 00 Full workflow.'}
 
 
 def main(argv=None):

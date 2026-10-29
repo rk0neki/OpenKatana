@@ -1,3 +1,21 @@
+# OpenKatana 0.1.1 — early access
+
+- Wheels include the effects playbook, complete Comfy example script,
+  source media and credits, README visuals, and Comfy installer.
+- Setup installs the effects playbook beside the project skill and preserves
+  customized files. Agents read it to know the full palette of effects;
+  creative choices follow the user's brief and nothing in it is compulsory.
+- The README opens with the competition demo, and the ComfyUI section and the
+  node installer point new users to the 00 Full workflow App.
+- A clean-wheel check creates a fresh environment, verifies installed resources,
+  renders both bundled examples and exercises Studio outside the source checkout.
+- Competition hosting estimates distinguish a ten-reviewer CPU demo from optional
+  model generation. The hosted pilot remains experimental and undeployed.
+
+FFmpeg and a browser are separate prerequisites. This is not a standalone desktop
+installer. macOS and production hosting remain unverified. See [setup](SETUP.md)
+and [publishing](PUBLISHING.md) for release checks and installation.
+
 # OpenKatana 0.1.0
 
 Turn photos, footage and music into an editable film through Studio, CLI/MCP or

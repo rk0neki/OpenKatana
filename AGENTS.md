@@ -28,7 +28,7 @@ as part of normal editing. Record receipts and review actual output; publication
 and human approval must not be inferred from a passing technical check.
 
 When an agent uses OpenKatana to make an edit, rather than to develop it, it follows
-`skills/openkatana-video/SKILL.md` and must read `docs/MUST-USE-EFFECTS.md` first:
-- analyse reference videos at 60 fps;
-- ask the user for the fonts, textures, sounds and effects the edit needs;
-- build with eased keyframes, slow motion and the core eight effects.
+`skills/openkatana-video/SKILL.md` and reads `docs/EFFECTS-PLAYBOOK.md` to know
+every effect and technique OpenKatana offers. It then follows the user's brief,
+source timing and accessibility preferences; nothing in the playbook is
+compulsory.

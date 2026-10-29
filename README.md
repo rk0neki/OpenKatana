@@ -12,7 +12,13 @@ with the Comfy Developer Platform for
 independent, open-source video editor for your AI agent: cuts, transitions, motion,
 typography and music in one shared project, all made with code. Built with the
 Comfy Developer Platform, with local open-weights workflows and optional authorized
-API models. **Version 0.1.0.**
+API models. **Version 0.1.1 — early access.**
+
+[![OpenKatana in ComfyUI: the Full workflow, App mode, Run, then Studio opens. Click for the one-minute demo with sound](docs/assets/demo-comfyui.gif)](https://youtu.be/sZys4qLAprw)
+
+**[Watch the one-minute demo](https://youtu.be/sZys4qLAprw)**: open the Full workflow in ComfyUI, run it
+to start Studio, drop in your videos, photos and audio, and hand the brief to your
+agent. The launch-film shots and the aura-farm edit in it were edited with OpenKatana.
 
 ![OpenKatana capabilities: 3D and morphs, type and graphics, editing and sound](docs/assets/openkatana-capabilities.png)
 
@@ -119,8 +125,12 @@ This renders an eight-second edit from bundled images and original music.
 
 ## Use it in ComfyUI
 
-OpenKatana includes six saved Apps: **Full workflow**, which puts every App in one
-graph, plus **Open Studio**, **All tools**, **Make a 3D scene**, **Background job**
+**Start with Apps → OpenKatana → 00 Full workflow.** It puts every App in one graph:
+one project ID feeds Open Studio, your video, music and photo uploads, Make edit →
+Render to video, a 3D starter and any of the 72 tools. Run it from App mode and
+Studio opens in its own window.
+
+OpenKatana includes six saved Apps: **Full workflow**, plus **Open Studio**, **All tools**, **Make a 3D scene**, **Background job**
 and **Video to edit**. The integration offers 85 nodes for its tools plus project,
 job and media helpers.
 
@@ -138,7 +148,7 @@ Its source clip is bundled, so repeating the local edit costs no credits.
 ## Documentation and compatibility
 
 - [Setup](docs/SETUP.md) · [Studio](docs/STUDIO.md) · [Agent guide](docs/AGENT_INTERFACE.md) · [All tools](docs/TOOLS.md)
-- [Timeline](docs/TIMELINE.md) · [Editor tools](docs/EDITOR_TOOLS.md) · [Effects](docs/EXPANSION.md)
+- [Timeline](docs/TIMELINE.md) · [Editor tools](docs/EDITOR_TOOLS.md) · [Effects](docs/EXPANSION.md) · [Effects playbook](docs/EFFECTS-PLAYBOOK.md)
 - [3D](docs/SCENE3D.md) · [WebGL](docs/WEBGL.md) · [Blender](docs/ANIMATION.md)
 - [Compositions](docs/COMPOSITIONS.md) · [HDR](docs/HDR.md) · [Models](docs/COMFY_MODELS.md)
 - [Capabilities](docs/CAPABILITY-MATRIX.md) · [Limits](docs/CAPABILITY-GAPS.md) · [Validation](docs/VALIDATION.md)

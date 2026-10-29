@@ -19,7 +19,7 @@ exclude docs/SESSION_HANDOFF.md docs/NEXT_SESSION_CONTEXT.md
 include CONTRIBUTING.md
 recursive-include .github *.yml
 
-recursive-include docs/assets *.png *.gif
+recursive-include docs/assets *.png *.gif *.mp4
 
 recursive-include openkatana/templates *.py *.js
 recursive-include skills *.md
