@@ -198,6 +198,22 @@ class ComfyAppsTests(unittest.TestCase):
         for group in workflow['groups']:
             self.assertEqual(len(group['bounding']), 4)
 
+    def test_open_studio_launches_an_app_window(self):
+        from openkatana import comfy_apps
+        launched = []
+        with patch('openkatana.render.chrome_path', return_value='browser.exe'), \
+             patch.object(comfy_apps.subprocess, 'Popen', side_effect=lambda args, **kw: launched.append(args)), \
+             patch.dict(comfy_apps.os.environ, {}, clear=False):
+            comfy_apps.os.environ.pop('OPENKATANA_NO_WINDOW', None)
+            self.assertEqual(comfy_apps.open_window('http://127.0.0.1:5000', self.root), 'app')
+        args = launched[0]
+        self.assertEqual(args[0], 'browser.exe')
+        self.assertIn('--app=http://127.0.0.1:5000', args)
+        self.assertIn('--user-data-dir=' + str(self.root / '.comfy-apps' / 'studio-window'), args)
+        with patch.dict(comfy_apps.os.environ, {'OPENKATANA_NO_WINDOW': '1'}), \
+             patch.object(comfy_apps.subprocess, 'Popen', side_effect=AssertionError('no window expected')):
+            self.assertEqual(comfy_apps.open_window('http://127.0.0.1:5000', self.root), 'off')
+
     def test_text_result_is_a_downloadable_app_output(self):
         import types
         module = types.SimpleNamespace(get_temp_directory=lambda: str(self.root))

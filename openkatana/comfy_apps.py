@@ -110,8 +110,27 @@ def run_background(workspace, job_id):
     write_json(folder / 'status.json', status)
 
 
+def open_window(url, workspace):
+    """Open Studio in its own app window: Chrome/Edge in app mode with a workspace profile, else the default
+    browser. OPENKATANA_NO_WINDOW=1 only returns the link (servers, CI)."""
+    if os.environ.get('OPENKATANA_NO_WINDOW'):
+        return 'off'
+    from .render import chrome_path
+    try:
+        browser = chrome_path()
+    except RuntimeError:
+        import webbrowser
+        return 'browser' if webbrowser.open(url) else 'off'
+    profile = Path(workspace) / '.comfy-apps' / 'studio-window'
+    profile.mkdir(parents=True, exist_ok=True)
+    subprocess.Popen([browser, '--app=' + url, '--user-data-dir=' + str(profile), '--no-first-run',
+                      '--no-default-browser-check', '--start-maximized'],
+                     stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, close_fds=True)
+    return 'app'
+
+
 def studio(workspace, project_id, name):
-    """Start or reuse a loopback Studio for this exact project, without opening tabs."""
+    """Start or reuse a loopback Studio for this exact project and open it in its own app window."""
     import urllib.request
     from .onboarding import setup_project
     root = AgentAPI(workspace)._project(project_id)
@@ -127,7 +146,7 @@ def studio(workspace, project_id, name):
             with urllib.request.urlopen(address['studio'] + '/api/studio-info', timeout=2) as response:
                 data = json.load(response)
             if Path(data['project_path']).resolve() == root:
-                return {**setup, 'studio': address['studio']}
+                return {**setup, 'studio': address['studio'], 'window': open_window(address['studio'], workspace)}
         except (OSError, ValueError, KeyError):
             pass
     log_path = folder / ('server-' + uuid.uuid4().hex + '.log')
@@ -143,7 +162,7 @@ def studio(workspace, project_id, name):
                 address = json.loads(lines[0])
                 if 'studio' in address:
                     write_json(address_file, address)
-                    return {**setup, 'studio': address['studio']}
+                    return {**setup, 'studio': address['studio'], 'window': open_window(address['studio'], workspace)}
             except ValueError:
                 pass
         time.sleep(.1)

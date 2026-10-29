@@ -61,7 +61,9 @@ also renders the edit. Switch to the node graph
 to see or rewire the whole workflow. The five single-purpose Apps:
 
 1. **Open Studio:** choose a simple project ID and display name; Run creates or
-   reopens it and starts a loopback Studio. Open the returned URL. Its setup data
+   reopens it, starts a loopback Studio and opens it in its own app window
+   (Chrome or Edge; the default browser otherwise). Set `OPENKATANA_NO_WINDOW=1`
+   to get only the returned URL. Its setup data
    gives your agent the exact workspace, project ID, Python and skill. Reopening
    preserves your timeline and reuses the Studio process.
 2. **All tools:** select a tool and supply the same JSON arguments used by the
