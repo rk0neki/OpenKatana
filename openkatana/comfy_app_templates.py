@@ -77,8 +77,9 @@ def video_edit_workflow():
 
 def full_workflow():
     """Every App in one graph. One Project ID feeds every OpenKatana node, so Studio, the edit,
-    the 3D starter and the tool all work on the same project. Video, music and a photo are imported
-    as project assets; the photo joins the edit as an extra media ID."""
+    the 3D starter and the tool all work on the same project. Video, music and a photo are uploaded in
+    optional file nodes and imported as project assets; the photo joins the edit as an extra media ID.
+    An empty file slot skips the media steps instead of failing."""
     graph_id = str(uuid.uuid5(uuid.NAMESPACE_URL, 'openkatana/app/full-workflow'))
     def node(i, kind, title, pos, size, inputs, outputs, widgets):
         return {'id': i, 'type': kind, 'title': title, 'pos': pos, 'size': size, 'flags': {},
@@ -105,7 +106,7 @@ def full_workflow():
             node(2, 'OpenKatanaWorkspace', '1 · Open Studio', [420, 80], [360, 150], [widget('project_id', 'STRING', 1)],
                  [out('result_json', 'STRING', [7])], ['my-film', 'My film']),
             preview(3, 'Studio link · OpenKatana', [840, 80], 7),
-            node(4, 'LoadVideo', '2 · Your video', [60, 460], [340, 360], [], [out('VIDEO', 'VIDEO', [8])], ['']),
+            node(4, 'OpenKatanaVideoFile', '2 · Your video', [60, 460], [340, 360], [], [out('video', 'VIDEO', [8])], ['']),
             imports(5, '3 · Import video and music', [440, 460], None, 8, 14, 2, [9], [10]),
             node(6, 'OpenKatanaMakeEdit', '4 · Make your edit', [840, 460], [340, 420],
                  [inp('media_id', 'STRING', 9), inp('music_asset_id', 'STRING', 10), widget('project_id', 'STRING', 3),
@@ -123,9 +124,8 @@ def full_workflow():
                  [inp('after', 'STRING', None), widget('project_id', 'STRING', 6)],
                  [out('result_json', 'STRING', [13])], ['get_capabilities', 'my-film', '{}']),
             preview(11, 'Tool result · OpenKatana', [1720, 80], 13),
-            node(12, 'LoadAudio', '2 · Your music', [60, 860], [340, 130], [], [out('AUDIO', 'AUDIO', [14])], ['', None, '']),
-            node(13, 'LoadImage', '2 · Your photo', [60, 1030], [340, 400], [],
-                 [out('IMAGE', 'IMAGE', [15]), out('MASK', 'MASK', None)], ['', 'image']),
+            node(12, 'OpenKatanaAudioFile', '2 · Your music', [60, 860], [340, 130], [], [out('audio', 'AUDIO', [14])], ['']),
+            node(13, 'OpenKatanaImageFile', '2 · Your photo', [60, 1030], [340, 400], [], [out('image', 'IMAGE', [15])], ['']),
             imports(14, '3 · Import your photo', [440, 1030], 15, None, None, 17, [16], None)],
         'links': [[1, 1, 0, 2, 0, 'STRING'], [2, 1, 0, 5, 3, 'STRING'], [3, 1, 0, 6, 2, 'STRING'],
                   [4, 1, 0, 7, 1, 'STRING'], [5, 1, 0, 8, 0, 'STRING'], [6, 1, 0, 10, 1, 'STRING'],
@@ -140,10 +140,10 @@ def full_workflow():
                    group(5, 'Every tool', [1320, 20, 860, 360], '#b58b2a')],
         'config': {}, 'version': .4,
         'extra': {'ds': {'scale': .65, 'offset': [0, 0]}, 'linearMode': True, 'linearData': {'inputs': [
-            [graph_id+':1:value', 'value'], [graph_id+':2:name', 'name'], [graph_id+':4:file', 'file'],
-            [graph_id+':12:audio', 'audio'], [graph_id+':13:image', 'image'], [graph_id+':5:rights', 'rights'],
+            [graph_id+':1:value', 'value'], [graph_id+':2:name', 'name'], [graph_id+':4:video', 'video'],
+            [graph_id+':12:music', 'music'], [graph_id+':13:image', 'image'], [graph_id+':5:rights', 'rights'],
             [graph_id+':6:preset', 'preset'], [graph_id+':6:seconds', 'seconds'],
             [graph_id+':6:replace_existing', 'replace_existing'], [graph_id+':8:template', 'template'],
             [graph_id+':10:tool', 'tool'], [graph_id+':10:arguments', 'arguments']], 'outputs': [7, 3, 9, 11]},
-            'openkatana': {'description': 'Every App in one graph. One Project ID feeds every node: open Studio for your agent, import your video, music and a photo, build and render the edit, start a 3D scene and call any tool. Keep seconds within the video and music length. Bypass (Ctrl+B) the music or photo loader and its import if you do not use it. Model weights are separate.',
+            'openkatana': {'description': 'Every App in one graph. One Project ID feeds every node: open Studio for your agent, import your video, music and a photo, build and render the edit, start a 3D scene and call any tool. Upload them in the form, or leave any slot empty: empty slots are skipped. Keep seconds within the video and music length. Model weights are separate.',
                           'local_only': True}}}

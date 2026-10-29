@@ -135,15 +135,15 @@ class ComfyAppsTests(unittest.TestCase):
         """Every App in one graph: real nodes, consistent links, one project ID for every OpenKatana node,
         and video, music and photo imports that reach the edit."""
         nodes = {n['id']: n for n in workflow['nodes']}
-        core = {'PrimitiveString': ['value'], 'LoadVideo': ['file'], 'LoadAudio': ['audio'],
-                'LoadImage': ['image'], 'PreviewAny': []}
+        core = {'PrimitiveString': ['value'], 'PreviewAny': []}
         # media.py needs torch, so its classes and fields are checked against its source text
         media_source = (ROOT / 'comfy_nodes/media.py').read_text(encoding='utf-8')
         media = {'OpenKatanaImportMedia': ['project_id', 'fps', 'rights'],
                  'OpenKatanaMakeEdit': ['project_id', 'preset', 'seconds', 'width', 'height', 'fps', 'replace_existing'],
-                 'OpenKatanaRenderVideo': ['project_id', 'preview_frames']}
+                 'OpenKatanaRenderVideo': ['project_id', 'preview_frames'],
+                 'OpenKatanaVideoFile': ['video'], 'OpenKatanaAudioFile': ['music'], 'OpenKatanaImageFile': ['image']}
         for kind, fields in media.items():
-            self.assertIn('class ' + kind + '(', media_source)
+            self.assertRegex(media_source, 'class ' + kind + '[(:]')
             for field in fields:
                 self.assertIn("'" + field + "'", media_source)
         for node in nodes.values():
@@ -155,7 +155,7 @@ class ComfyAppsTests(unittest.TestCase):
             self.assertEqual(nodes[source]['outputs'][slot]['type'], kind)
         project = next(n for n in nodes.values() if n['type'] == 'PrimitiveString')
         fed = {workflow['links'][i - 1][3] for i in project['outputs'][0]['links']}
-        katana = {i for i, n in nodes.items() if n['type'] in bridge.NODE_CLASS_MAPPINGS or n['type'] in media}
+        katana = {i for i, n in nodes.items() if any(s['name'] == 'project_id' for s in n['inputs'])}
         self.assertEqual(fed, katana)
         for i in katana:
             slot = next(s for s in nodes[i]['inputs'] if s['name'] == 'project_id')
@@ -163,7 +163,8 @@ class ComfyAppsTests(unittest.TestCase):
             self.assertIsNotNone(slot['link'])
         kinds = [nodes[i]['type'] for i in sorted(nodes)]
         for kind in ('OpenKatanaWorkspace', 'OpenKatanaImportMedia', 'OpenKatanaMakeEdit',
-                     'OpenKatanaRenderVideo', 'OpenKatanaScene', 'OpenKatanaTool', 'LoadVideo', 'LoadAudio', 'LoadImage'):
+                     'OpenKatanaRenderVideo', 'OpenKatanaScene', 'OpenKatanaTool',
+                     'OpenKatanaVideoFile', 'OpenKatanaAudioFile', 'OpenKatanaImageFile'):
             self.assertIn(kind, kinds)
         def source(node, name):
             link = next(s for s in node['inputs'] if s['name'] == name)['link']
@@ -174,10 +175,15 @@ class ComfyAppsTests(unittest.TestCase):
             if node['type'] == 'OpenKatanaImportMedia':  # exactly one IMAGE or VIDEO source per import
                 self.assertEqual((source(node, 'images') is None) + (source(node, 'video') is None), 1)
                 sources[source(node, 'images') or source(node, 'video')] = node
-        self.assertEqual(source(sources['LoadVideo'], 'audio'), 'LoadAudio')
+        self.assertEqual(source(sources['OpenKatanaVideoFile'], 'audio'), 'OpenKatanaAudioFile')
         self.assertEqual(source(edit, 'media_id'), 'OpenKatanaImportMedia')
         photo = next(s for s in edit['inputs'] if s['name'] == 'extra_media_ids')['link']
-        self.assertEqual(workflow['links'][photo - 1][1], sources['LoadImage']['id'])
+        self.assertEqual(workflow['links'][photo - 1][1], sources['OpenKatanaImageFile']['id'])
+        # empty file slots are allowed and skip instead of failing
+        for kind in ('OpenKatanaVideoFile', 'OpenKatanaAudioFile', 'OpenKatanaImageFile'):
+            self.assertIn("return (None,)", media_source.split('class ' + kind)[1].split('\nclass ')[0])
+        self.assertIn("skipped('No video or photo chosen", media_source)
+        self.assertIn("skipped('No media imported", media_source)
         data = workflow['extra']['linearData']
         for widget, field in data['inputs']:
             graph, node_id, name = widget.rsplit(':', 2)
@@ -191,6 +197,22 @@ class ComfyAppsTests(unittest.TestCase):
         self.assertIn(next(i for i, n in nodes.items() if n['type'] == 'OpenKatanaRenderVideo'), data['outputs'])
         for group in workflow['groups']:
             self.assertEqual(len(group['bounding']), 4)
+
+    def test_open_studio_launches_an_app_window(self):
+        from openkatana import comfy_apps
+        launched = []
+        with patch('openkatana.render.chrome_path', return_value='browser.exe'), \
+             patch.object(comfy_apps.subprocess, 'Popen', side_effect=lambda args, **kw: launched.append(args)), \
+             patch.dict(comfy_apps.os.environ, {}, clear=False):
+            comfy_apps.os.environ.pop('OPENKATANA_NO_WINDOW', None)
+            self.assertEqual(comfy_apps.open_window('http://127.0.0.1:5000', self.root), 'app')
+        args = launched[0]
+        self.assertEqual(args[0], 'browser.exe')
+        self.assertIn('--app=http://127.0.0.1:5000', args)
+        self.assertIn('--user-data-dir=' + str(self.root / '.comfy-apps' / 'studio-window'), args)
+        with patch.dict(comfy_apps.os.environ, {'OPENKATANA_NO_WINDOW': '1'}), \
+             patch.object(comfy_apps.subprocess, 'Popen', side_effect=AssertionError('no window expected')):
+            self.assertEqual(comfy_apps.open_window('http://127.0.0.1:5000', self.root), 'off')
 
     def test_text_result_is_a_downloadable_app_output(self):
         import types

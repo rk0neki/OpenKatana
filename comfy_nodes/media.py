@@ -57,9 +57,104 @@ def save_audio(audio, path):
         output.writeframes(data.tobytes())
 
 
+def input_choices(kind):
+    """Files of one kind in ComfyUI's input folder; the first choice, '', means none."""
+    import os
+    import folder_paths
+    root = folder_paths.get_input_directory()
+    files = [f for f in os.listdir(root) if os.path.isfile(os.path.join(root, f))]
+    return [''] + sorted(folder_paths.filter_files_content_types(files, [kind]))
+
+
+def check_choice(name):
+    import folder_paths
+    return True if not name or folder_paths.exists_annotated_filepath(name) else f'File not found in input: {name}'
+
+
+def skipped(message, outputs):
+    """A clear result instead of an error when the user chose no media."""
+    output = bridge.response({'state': 'skipped', 'message': message})
+    output['result'] = (*outputs, output['result'][0])
+    return output
+
+
+class OpenKatanaVideoFile:
+    DESCRIPTION = 'Choose or upload a video, or leave it empty; an empty slot skips the media steps instead of failing.'
+    CATEGORY = 'OpenKatana/Media'
+    RETURN_TYPES = ('VIDEO',)
+    RETURN_NAMES = ('video',)
+    FUNCTION = 'load'
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {'required': {'video': (input_choices('video'), {'video_upload': True})}}
+
+    @classmethod
+    def VALIDATE_INPUTS(cls, video):
+        return check_choice(video)
+
+    def load(self, video):
+        if not video:
+            return (None,)
+        import folder_paths
+        from comfy_api.latest import InputImpl
+        return (InputImpl.VideoFromFile(folder_paths.get_annotated_filepath(video)),)
+
+
+class OpenKatanaAudioFile:
+    DESCRIPTION = 'Choose or upload music, or leave it empty to use the video\'s own sound.'
+    CATEGORY = 'OpenKatana/Media'
+    RETURN_TYPES = ('AUDIO',)
+    RETURN_NAMES = ('audio',)
+    FUNCTION = 'load'
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        # Named music: ComfyUI's legacy upload helper wants LoadAudio's own player on an input named audio.
+        return {'required': {'music': (input_choices('audio'), {'audio_upload': True})}}
+
+    @classmethod
+    def VALIDATE_INPUTS(cls, music):
+        return check_choice(music)
+
+    def load(self, music):
+        if not music:
+            return (None,)
+        import folder_paths
+        from comfy_extras.nodes_audio import load
+        waveform, rate = load(folder_paths.get_annotated_filepath(music))
+        return ({'waveform': waveform.unsqueeze(0), 'sample_rate': rate},)
+
+
+class OpenKatanaImageFile:
+    DESCRIPTION = 'Choose or upload a photo, or leave it empty to skip it.'
+    CATEGORY = 'OpenKatana/Media'
+    RETURN_TYPES = ('IMAGE',)
+    RETURN_NAMES = ('image',)
+    FUNCTION = 'load'
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {'required': {'image': (input_choices('image'), {'image_upload': True})}}
+
+    @classmethod
+    def VALIDATE_INPUTS(cls, image):
+        return check_choice(image)
+
+    def load(self, image):
+        if not image:
+            return (None,)
+        import folder_paths
+        from PIL import Image, ImageOps
+        with Image.open(folder_paths.get_annotated_filepath(image)) as im:
+            rgb = ImageOps.exif_transpose(im).convert('RGB')
+            return (torch.from_numpy(np.asarray(rgb, dtype=np.float32) / 255)[None],)
+
+
 class OpenKatanaImportMedia(bridge.OpenKatanaTool):
     DESCRIPTION = ('Import model IMAGE frames or VIDEO into a shared project; preserve VIDEO audio or connect AUDIO. '
-                   'Connect exactly one of images/video. The fps field applies to IMAGE batches only.')
+                   'Connect exactly one of images/video; with neither, the import is skipped. '
+                   'The fps field applies to IMAGE batches only.')
     CATEGORY = 'OpenKatana/Media'
     RETURN_TYPES = ('STRING', 'STRING', 'STRING')
     RETURN_NAMES = ('media_id', 'music_asset_id', 'result_json')
@@ -72,7 +167,9 @@ class OpenKatanaImportMedia(bridge.OpenKatanaTool):
             'optional': {'images': ('IMAGE',), 'video': ('VIDEO',), 'audio': ('AUDIO',)}}
 
     def execute(self, project_id, fps, rights, images=None, video=None, audio=None):
-        if (images is None) == (video is None):
+        if images is None and video is None:  # an empty file slot upstream
+            return skipped('No video or photo chosen; nothing imported.', ('', ''))
+        if images is not None and video is not None:
             raise ValueError('Connect exactly one IMAGE or VIDEO source')
         with transfer() as (key, folder):
             if images is not None:
@@ -113,11 +210,14 @@ class OpenKatanaMakeEdit(bridge.OpenKatanaTool):
         extra = json.loads(text) if text.startswith('[') else [text] if text else []  # a connected Import media ID
         if not isinstance(extra, list) or not all(isinstance(x, str) for x in extra):
             raise ValueError('extra_media_ids must be a JSON list of media IDs or one media ID')
+        assets = [x for x in (media_id, *extra) if x]  # imports with no chosen media pass ''
+        if not assets:
+            return skipped('No media imported; no edit made.', ())
         state = bridge.invoke('call', tool='get_project', arguments={'project_id': project_id})
         if state['timeline'] is not None and not replace_existing:
             raise ValueError('Project already has an edit; choose another project or enable replace_existing')
         result = bridge.invoke('call', tool='build_recipe', arguments={'project_id': project_id,
-            'family': preset, 'asset_ids': [media_id, *extra], 'music_asset_id': music_asset_id or None,
+            'family': preset, 'asset_ids': assets, 'music_asset_id': music_asset_id or None,
             'seconds': seconds, 'width': width, 'height': height, 'fps': fps})
         saved = bridge.invoke('call', tool='save_timeline', arguments={'project_id': project_id,
             'timeline': result['timeline'], 'revision': state['revision']})
@@ -138,6 +238,8 @@ class OpenKatanaRenderVideo(bridge.OpenKatanaTool):
             'optional': {'after': ('STRING', {'forceInput': True})}}
 
     def execute(self, project_id, preview_frames=16, after=None):
+        if after and after.lstrip().startswith('{') and json.loads(after).get('state') == 'skipped':
+            return skipped('No edit was made, so nothing was rendered.', (None, None))
         from comfy_api.latest import InputImpl
         from PIL import Image
         result = bridge.invoke('render_video', project_id=project_id)
@@ -156,6 +258,10 @@ class OpenKatanaRenderVideo(bridge.OpenKatanaTool):
 
 
 NODE_CLASS_MAPPINGS = {'OpenKatanaImportMedia': OpenKatanaImportMedia,
-    'OpenKatanaMakeEdit': OpenKatanaMakeEdit, 'OpenKatanaRenderVideo': OpenKatanaRenderVideo}
+    'OpenKatanaMakeEdit': OpenKatanaMakeEdit, 'OpenKatanaRenderVideo': OpenKatanaRenderVideo,
+    'OpenKatanaVideoFile': OpenKatanaVideoFile, 'OpenKatanaAudioFile': OpenKatanaAudioFile,
+    'OpenKatanaImageFile': OpenKatanaImageFile}
 NODE_DISPLAY_NAME_MAPPINGS = {'OpenKatanaImportMedia': 'OpenKatana · Import media',
-    'OpenKatanaMakeEdit': 'OpenKatana · Make edit', 'OpenKatanaRenderVideo': 'OpenKatana · Render to video'}
+    'OpenKatanaMakeEdit': 'OpenKatana · Make edit', 'OpenKatanaRenderVideo': 'OpenKatana · Render to video',
+    'OpenKatanaVideoFile': 'OpenKatana · Video file', 'OpenKatanaAudioFile': 'OpenKatana · Music file',
+    'OpenKatanaImageFile': 'OpenKatana · Photo file'}

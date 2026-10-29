@@ -130,7 +130,7 @@
     },
     {
       "id": 4,
-      "type": "LoadVideo",
+      "type": "OpenKatanaVideoFile",
       "title": "2 · Your video",
       "pos": [
         60,
@@ -146,7 +146,7 @@
       "inputs": [],
       "outputs": [
         {
-          "name": "VIDEO",
+          "name": "video",
           "type": "VIDEO",
           "links": [
             8
@@ -154,7 +154,7 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "LoadVideo"
+        "Node name for S&R": "OpenKatanaVideoFile"
       },
       "widgets_values": [
         ""
@@ -515,7 +515,7 @@
     },
     {
       "id": 12,
-      "type": "LoadAudio",
+      "type": "OpenKatanaAudioFile",
       "title": "2 · Your music",
       "pos": [
         60,
@@ -531,7 +531,7 @@
       "inputs": [],
       "outputs": [
         {
-          "name": "AUDIO",
+          "name": "audio",
           "type": "AUDIO",
           "links": [
             14
@@ -539,17 +539,15 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "LoadAudio"
+        "Node name for S&R": "OpenKatanaAudioFile"
       },
       "widgets_values": [
-        "",
-        null,
         ""
       ]
     },
     {
       "id": 13,
-      "type": "LoadImage",
+      "type": "OpenKatanaImageFile",
       "title": "2 · Your photo",
       "pos": [
         60,
@@ -565,24 +563,18 @@
       "inputs": [],
       "outputs": [
         {
-          "name": "IMAGE",
+          "name": "image",
           "type": "IMAGE",
           "links": [
             15
           ]
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": null
         }
       ],
       "properties": {
-        "Node name for S&R": "LoadImage"
+        "Node name for S&R": "OpenKatanaImageFile"
       },
       "widgets_values": [
-        "",
-        "image"
+        ""
       ]
     },
     {
@@ -881,12 +873,12 @@
           "name"
         ],
         [
-          "cfab03df-9ac1-529e-8346-03dffa1cec1c:4:file",
-          "file"
+          "cfab03df-9ac1-529e-8346-03dffa1cec1c:4:video",
+          "video"
         ],
         [
-          "cfab03df-9ac1-529e-8346-03dffa1cec1c:12:audio",
-          "audio"
+          "cfab03df-9ac1-529e-8346-03dffa1cec1c:12:music",
+          "music"
         ],
         [
           "cfab03df-9ac1-529e-8346-03dffa1cec1c:13:image",
@@ -929,7 +921,7 @@
       ]
     },
     "openkatana": {
-      "description": "Every App in one graph. One Project ID feeds every node: open Studio for your agent, import your video, music and a photo, build and render the edit, start a 3D scene and call any tool. Keep seconds within the video and music length. Bypass (Ctrl+B) the music or photo loader and its import if you do not use it. Model weights are separate.",
+      "description": "Every App in one graph. One Project ID feeds every node: open Studio for your agent, import your video, music and a photo, build and render the edit, start a 3D scene and call any tool. Upload them in the form, or leave any slot empty: empty slots are skipped. Keep seconds within the video and music length. Model weights are separate.",
       "local_only": true
     }
   }
