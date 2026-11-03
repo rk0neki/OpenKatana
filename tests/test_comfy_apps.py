@@ -126,10 +126,71 @@ class ComfyAppsTests(unittest.TestCase):
             for node in workflow['nodes']:
                 self.assertTrue(node['type'] in bridge.NODE_CLASS_MAPPINGS or node['type'] == 'PreviewAny')
             node = workflow['nodes'][0]
-            fields = bridge.NODE_CLASS_MAPPINGS[node['type']].INPUT_TYPES()['required']
+            types = bridge.NODE_CLASS_MAPPINGS[node['type']].INPUT_TYPES()
+            fields = {**types['required'], **types.get('optional', {})}
+            # widgets_values are positional: one per widget field, in the node's field order
+            widgets = [k for k, v in fields.items() if not (len(v) > 1 and v[1].get('forceInput'))]
+            self.assertEqual(len(node['widgets_values']), len(widgets), name)
             for widget, field in workflow['extra']['linearData']['inputs']:
-                self.assertIn(field, fields)
+                self.assertIn(field, widgets)
                 self.assertEqual(widget, workflow['id'] + ':1:' + field)
+
+    def test_seven_apps_are_written_and_installed(self):
+        names = sorted(templates())
+        self.assertEqual(len(names), 7)
+        self.assertIn('07 Preview an effect.app.json', names)
+        folder = ROOT / 'comfy_nodes/example_workflows'
+        self.assertEqual(sorted(p.name for p in folder.glob('*.app.json')), names)
+        for name in names:   # scripts/build_comfy_apps.py output is current
+            self.assertEqual(json.loads((folder / name).read_text(encoding='utf-8')), templates()[name], name)
+        # the installer copies every template into the user's workflows
+        spec = importlib.util.spec_from_file_location('install_comfy_nodes', ROOT / 'scripts/install_comfy_nodes.py')
+        installer = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(installer)
+        comfy = self.root / 'comfy'
+        (comfy / 'custom_nodes').mkdir(parents=True)
+        checked = types.SimpleNamespace(returncode=0, stdout=json.dumps({'ok': True, 'result': {}}))
+        with patch.object(installer.subprocess, 'run', return_value=checked):
+            result = installer.install(comfy, sys.executable, self.root / 'workspace')
+        self.assertEqual(sorted(result['installed']), names)
+        self.assertEqual(sorted(p.name for p in (comfy / 'user/default/workflows/OpenKatana').iterdir()), names)
+
+    def test_preview_effect_app(self):
+        from openkatana.effect_preview import check_effect
+        workflow = templates()['07 Preview an effect.app.json']
+        node = workflow['nodes'][0]
+        self.assertEqual(node['type'], 'OpenKatana_preview_effect')
+        self.assertIn('OpenKatana_preview_effect', bridge.NODE_CLASS_MAPPINGS)
+        self.assertEqual([f for _, f in workflow['extra']['linearData']['inputs']], ['project_id', 'effect', 'params', 'source'])
+        kind = bridge.NODE_CLASS_MAPPINGS['OpenKatana_preview_effect']
+        types_ = kind.INPUT_TYPES()
+        self.assertEqual(list(types_['required']), ['project_id', 'arguments', 'effect', 'params'])
+        self.assertEqual(list(types_['optional']), ['source', 'after'])
+        values = dict(zip(['project_id', 'arguments', 'effect', 'params', 'source'], node['widgets_values']))
+        self.assertEqual(values['effect'], 'local_twirl')
+        params = json.loads(values['params'])
+        self.assertIsInstance(params['angle'], list)          # eased keyframes
+        # a key's ease shapes the move to the next key (util.keyedT), so an ease on the last key would do nothing
+        self.assertEqual(params['angle'][0][2], 'inout3')
+        self.assertEqual([len(key) for key in params['angle'][1:]], [2])
+        self.assertIn(json.dumps(params['angle']), bridge.TYPED_FIELDS['preview_effect']['required']['params'][1]['tooltip'])
+        self.assertIsInstance(check_effect(values['effect'], params), dict)
+        # the node sends its fields as the tool's JSON arguments; empty fields are not sent
+        def run(**kw):
+            with patch.object(bridge, 'invoke', return_value={'ok': 1}) as invoke, patch.object(bridge, 'result_media', return_value=[]),                  patch.dict(sys.modules, {'folder_paths': types.SimpleNamespace(get_temp_directory=lambda: str(self.root))}):
+                kind().execute(**kw)
+            return invoke.call_args.kwargs['arguments']
+        self.assertEqual(run(project_id='film', arguments='{}', effect='local_twirl', params=values['params'], source=''),
+                         {'project_id': 'film', 'effect': 'local_twirl', 'params': params})
+        self.assertEqual(run(project_id='film', arguments='{"seconds": 1}', effect=' glow ', params='', source='media/a.png'),
+                         {'project_id': 'film', 'seconds': 1, 'effect': 'glow', 'source': 'media/a.png'})
+        # an older saved graph with only project_id and arguments keeps working
+        self.assertEqual(run(project_id='film', arguments='{"effect": "invert"}', effect='', params=''),
+                         {'project_id': 'film', 'effect': 'invert'})
+        with self.assertRaisesRegex(ValueError, 'disagree'):
+            run(project_id='film', arguments='{"effect": "invert"}', effect='glow', params='')
+        with self.assertRaisesRegex(ValueError, 'params must be a JSON object'):
+            run(project_id='film', arguments='{}', effect='glow', params='[1]')
 
     def check_full_workflow(self, workflow):
         """Every App in one graph: real nodes, consistent links, one project ID for every OpenKatana node,

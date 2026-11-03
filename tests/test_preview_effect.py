@@ -138,5 +138,36 @@ class PreviewEffectTests(unittest.TestCase):
         self.assertTrue(right[0] > 200 and right[1] > 200 and right[2] < 60, right)
 
 
+class EveryLocalEffectPreviewsTests(unittest.TestCase):
+    """Every registered local effect (the packs included, as they are added) must be previewable with its defaults:
+    preview_effect builds a valid one-shot timeline from the effect name alone. Validation only, no render."""
+    # Effects whose defaults cannot stand alone need these fields; anything else must preview with {}.
+    MINIMAL = {'local_scramble_text': {'text': 'OK'}, 'local_displacement_map': {'clip': 'source'}}
+
+    def test_every_local_effect_name_has_a_valid_preview_timeline(self):
+        from openkatana import local_fx
+        from openkatana.contracts import validate
+        from openkatana.effect_preview import _font, check_effect, effect_names, preview_timeline
+        self.assertGreaterEqual(len(local_fx.NAMES), 28)
+        self.assertEqual([n for n in local_fx.NAMES if n not in effect_names()], [])
+        clip = {'frames_dir': 'source', 'n': 6, 'fps': 30, 'w': 192, 'h': 108, 'pattern': '%05d.jpg'}
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for name in local_fx.NAMES:
+                with self.subTest(effect=name):
+                    out = root / name
+                    (out / 'source').mkdir(parents=True)
+                    for i in range(6):
+                        Image.new('RGB', (192, 108), (40 * i, 90, 160)).save(out / 'source' / f'{i:05d}.jpg')
+                    params = self.MINIMAL.get(name)
+                    value, fonts = _font(root, out, name, check_effect(name, params), [])
+                    for still in (False, True):
+                        edit = validate(preview_timeline(name, value, clip, 6, 30, still, fonts), out)
+                        self.assertEqual(list(edit['shots'][0]['fx']), [name])
+                    # the documented call shape fails only on a real problem, never on the name
+                    if params is None:
+                        self.assertIs(check_effect(name, {}), True)
+
+
 if __name__ == '__main__':
     unittest.main()

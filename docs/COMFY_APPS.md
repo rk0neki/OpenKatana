@@ -24,7 +24,7 @@ python scripts/install_comfy_nodes.py --comfy-root PATH_TO_COMFYUI
 and `output`. `--python PATH_TO_OPENKATANA_PYTHON` selects another installed
 OpenKatana environment; `--workspace PATH_TO_PROJECTS` selects an existing shared
 workspace. The default is `ComfyUI/output/OpenKatana`. The script links the node
-pack, writes `user/openkatana/config.json`, and installs six App workflows under
+pack, writes `user/openkatana/config.json`, and installs seven App workflows under
 `user/default/workflows/OpenKatana`. It does not pip-install into ComfyUI or
 download dependencies. Existing edited Apps and differing configuration are
 preserved. Stop active work, restart ComfyUI once and refresh its interface.
@@ -60,7 +60,7 @@ The [Registry listing](https://registry.comfy.org/nodes/openkatana) is
    with Python 3.11 or newer. FFmpeg and Chrome/Chromium are still required.
 3. With the Python interpreter reported by setup, run
    `scripts/install_comfy_nodes.py --comfy-root PATH_TO_COMFYUI`.
-   This configures the editor and installs the six Apps. It detects the Registry
+   This configures the editor and installs the seven Apps. It detects the Registry
    root install and does not add a second node link.
 4. Restart ComfyUI. Open **Apps → OpenKatana → 00 Full workflow**, then Run.
    Empty media slots are skipped; Studio becomes available through **Open Studio**.
@@ -84,9 +84,9 @@ At that verification time, the Registry API still marked `0.1.1` pending.
 The public listing and pinned-version Manager installation were verified;
 installation by the default/latest version remains unverified until review clears.
 
-## The six Apps
+## The seven Apps
 
-**Full workflow** puts every App below into one graph. One **Project ID** node feeds
+**Full workflow** puts every App below but Preview an effect into one graph. One **Project ID** node feeds
 every OpenKatana node, in five groups: *Your project and Studio*, *Your media* (a
 video, music and a photo, each imported as a project asset), *Make the edit* (**Make
 edit → Render to video**, with the photo as an extra media ID), *3D starter* and
@@ -95,7 +95,7 @@ the video, music and photo. Leave any of them empty and Run still works: empty s
 are skipped, so with no media it just opens Studio, starts a 3D scene and returns the
 tool result. With media, keep `seconds` within the video and music length and it
 also renders the edit. Switch to the node graph
-to see or rewire the whole workflow. The five single-purpose Apps:
+to see or rewire the whole workflow. The six single-purpose Apps:
 
 1. **Open Studio:** choose a simple project ID and display name; Run creates or
    reopens it, starts a loopback Studio and opens it in its own app window
@@ -119,6 +119,21 @@ to see or rewire the whole workflow. The five single-purpose Apps:
    Existing timelines are protected unless `replace_existing` is explicitly enabled.
    Source audio is imported separately and passed to the recipe. A silent source
    requires a silent preset such as ramp-freeze (beat-montage requires music).
+6. **Preview an effect:** try one effect before it goes in your timeline. Set the
+   project ID, an effect name and its fields as JSON in `params`; Run renders a
+   short video of the moving test card with only that effect, shown in the
+   preview area, and a 6-frame contact sheet whose path is in the result JSON.
+   It starts with an After Effects Twirl, eased in and out
+   (`local_twirl`); try `local_deep_glow`, `local_lens_flare`, `local_echo` or any
+   shot effect in [the timeline guide](TIMELINE.md), with a recipe for each in the
+   [effects playbook](EFFECTS-PLAYBOOK.md). Leave `params` empty for the effect's
+   defaults. `source` takes a project image or video instead of the test card.
+   The App runs the `preview_effect` tool on its own node,
+   **OpenKatana · Preview effect**; its `arguments` JSON takes the other fields
+   (`seconds`, `fps`, `at`, `max_width`). Nothing is added to the project timeline.
+   In Full workflow, the **Any of the 75 tools** node in the *Every tool* group
+   runs `preview_effect` with the same
+   JSON arguments.
 
 Example: select `create_project`, set project ID `film`, and arguments
 `{"name":"My film"}`. For an existing project use `get_project` with `{}`.

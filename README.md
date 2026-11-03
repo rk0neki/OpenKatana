@@ -58,6 +58,7 @@ frame blending. They join Turbulent Displace and Displacement Map, and each one 
 
 Try any of them in ComfyUI with the **OpenKatana · Preview effect** node, or ask your agent to call `preview_effect`.
 The [effects playbook](docs/EFFECTS-PLAYBOOK.md) has a recipe for each.
+Reproduce the reel with `python examples/effects_reel.py` (its effects are in `examples/effects_reel.json`; output in `work/effects-reel`).
 
 ## Quick start
 
@@ -115,8 +116,8 @@ one project ID feeds Open Studio, your video, music and photo uploads, Make edit
 Render to video, a 3D starter and any of the 75 tools. Run it from App mode and
 Studio opens in its own window.
 
-OpenKatana includes six saved Apps: **Full workflow**, plus **Open Studio**, **All tools**, **Make a 3D scene**, **Background job**
-and **Video to edit**. The integration offers 88 nodes for its tools plus project,
+OpenKatana includes seven saved Apps: **Full workflow**, plus **Open Studio**, **All tools**, **Make a 3D scene**, **Background job**,
+**Video to edit** and **Preview an effect**. The integration offers 88 nodes for its tools plus project,
 job and media helpers.
 
 Connect a local model's image frames or video output to **Import media → Make edit
