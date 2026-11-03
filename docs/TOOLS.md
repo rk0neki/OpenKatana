@@ -1,6 +1,6 @@
 # Tool reference
 
-OpenKatana has 74 tools, shared by the CLI, the MCP server and the ComfyUI
+OpenKatana has 75 tools, shared by the CLI, the MCP server and the ComfyUI
 nodes. This page is generated from the tool catalog by
 `python scripts/build_tools_doc.py`; do not edit it by hand.
 
@@ -23,7 +23,7 @@ guide with details and limits. Parameters ending in `?` are optional.
 | [Bring in and inspect media](#bring-in-and-inspect-media) | 8 | [Editor tools](EDITOR_TOOLS.md) |
 | [Author the timeline](#author-the-timeline) | 6 | [Timeline](TIMELINE.md), [Release tools](RELEASE-TOOLS.md) |
 | [Music, sound and captions](#music-sound-and-captions) | 7 | [Editor tools](EDITOR_TOOLS.md) |
-| [Analysis and effects](#analysis-and-effects) | 5 | [Effects](EXPANSION.md) |
+| [Analysis and effects](#analysis-and-effects) | 6 | [Effects](EXPANSION.md) |
 | [Match a reference](#match-a-reference) | 8 | [Editor tools](EDITOR_TOOLS.md) |
 | [Fonts and text shaping](#fonts-and-text-shaping) | 3 | [Editor tools](EDITOR_TOOLS.md), [Release tools](RELEASE-TOOLS.md) |
 | [Compositions and plugins](#compositions-and-plugins) | 6 | [Compositions](COMPOSITIONS.md) |
@@ -97,6 +97,7 @@ Guide: [Effects](EXPANSION.md)
 | `review_mask` | Review a clip's matte: sheets of the source every `step` s plus the last frame with the background tinted, the matte edge outlined and coverage per frame; flags empty/full mattes and coverage jumps. | `project_id`, `clip_id`, `step?`, `accept?`, `note?` |
 | `morph_images` | Morph two local images using geometric ORB correspondence or explicit normalized landmarks. | `project_id`, `source`, `target`, `width?`, `height?`, `fps?`, `frames?`, `points?` |
 | `render_page` | Render a project HTML/CSS/SVG/Canvas page that defines window.openkatanaPage = {width, height, fps, frames, render(t, f)} into PNG frames (render(f/fps, f) per frame) after a forward/reverse determinism check; returns a clip to add to the timeline. | `project_id`, `page`, `frames?`, `fps?` |
+| `preview_effect` | See ONE timeline effect before using it: a short mp4 and a 6-frame contact sheet of a shot with only that effect. | `project_id`, `effect`, `params?`, `source?`, `seconds?`, `fps?`, `at?`, `max_width?` |
 
 ## Match a reference
 

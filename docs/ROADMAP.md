@@ -1,6 +1,6 @@
 # Development plan
 
-Version 0.1.2 includes 74 shared MCP/CLI operations, local
+Version 0.1.2 includes 75 shared MCP/CLI operations, local
 Studio, timeline editing, audio, responsive compositions/plugins, advanced text,
 WebGL and optional Blender authoring, HDR finishing and Comfy model workflows.
 

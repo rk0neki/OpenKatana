@@ -1,8 +1,8 @@
 # OpenKatana in ComfyUI Apps
 
 Run OpenKatana locally from ComfyUI's Apps panel. The integration offers every
-shared AgentAPI tool (currently 74), plus the existing three tensor utilities and
-ten convenience/media nodes (87 nodes total). Studio, CLI and MCP continue to use the same project
+shared AgentAPI tool (currently 75), plus the existing three tensor utilities and
+ten convenience/media nodes (88 nodes total). Studio, CLI and MCP continue to use the same project
 files and revision checks. ComfyUI Apps is an additional entry point.
 
 No hosted server, account, cloud credits or model download is needed for editing
