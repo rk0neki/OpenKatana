@@ -13,6 +13,7 @@ SPECS = {
     'local_paper_frame': 'mode color margin seed',
     'local_scramble_text': 'text family size pos fill d at seed',
     'local_curve': 'scale dx dy blur glow exposure at mirror glow_radius glow_bright glow_contrast glow_mode',
+    'local_turbulent_displace': 'displacement amount size complexity evolution speed offset drift every pin region feather seed at',
 }
 NAMES = tuple(SPECS)
 RANGES = {'amount': (0, 1), 'd': (.001, 60), 'at': (0, 3600), 'spacing': (3, 200), 'mix': (0, 1), 'count': (1, 512),
@@ -23,12 +24,59 @@ INTEGER = ('count', 'seed', 'every', 'n', 'levels')
 # local_curve per-frame arrays (frame 0 = the shot start): scale, offsets and blur radius as fractions of the canvas height
 CURVES = {'scale': (.05, 20), 'dx': (-5, 5), 'dy': (-5, 5), 'blur': (0, .5), 'glow': (0, 4), 'exposure': (0, 8)}
 MAX_CURVE = 600
+DISPLACEMENTS = ('turbulent', 'bulge', 'twist', 'horizontal', 'vertical', 'cross')
+PINS = ('all', 'none', 'horizontal', 'vertical')
+TURBULENT = {'size': (1, 4000), 'complexity': (1, 8), 'evolution': (-1e4, 1e4), 'speed': (-60, 60), 'feather': (0, 1)}
+
+
+def _turbulent(k, v, loc):
+    """local_turbulent_displace fields that differ from the shared ones (amount in px at 1080, keyframes allowed)."""
+    if k == 'displacement':
+        if v not in DISPLACEMENTS:
+            raise ContractError(f'{loc}: one of {", ".join(DISPLACEMENTS)}')
+    elif k == 'pin':
+        if v not in PINS:
+            raise ContractError(f'{loc}: one of {", ".join(PINS)}')
+    elif k == 'amount':
+        if isinstance(v, list):
+            if not 1 <= len(v) <= 64:
+                raise ContractError(f'{loc}: a number or 1..64 keyframes [seconds, px]')
+            last = -1
+            for i, key in enumerate(v):
+                if not isinstance(key, list) or len(key) != 2:
+                    raise ContractError(f'{loc}[{i}]: expected [seconds, px]')
+                number(key[0], f'{loc}[{i}][0]', 0, 3600); number(key[1], f'{loc}[{i}][1]', 0, 1000)
+                if key[0] <= last:
+                    raise ContractError(f'{loc}: keyframe times must increase')
+                last = key[0]
+        else:
+            number(v, loc, 0, 1000)
+    elif k in ('offset', 'drift'):
+        if not isinstance(v, list) or len(v) != 2:
+            raise ContractError(f'{loc}: expected [x, y] px (at 1080)')
+        for x in v:
+            number(x, loc, -1e5, 1e5)
+    elif k == 'region':
+        if not isinstance(v, list) or len(v) != 4:
+            raise ContractError(f'{loc}: expected [x0, y0, x1, y1] (0..1)')
+        for x in v:
+            number(x, loc, 0, 1)
+        if v[2] <= v[0] or v[3] <= v[1]:
+            raise ContractError(f'{loc}: x1 and y1 must be greater than x0 and y0')
+    elif k in TURBULENT:
+        lo, hi = TURBULENT[k]
+        number(v, loc, lo, hi, integer=k == 'complexity')
+    else:
+        return False
+    return True
 
 
 def local_effect(name, p, where):
     fields(p, SPECS[name], where)
     for k, v in p.items():
         loc = f'{where}.{k}'
+        if name == 'local_turbulent_displace' and _turbulent(k, v, loc):
+            continue
         if k in ('ink', 'paper', 'color', 'fill'):
             color(v, loc)
         elif k in CURVES:

@@ -422,10 +422,17 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 - **For type:** slide rows sideways and columns up and down by a sum of three sine
   waves, with phases that change every frame. Use 3–22 px at 1080 and a wave size of
   0.25–0.8 of the cap height.
-- **OpenKatana:** type can be displaced from a project hook. Plates and graphics need a
-  built-in `turbulent_displace` effect (fractal-noise displacement with amount, size,
-  complexity and evolution). The `liquid` transition (`wobble`) and `lens_warp` cover
-  only part of it.
+- **OpenKatana:** `local_turbulent_displace`, the After Effects Turbulent Displace for
+  plates, graphics and type (TIMELINE.md):
+  - `displacement` turbulent, bulge, twist, horizontal, vertical or cross; `amount` in
+    px at 1080 (keyframes `[[seconds, px], ...]` for a burst on a hit), `size`,
+    `complexity` (octaves) and `evolution` with `speed`.
+  - A wavy line: `horizontal` or `vertical`, 3-22 px, `size` about the cap height.
+  - A word in rippling liquid: `region` around the word with a `feather`, `speed` 1-2.
+  - A boiling, hand-drawn edge: `complexity` 3-4, small `size`, `every` 2-3.
+  - Burning ornaments: `twist` with a `drift` upwards.
+  A project hook can still displace single glyphs. The `liquid` transition (`wobble`)
+  and `lens_warp` cover a cut or a lens.
 
 ### 22. Slash cuts, glitch slices and smears on type
 
@@ -564,7 +571,7 @@ v15 adds to the table below:
 | 18 | Opacity | Partial: text, textures and glows have their own opacity; not audited per scene |
 | 19 | Letterbox | Done, including the finale's mode letterbox |
 | 20 | Word slams | Done |
-| 21 | Turbulent displacement | Done for type; plates and graphics remain an OpenKatana gap |
+| 21 | Turbulent displacement | Done for type; plates and graphics now have the built-in `local_turbulent_displace` |
 | 22 | Slash cuts, glitches, smears | Done |
 | 23 | 3D tracked text | Section not in the cut |
 | 24 | Typing, ghosting, split colour | Done |
