@@ -29,6 +29,7 @@ def _point(v, loc, lo, hi):
 def validate(name, p, where):
     """Check one effect's parameters; raise ContractError with the field path on a bad value."""
     from .local_fx import _ease, _keyed
+    from .native import Normalizer
     for k, v in p.items():
         loc = f'{where}.{k}'
         if k in CHOICES:
@@ -44,11 +45,16 @@ def validate(name, p, where):
         elif k in KEYED:
             _keyed(v, loc, *KEYED[k])
         elif k == 'tint':
-            if v != 'none':
-                color(v, loc)
+            if v != 'none':   # 'tint' is not one of native's colour keys (grades use it as a number): convert here
+                c = Normalizer({}).colour(v, loc, allow_ref=False)
+                color(c, loc)
+                if c != v:
+                    p[k] = c   # the canonical "#rrggbb" the renderer reads
         elif k == 'color':
             color(v, loc)
         elif k == 'ease':
+            if v == 'hold':   # a keyframe ease; the automatic sweep would have nothing to hold
+                raise ContractError(f'{loc}: hold is for keyframes; use lin, in2, out2, inout, ... or a cubic-bezier')
             _ease(v, loc)
         else:
             number(v, loc, *PLAIN[k], integer=k in INTEGER)

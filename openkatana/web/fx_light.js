@@ -16,15 +16,15 @@
     g.imageSmoothingQuality = 'high'; g.drawImage(ctx.canvas, 0, 0, w, h);
     return g.getImageData(0, 0, w, h).data;
   }
-  // the parts brighter than `th` (Rec. 709 luma, 0..1): colour x clamp((luma - th) / (1 - th)) as float RGB; null when
-  // nothing passes (the effect then leaves the frame untouched)
-  function bright(d, n, th) {
+  // the parts brighter than `th` (Rec. 709 luma, 0..1): colour x clamp((luma - th) / (1 - th)) ** knee as float RGB; null
+  // when nothing passes (the effect then leaves the frame untouched)
+  function bright(d, n, th, knee = 1) {
     const out = new Float32Array(n * 3), span = Math.max(1e-3, 1 - th);
     let any = false;
     for (let i = 0; i < n; i++) {
       const r = d[4 * i] / 255, g = d[4 * i + 1] / 255, b = d[4 * i + 2] / 255, l = .2126 * r + .7152 * g + .0722 * b;
       if (l <= th) continue;
-      const m = Math.min(1, (l - th) / span);
+      const m = Math.min(1, (l - th) / span) ** knee;
       out[3 * i] = r * m; out[3 * i + 1] = g * m; out[3 * i + 2] = b * m; any = true;
     }
     return any ? out : null;
@@ -88,9 +88,11 @@
   }
 
   // local_deep_glow: Deep Glow / a good After Effects Glow. Parts brighter than `threshold` (luma 0..1, soft above it)
-  // are blurred `layers` times with radii doubling up to `radius` (px at 1080) and summed with equal weights (2 in all), so a point
-  // of light falls off about as the inverse square: a tight core and a wide tail. `exposure` scales the sum; `tint`
-  // colours it, `saturation` scales its colourfulness; `blend` add (default) or screen. Built at most 540 px high.
+  // (squared above it, so parts just over the threshold glow faintly) are blurred `layers` times with radii doubling up to
+  // `radius` (px at 1080) and summed with weights growing by sqrt 2 per layer and adding up to 1: exposure 1 adds the
+  // thresholded picture once over a flat area (After Effects' Glow at intensity 1), and a point of light falls off about
+  // as r^-1.5, a tight core and a wide tail. `exposure` scales the sum; `tint` colours it, `saturation` scales its
+  // colourfulness; `blend` add (default) or screen. Built at most 540 px high.
   register('local_deep_glow', {order: 80, draw(ctx, p, s) {
     const {W, H} = s, t = s.elapsed - (p.at ?? 0);
     if (t < 0) return;
@@ -99,8 +101,9 @@
     const th = clamp(keyedT(p.threshold, t, .6)), L = clamp(Math.round(p.layers ?? 6), 2, 8);
     const sc = Math.min(1, 540 / H), w = Math.max(1, Math.round(W * sc)), h = Math.max(1, Math.round(H * sc));
     const R = Math.max(.5, keyedT(p.radius, t, 120) * H / 1080 * sc);
-    const src = bright(grab(ctx, w, h), w * h, th);
+    const src = bright(grab(ctx, w, h), w * h, th, 2);
     if (!src) return;
+    const wsum = (2 ** (L / 2) - 1) / (Math.SQRT2 - 1);   // sum of sqrt 2 ** i, i < L
     const acc = new Float32Array(w * h * 3), levels = [{d: src, w, h}];
     for (let i = 0; i < L; i++) {
       const sigma = R / 2 ** (L - 1 - i) / 2;   // the radius is about two sigma
@@ -111,7 +114,7 @@
       }
       const {d, w: lw, h: lh} = levels[lv], buf = Float32Array.from(d);
       gauss(buf, lw, lh, sigma / 2 ** lv);
-      addUp(acc, w, h, buf, lw, lh, 2 / L);
+      addUp(acc, w, h, buf, lw, lh, Math.SQRT2 ** i / wsum);
     }
     lay(ctx, s, acc, w, h, E, tintOf(p.tint), keyedT(p.saturation, t, 1), p.blend);
   }});
@@ -215,18 +218,20 @@
     const sc = Math.min(1, 270 / H), w = Math.max(1, Math.round(W * sc)), h = Math.max(1, Math.round(H * sc));
     const src = bright(grab(ctx, w, h), w * h, th);
     if (!src) return;
-    gauss(src, w, h, .8);   // fills between samples
     const cx = c[0] * w - .5, cy = c[1] * h - .5, far = Math.max(Math.hypot(cx, cy), Math.hypot(w - cx, cy), Math.hypot(cx, h - cy), Math.hypot(w - cx, h - cy));
-    const N = Math.max(8, Math.min(96, Math.ceil(far * len / 1.2))), U = new Float32Array(N), Wt = new Float32Array(N);
+    const N = Math.max(8, Math.min(192, Math.ceil(far * len / 1.2))), U = new Float32Array(N), Wt = new Float32Array(N);
+    gauss(src, w, h, clamp(far * len / N * .4, .8, 4));   // fills between samples (wider when they lie far apart)
     let wsum = 0;
     for (let i = 0; i < N; i++) { U[i] = 1 - len * i / N; Wt[i] = 1 - i / N; wsum += Wt[i]; }
     for (let i = 0; i < N; i++) Wt[i] /= wsum;
-    const out = new Float32Array(w * h * 3);
+    const out = new Float32Array(w * h * 3), du = len / N;
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
       const dx = x - cx, dy = y - cy, o = (y * w + x) * 3;
+      // a fixed per-pixel jitter of the samples along the ray (interleaved gradient noise): no stamped copies between them
+      const j = du * ((52.9829189 * ((.06711056 * x + .00583715 * y) % 1)) % 1);
       let r = 0, g = 0, b = 0;
       for (let i = 0; i < N; i++) {
-        const sx = cx + dx * U[i], sy = cy + dy * U[i];
+        const sx = cx + dx * (U[i] - j), sy = cy + dy * (U[i] - j);
         if (sx < 0 || sy < 0 || sx > w - 1 || sy > h - 1) continue;
         const x0 = Math.floor(sx), y0 = Math.floor(sy), x1 = Math.min(w - 1, x0 + 1), y1 = Math.min(h - 1, y0 + 1), ux = sx - x0, uy = sy - y0;
         const a = (y0 * w + x0) * 3, bb = (y0 * w + x1) * 3, cc = (y1 * w + x0) * 3, dd = (y1 * w + x1) * 3, wt = Wt[i];
@@ -252,7 +257,8 @@
     const I = keyedT(p.intensity, t, 1);
     if (!(I > 0)) return;
     const k = H / 1080, a = keyedT(p.angle, t, 30) * Math.PI / 180, nx = Math.cos(a), ny = Math.sin(a);
-    const hw = Math.max(.5, keyedT(p.width, t, 80) * k / 2), soft = clamp(keyedT(p.softness, t, .5));
+    // at least 1.5 px each side so a thin band still lands on pixels without shimmering; a narrower one keeps its energy
+    const hw0 = keyedT(p.width, t, 80) * k / 2, hw = Math.max(1.5, hw0), thin = Math.min(1, hw0 / hw), soft = clamp(keyedT(p.softness, t, .5));
     const proj = [0, W * nx, H * ny, W * nx + H * ny], lo = Math.min(...proj), hi = Math.max(...proj);
     let c;
     if (p.position != null) c = lo + keyedT(p.position, t, 0) * (hi - lo);
@@ -265,7 +271,7 @@
     const ramp = Math.max(.001, soft / 2), smooth = u => u * u * (3 - 2 * u);
     for (let i = 0; i <= 4; i++) {   // smoothstep shoulders, a flat core
       const u = i / 4, v = smooth(u);
-      g.addColorStop(ramp * u, rgba(col, v)); g.addColorStop(1 - ramp * u, rgba(col, v));
+      g.addColorStop(ramp * u, rgba(col, v * thin)); g.addColorStop(1 - ramp * u, rgba(col, v * thin));
     }
     const band = buffer(W, H), bx = band.getContext('2d');   // the band's light on black (adds nothing elsewhere)
     bx.fillStyle = '#000000'; bx.fillRect(0, 0, W, H); bx.fillStyle = g; bx.fillRect(0, 0, W, H);

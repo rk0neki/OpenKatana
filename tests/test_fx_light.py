@@ -76,10 +76,16 @@ class LightPackTests(unittest.TestCase):
                ('local_lens_flare', {'flicker': 2}, 'out of range'),
                ('local_light_rays', {'length': 2}, 'out of range'), ('local_light_rays', {'center': [[0, .5], [1, .6]]}, r'\[x, y\]'),
                ('local_light_sweep', {'reception': 'cutout'}, 'one of add'), ('local_light_sweep', {'ease': 'bounce'}, 'one of lin'),
-               ('local_light_sweep', {'color': 'none'}, 'rrggbb'), ('local_light_sweep', {'intensity': float('nan')}, '')]
+               ('local_light_sweep', {'color': 'none'}, 'rrggbb'), ('local_light_sweep', {'intensity': float('nan')}, ''),
+               ('local_light_sweep', {'ease': 'hold'}, 'hold is for keyframes'),
+               ('local_deep_glow', {'tint': [255, 0, 0, .5]}, 'opaque')]
         for name, fx, error in bad:
             with self.assertRaisesRegex(ContractError, error, msg=f'{name} {fx}'):
                 validate(self.edit(name, fx), self.root)
+        # tint takes every colour syntax the error message offers, canonicalised to "#rrggbb" for the renderer
+        for name, tint in (('local_deep_glow', 'rgb(255,0,0)'), ('local_lens_flare', [255, 0, 0]), ('local_light_rays', '#FF0000')):
+            out = validate(self.edit(name, {'tint': tint}), self.root)
+            self.assertEqual(out['shots'][0]['fx'][name]['tint'], '#ff0000', msg=name)
 
     @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
     def test_below_threshold_and_zero_amounts_untouched(self):
@@ -104,6 +110,32 @@ class LightPackTests(unittest.TestCase):
         # tint: the glow takes the colour
         g = self.render('local_deep_glow', {'radius': 600, 'threshold': .5, 'tint': '#ff4000'})[0]
         self.assertGreater(g[54, 108, 0], g[54, 108, 2] + 10)
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_glow_defaults_do_not_wash_out_bright_plates(self):
+        # a flat area above the threshold gets its thresholded self added about once (exposure 1 = 1x, After Effects'
+        # Glow at intensity 1): luma .78 with threshold .6 -> ((.78 - .6) / .4) ** 2 = .21 of 200 added
+        self.plate(np.full((H, W, 3), 200, np.uint8))
+        f = self.render('local_deep_glow', {})[0]
+        self.assertLess(abs(f[54, 96].mean() - 242), 6)
+        # a daylight sky: brightened, not clipped to white
+        y = np.linspace(0, 1, H)[:, None, None]
+        self.plate(((np.array([110, 160, 220]) * (1 - y) + np.array([200, 215, 235]) * y) * np.ones((H, W, 1))).round().astype(np.uint8))
+        f = self.render('local_deep_glow', {})[0]
+        self.assertLess(f[60, 96, :2].max(), 230)
+        self.assertGreater(f[60, 96].sum(), self.source[60, 96].astype(int).sum())
+        self.assertLess((f == 255).all(axis=2).mean(), .1)
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_thin_sweep_band_still_lands(self):
+        # a band under 2 px wide is drawn 3 px wide with its energy kept (it used to vanish between pixel centres)
+        e = {}
+        for width in (10, 20, 40):
+            f = self.render('local_light_sweep', {'angle': 0, 'width': width, 'position': .5, 'softness': .5})[0]
+            e[width] = (f - self.source).sum()
+        self.assertGreater(e[10], 0)
+        self.assertLess(abs(e[10] / e[40] - .25), .08)
+        self.assertLess(abs(e[20] / e[40] - .5), .1)
 
     @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
     def test_flare_core_sits_at_its_position(self):
