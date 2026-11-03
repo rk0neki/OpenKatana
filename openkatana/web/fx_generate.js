@@ -62,6 +62,17 @@
     }
     return out;
   }
+  // two value-noise lattices half a step apart in z (and w), summed: where one is at a lattice point (still, full
+  // spread) the other is midway (moving fastest, narrowest spread), so evolution runs at a steady pace and contrast
+  // instead of easing in and out once a revolution
+  const vnoise2 = (x, y, z, w, ip, sd, four) =>
+    .7071 * (vnoise(x, y, z, w, ip, sd, four) + vnoise(x, y, z + .5, w + .5, ip, sd ^ 0x6a09e667, four));
+  // the error function (Abramowitz and Stegun 7.1.26, error under 1.5e-7)
+  function erf(x) {
+    const q = 1 / (1 + .3275911 * Math.abs(x));
+    const y = 1 - q * (.254829592 + q * (-.284496736 + q * (1.421413741 + q * (-1.453152027 + q * 1.061405429)))) * Math.exp(-x * x);
+    return x < 0 ? -y : y;
+  }
   const seedHash = seed => Math.imul((seed | 0) ^ 0x5bd1e995, 0x01000193) ^ 0x3c6ef372;
 
   // local_fractal_noise: After Effects' Fractal Noise. Octaves of noise (`complexity`, a fraction weighs in the last one),
@@ -96,7 +107,7 @@
     }
     const gain = {block: .74, linear: 1.12, spline: 1.28}[ntype] ?? 1;   // every noise type to one spread (sd .35)
     const one = (x, y, m) => gain * (spline ? (cyc ? .933 * pn.n4(x, y, cz + m[4], cw + m[5]) : pn(x, y, cz + m[4]))
-      : vnoise(x, y, cz + m[4], cw + m[5], ip, sd, !!cyc));
+      : vnoise2(x, y, cz + m[4], cw + m[5], ip, sd, !!cyc));
     const norm = kind === 'basic' ? .55 / Math.sqrt(w2) : 1 / wsum;
     const con = keyedT(p.contrast, t, 100) / 100, bri = keyedT(p.brightness, t, 0) / 100, inv = !!p.invert;
     const over = OVERFLOW[p.overflow ?? 'clip'], tint = p.tint && p.tint !== 'none' ? hex(p.tint) : [255, 255, 255];
@@ -346,16 +357,24 @@
       g.globalAlpha = 1;
     };
     const layer = buffer(W, H), lg = layer.getContext('2d');
-    if (gr > 0 && go > 0) {   // the glow: the bolts thickened on a small buffer, blurred twice (tight and wide), added
-      const sc = Math.min(1, 270 / H), gw = Math.ceil(W * sc), gh = Math.ceil(H * sc), src = buffer(gw, gh), sg = src.getContext('2d');
-      sg.strokeStyle = glowC; stroke(sg, sc, wf => 2 * core * wf + gr * .12);
+    if (gr > 0 && go > 0) {
+      // the glow: the bolts drawn thick on a small buffer and blurred twice, a tight halo and a wide one, each scaled so
+      // the main bolt's halo peaks at its share of glow_opacity (a blurred line loses height as the blur widens), added
+      const sc = Math.min(1, 270 / H), gw = Math.ceil(W * sc), gh = Math.ceil(H * sc);
       lg.globalCompositeOperation = 'lighter'; lg.imageSmoothingQuality = 'high';
-      for (const [r, a] of [[gr * .25, .8], [gr * .7, .7]]) {
+      for (const [r, share] of [[gr * .2, 1], [gr * .6, .6]]) {
+        const lw = 2 * core + r, rs = Math.max(.5, r * sc), peak = erf(lw * sc / (2 * Math.SQRT2 * rs));
+        const src = buffer(gw, gh), sg = src.getContext('2d');
+        sg.strokeStyle = glowC; stroke(sg, sc, wf => 2 * core * wf + r);
+        let gain = go * share / Math.max(peak, 1e-3), dbl = 0;
+        while (gain > 1 && dbl < 6) { gain /= 2; dbl++; }
         const bl = buffer(gw, gh), bg = bl.getContext('2d');
-        bg.filter = `blur(${Math.max(.5, r * sc)}px)`; bg.drawImage(src, 0, 0); bg.filter = 'none';
-        lg.globalAlpha = Math.min(1, go * a * 1.6); lg.drawImage(bl, 0, 0, W, H);
+        bg.filter = `blur(${rs}px)`; bg.globalAlpha = gain; bg.drawImage(src, 0, 0); bg.filter = 'none'; bg.globalAlpha = 1;
+        bg.globalCompositeOperation = 'lighter';
+        for (let i = 0; i < dbl; i++) bg.drawImage(bl, 0, 0);
+        lg.drawImage(bl, 0, 0, W, H);
       }
-      lg.globalAlpha = 1; lg.globalCompositeOperation = 'source-over';
+      lg.globalCompositeOperation = 'source-over';
     }
     if (core > 0) { lg.strokeStyle = coreC; stroke(lg, 1, wf => 2 * core * wf); }
     lay(ctx, s, layer, p, o);

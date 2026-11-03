@@ -218,5 +218,28 @@ class GeneratePackTests(unittest.TestCase):
             self.assertGreater(k.max(), 200, msg=kind)
 
 
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_lightning_glow_reaches_its_radius(self):
+        # a straight bolt on grey: the default glow (radius 50 at 1080, opacity .5) still shows a blue halo at its
+        # radius (5 px here); glow_opacity 0 leaves only the core
+        self.plate(np.full((H, W, 3), 128, np.uint8))
+        fx = {'origin': [.05, .5], 'direction': [.95, .5], 'forking': 0, 'turbulence': .01}
+        f = self.render('local_lightning', fx)[0]
+        row = int(np.argmax(f[:, 96, 0])); halo = f[:, 96, 2] - 128
+        self.assertGreater(min(halo[row - 5], halo[row + 5]), 7)
+        self.assertGreater(min(halo[row - 2], halo[row + 2]), 25)
+        g = self.render('local_lightning', {**fx, 'glow_opacity': 0})[0]
+        self.assertLessEqual(np.abs(g[:, 96] - 128)[[row - 5, row + 5]].max(), 1)
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_fractal_noise_evolves_at_a_steady_pace(self):
+        # at a constant speed the texture changes as much from frame to frame near a whole revolution as midway
+        # between (value noise once eased in and out every revolution)
+        for kind in ('soft_linear', 'block'):
+            fr = self.render('local_fractal_noise', {'speed': 2, 'noise_type': kind}, frames=16)
+            d = [np.abs(fr[i + 1] - fr[i]).mean() for i in range(15)]
+            self.assertLess(max(d) / min(d), 1.25, msg=f'{kind}: {d}')
+
+
 if __name__ == '__main__':
     unittest.main()
