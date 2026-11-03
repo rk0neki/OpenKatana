@@ -21,7 +21,7 @@ GROUPS = [
      ['analyze_audio', 'plan_music_edit', 'plan_storyboard', 'fill_storyboard', 'list_sfx',
       'transcribe_audio', 'make_captions']),
     ('Analysis and effects', [('Effects', 'EXPANSION.md')],
-     ['analyze_clip', 'analyze_energy', 'review_mask', 'morph_images', 'render_page']),
+     ['analyze_clip', 'analyze_energy', 'review_mask', 'morph_images', 'render_page', 'preview_effect']),
     ('Match a reference', [('Editor tools', 'EDITOR_TOOLS.md')],
      ['analyze_reference', 'compare_reference', 'shot_sheet', 'eye_sheet', 'save_reference_plan', 'audit_reference_plan',
       'bind_reference', 'inspect_identity']),
@@ -46,19 +46,21 @@ GROUPS = [
 ]
 
 # What the current release added, listed under the introduction. Update it with each release.
-NEW_IN = '0.1.2'
-NEW_TOOLS = ['shot_sheet', 'eye_sheet']
+NEW_IN = '0.1.3'
+NEW_TOOLS = ['preview_effect']
 NEW_NOTES = [
-    '`analyze_reference` `measure`: frame-level measurement on a 60-fps clock (every reference is analysed at 60 fps): '
-    'cuts versus exposure dips, picture cadence, look per shot, texture speck rate and the median cut transition as '
-    '`local_curve` arrays.',
-    '`compare_reference` `side_by_side` (a reference-left, render-right video) and `look` (tone, saturation and colour '
-    'cast of both, and their difference).',
-    'New timeline effects, set in the timeline rather than called as tools ([Timeline](TIMELINE.md), '
-    '[Effects playbook](EFFECTS-PLAYBOOK.md)): `local_turbulent_displace` (After Effects\' Turbulent Displace: smoother '
-    'modes, Cycle Evolution loops, eased keyframes, locked pins, high quality) and `local_displacement_map` (Displacement '
-    'Map: any channel, per-axis amounts, stretch, centre or tile, wrap); texture `overlays` and adjustment layers; '
-    '`local_curve` transitions measured from a reference.',
+    'Distort pack, set in the timeline ([Timeline](TIMELINE.md)): `local_wave_warp`, `local_ripple`, `local_shockwave`, '
+    '`local_twirl`, `local_bulge`, `local_polar`, `local_kaleidoscope` and `local_mirror`, with After Effects\' parameter '
+    'names, eased keyframes, edges and high quality.',
+    'Light pack: `local_deep_glow`, `local_lens_flare`, `local_light_rays` and `local_light_sweep`.',
+    'Time pack: `local_echo`, `local_time_displacement`, `local_posterize_time` and `local_frame_blend`; each reads other '
+    'frames of its own shot.',
+    'Blur & Sharpen pack: `local_gaussian_blur`, `local_directional_blur`, `local_radial_blur`, `local_camera_lens_blur`, `local_unsharp_mask`, `local_channel_blur`, `local_tilt_shift`.',
+    'Stylize pack: `local_rgb_split`, `local_motion_tile`, `local_find_edges`, `local_emboss`, `local_mosaic`, `local_scatter`.',
+    'Generate pack: `local_fractal_noise`, `local_cell_pattern`, `local_gradient_ramp`, `local_four_color_gradient`, `local_grid`, `local_radio_waves`, `local_lightning`.',
+    'ComfyUI: a seventh saved App, **06 Preview an effect**; `examples/effects_reel.py` reproduces the README reel.',
+    'Recipes for every effect are in the [effects playbook](EFFECTS-PLAYBOOK.md); `preview_effect` shows any of them in '
+    'ComfyUI or to an agent.',
 ]
 
 

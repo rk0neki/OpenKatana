@@ -27,7 +27,14 @@ adjustment layers), `local_curve`, `local_turbulent_displace` (keyframed and hel
 pinning and locked pins, region, boil, single-axis moves, a Cycle Evolution loop that
 returns to its first frame, smoother and high-quality modes), `local_displacement_map`
 (exact pixel shifts per channel, full and half, per-axis amounts, an eased amount,
-reflect, clamp and wrap edges, centred and tiled maps), hook image preloading and the frame-level
+reflect, clamp and wrap edges, centred and tiled maps), the Distort pack (identity cases, exact mirror and
+polar geometry, fold-free pinches, kaleidoscope seams), the Light pack (untouched below the threshold, glow
+around a bright dot without washing out bright plates, flare and sweep placement), the Time pack (echo
+positions and intensities on a moving square, held frame pairs, time displacement across the frame, nothing
+duplicated inside echoes), the Blur & Sharpen, Stylize and Generate packs (identity cases, exact shifts and
+block colours, edge-preserving blurs, deterministic and looping noise, gradient end colours), `preview_effect`
+(test card, project image and video, fonts, warnings, and a validation pass over every registered effect name)
+and the effects reel example, hook image preloading and the frame-level
 reference measurement (cuts and dips, cadence, textures and transitions, on a
 synthetic reference with known answers) have pixel- or value-level unit tests.
 

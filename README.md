@@ -4,10 +4,11 @@
 
 # OpenKatana
 
-OpenKatana is an independent, open-source **editing engine your AI agent drives: your photos, footage and music in, a finished edit out; cuts, transitions, motion, typography and music in one shared project, all made with code.** Inspired by Higgsfield's Katana, built with the Comfy Developer Platform, with local open-weights workflows and optional authorized API models. **Version 0.1.2** [#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield/).
+OpenKatana is an independent, open-source **editing engine your AI agent drives: your photos, footage and music in, a finished edit out; cuts, transitions, motion, typography and music in one shared project, all made with code.** Inspired by Higgsfield's Katana, built with the Comfy Developer Platform, with local open-weights workflows and optional authorized API models. **Version 0.1.3** [#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield/).
 
 [![Comfy Registry](https://img.shields.io/badge/Comfy_Registry-OpenKatana-00A67E)](https://registry.comfy.org/nodes/openkatana)
-[![Release v0.1.2](https://img.shields.io/badge/release-v0.1.2-blue)](https://github.com/rk0neki/OpenKatana/releases/tag/v0.1.2)
+[![Release v0.1.3](https://img.shields.io/badge/release-v0.1.3-blue)](https://github.com/rk0neki/OpenKatana/releases/tag/v0.1.3)
+[![75 tools](https://img.shields.io/badge/tools-75-6f42c1)](docs/TOOLS.md)
 [![CI](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml)
 [![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](docs/SETUP.md)
@@ -20,7 +21,7 @@ OpenKatana is an independent, open-source **editing engine your AI agent drives:
 [![Finished Koji anime edit made with OpenKatana: cuts, effects and motion](docs/assets/koji-edit.gif)](docs/assets/koji-edit.mp4)
 
 **[Watch the anime edit with sound](docs/assets/koji-edit.mp4)** — the finale from the OpenKatana launch film.
-Source animation: [“Koji” by Ammonite & Zean](https://www.youtube.com/watch?v=61zI4eE92xM) (CC BY); edited with OpenKatana.
+Source animation: [“Koji” by Ammonite & Zean](https://www.youtube.com/watch?v=61zI4eE92xM) (CC BY); music made with [Suno](https://suno.com); edited with OpenKatana.
 
 ### Motif
 
@@ -30,12 +31,47 @@ Source animation: [“Koji” by Ammonite & Zean](https://www.youtube.com/watch?
 
 A 24-second product film with procedural 3D objects, choreographed cameras, animated displays, typography and an original soundtrack. OpenKatana offers code-authored WebGL rendering for 3D scenes, with a Blender option available too. This MOTIF export used the Blender option; OpenKatana assembles and finishes the film. No video-generation model was used. The GIF shows an eight-second preview at reduced resolution and frame rate; the MP4 preserves the original 1080p/60fps export and audio. [Artwork and film credits](docs/assets/readme-visuals.json).
 
+## Why OpenKatana is different
+
+- **Your agent edits, with real tools.** Instead of one prompt-to-video model, your own AI agent cuts real footage
+  with OpenKatana's [editing tools](docs/TOOLS.md): timeline, typography, camera moves, audio, 3D and effects. The
+  result stays an editable project, not a flattened clip.
+- **One project, four ways in.** ComfyUI Apps, Studio, the CLI and MCP open the same project files with revision
+  checks, so you and your agent can take turns on the same edit.
+- **Match a reference edit.** `analyze_reference` measures a reference at 60 fps (cuts versus flashes, picture cadence,
+  the look of each shot, texture speed and the shape of each transition) and turns it into timeline settings.
+- **After Effects-grade effects, written as code.** Turbulent Displace, Displacement Map and six effect packs
+  (Distort, Light, Time, Blur & Sharpen, Stylize and Generate: Wave Warp, Twirl, Deep Glow, Lens Flare, Echo, Time
+  Displacement, RGB split, Fractal Noise, Advanced Lightning and more) take keyframes, eases and antialiasing, each as
+  a few lines of [timeline JSON](docs/TIMELINE.md).
+- **Open and local.** Apache-2.0, runs on your machine, no account. Models are optional and installed separately.
+
+## New in 0.1.3: six After Effects effect packs
+
+[![Twirl, Polar Coordinates, Kaleidoscope, Lens Flare, Light Rays, Echo, RGB Split and Advanced Lightning, rendered by OpenKatana](docs/assets/ae-packs.gif)](docs/assets/ae-packs.mp4)
+
+**[Watch all 37 effects](docs/assets/ae-packs.mp4)** or browse the **[effects gallery](docs/EFFECTS-GALLERY.md)**:
+Distort (Wave Warp, Ripple, Shockwave, Twirl, Bulge, Polar Coordinates, Kaleidoscope, Mirror), Light (Deep Glow, Lens
+Flare, Light Rays, Light Sweep), Time (Echo, Time Displacement, Posterize Time, frame blending), Blur & Sharpen
+(Gaussian, Directional, Radial and Camera Lens Blur, Unsharp Mask, Channel Blur, Tilt-Shift), Stylize (RGB Split,
+Motion Tile, Find Edges, Emboss, Mosaic, Scatter) and Generate (Fractal Noise, Advanced Lightning, Radio Waves, Cell
+Pattern, Gradient Ramp, 4-Color Gradient, Grid). They join Turbulent Displace and Displacement Map, and each one is a
+few lines of timeline JSON:
+
+```json
+"fx": {"local_twirl": {"angle": [[0, 0, "ease"], [1, 240]], "radius": 0.45}}
+```
+
+Try any of them in ComfyUI with the **OpenKatana · Preview effect** node, or ask your agent to call `preview_effect`.
+The [effects playbook](docs/EFFECTS-PLAYBOOK.md) has a recipe for each.
+Reproduce the reel with `python examples/effects_reel.py` (its effects are in `examples/effects_reel.json`; output in `work/effects-reel`).
+
 ## Quick start
 
 **ComfyUI Manager:** search **OpenKatana**, or run `comfy node install openkatana`
 with Comfy CLI configured for your ComfyUI installation. Then complete the
 [editor setup and Apps installation](docs/COMFY_APPS.md#comfy-registry-and-manager).
-The Registry may list 0.1.1 until 0.1.2 is published there; for 0.1.2, or if Manager cannot resolve it, use the source install below.
+New Registry versions wait for Comfy's review; if Manager cannot resolve the latest version, use the source install below.
 
 **With your agent:** copy and send the existing setup prompt:
 
@@ -83,11 +119,11 @@ above remains available.
 
 **Start with Apps → OpenKatana → 00 Full workflow.** It puts every App in one graph:
 one project ID feeds Open Studio, your video, music and photo uploads, Make edit →
-Render to video, a 3D starter and any of the 74 tools. Run it from App mode and
+Render to video, a 3D starter and any of the 75 tools. Run it from App mode and
 Studio opens in its own window.
 
-OpenKatana includes six saved Apps: **Full workflow**, plus **Open Studio**, **All tools**, **Make a 3D scene**, **Background job**
-and **Video to edit**. The integration offers 87 nodes for its tools plus project,
+OpenKatana includes seven saved Apps: **Full workflow**, plus **Open Studio**, **All tools**, **Make a 3D scene**, **Background job**,
+**Video to edit** and **Preview an effect**. The integration offers 88 nodes for its tools plus project,
 job and media helpers.
 
 Connect a local model's image frames or video output to **Import media → Make edit
@@ -112,7 +148,7 @@ tools; you set the direction and refine the result in Studio.
 - **Finishing:** frame previews, motion checks, HDR workflows and video export.
   Restoration and generation adapters use separately installed or authorized models.
 
-OpenKatana offers **74 CLI/MCP tools** ([see them all](docs/TOOLS.md)). Your agent supplies the creative
+OpenKatana offers **75 CLI/MCP tools** ([see them all](docs/TOOLS.md)). Your agent supplies the creative
 decisions; OpenKatana executes them and keeps an editable project on your machine.
 
 ![OpenKatana capabilities: 3D and morphs, type and graphics, editing and sound](docs/assets/openkatana-capabilities.png)
@@ -133,6 +169,25 @@ decisions; OpenKatana executes them and keeps an editable project on your machin
 Studio, ComfyUI Apps, CLI and optional MCP work with the same project. You can
 move between agent instructions and hands-on review without starting over.
 The two AI-generated illustrations explain the product; the films above show actual rendered output.
+
+## How it's built
+
+```mermaid
+flowchart LR
+  agent["Your AI agent<br/>(CLI or MCP)"] --> api
+  comfy["ComfyUI Apps<br/>(Comfy SDK nodes)"] --> api
+  studio["Studio<br/>(browser editor)"] --> api
+  api["OpenKatana AgentAPI<br/>75 tools, strict JSON contracts"] --> project[("Project files<br/>timeline, media, revisions")]
+  project --> engine["Render engine<br/>headless Chrome: Canvas 2D, WebGL,<br/>effect packs (web/fx_*.js)"]
+  engine --> ffmpeg["FFmpeg<br/>MP4 export"]
+  api -. optional .-> models["ComfyUI model workflows<br/>(local or authorized API)"]
+  api -. optional .-> blender["Blender"]
+```
+
+Every entry point calls the same AgentAPI, so an agent, a ComfyUI App and Studio edit one project with revision
+checks. A timeline is plain JSON, validated against strict contracts (unknown fields are rejected). The engine draws
+each frame in headless Chrome, where effects such as the After Effects packs register from `web/fx_*.js`, and FFmpeg
+encodes the result. The ComfyUI integration is built on the official Comfy SDK; model jobs run through ComfyUI.
 
 ## Documentation and compatibility
 

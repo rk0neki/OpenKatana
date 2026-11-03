@@ -1,3 +1,50 @@
+# OpenKatana 0.1.3
+
+Six After Effects effect packs, written as code: Distort, Light, Time, Blur & Sharpen, Stylize and Generate (36 new
+effects), a ComfyUI node and App to preview any effect, and a reel of them all. 75 shared tools (new: `preview_effect`),
+88 Comfy nodes and seven saved Apps.
+
+## Effects
+
+- **Distort pack**: Wave Warp, Ripple, Shockwave, Twirl, Bulge, Polar Coordinates, Kaleidoscope (CC Kaleida) and
+  Mirror (`local_wave_warp` ... `local_mirror`), with After Effects' parameter names, eased keyframes on the main
+  amounts, region and feather, reflect/clamp/wrap edges and antialiased high quality. A pinch (negative bulge) never
+  folds the picture.
+- **Light pack**: `local_deep_glow` (a multi-layer, energy-conserving bloom above a threshold, with tint and
+  saturation), `local_lens_flare` (procedural flares with the 50-300mm zoom, 35mm and 105mm prime ghost sets, halo,
+  rainbow ring, anamorphic streak and flicker), `local_light_rays` (CC Light Rays-style rays from bright areas) and
+  `local_light_sweep` (a CC Light Sweep shine). Nothing changes where nothing is bright enough.
+- **Time pack**: After Effects' Echo (all seven operators), Time Displacement (horizontal, vertical, radial, self or
+  clip maps, for slit-scan and time-ripple looks), Posterize Time and frame blending. Each reads other frames of its
+  own shot through a nested render that stops at the effect, so text and grades placed later are drawn once, on top;
+  posterize time followed by echo gives a stop-motion trail.
+- Blur & Sharpen pack (After Effects' Blur & Sharpen category, orders 50-57): `local_gaussian_blur` (blurriness, both / horizontal / vertical, repeat_edge_pixels), `local_directional_blur`, `local_radial_blur` (spin, and zoom that reads toward the centre as After Effects does; low / high quality), `local_camera_lens_blur` (iris polygons with rotation and roundness, highlight gain / threshold bokeh, horizontal / vertical / radial or clip blur maps with focal distance and invert), `local_unsharp_mask` (amount, radius, threshold), `local_channel_blur` (per-channel blurriness) and `local_tilt_shift` (a sharp focus band with feather, angle and saturation boost). Main amounts take eased keyframes, and every effect supports `at` (all but tilt-shift also take region / feather). The Gaussian is separable and continuous down to sub-pixel sigma, so keyframed blurs never step or stall, and one-axis blurs never mix rows. Lens blur keeps the average brightness, and zero amounts leave the frame bit-identical. Every effect stays within about 1 s per 1080p frame.
+- Stylize pack (`openkatana/web/fx_stylize.js`, orders 60-65): `local_rgb_split` (linear or radial chromatic aberration; red and blue move by exactly `amount` px at 1080 in opposite directions and green stays; edges, radial high quality), and After Effects' Motion Tile (`local_motion_tile`: tile centre and size, output size, mirror edges, column or row phase), Find Edges (`local_find_edges`: pencil lines on white, or inverted to bright lines on black, with blend), Emboss (`local_emboss`: direction, relief, contrast, blend), Mosaic (`local_mosaic`: exact uniform blocks, average or sharp centre colour) and Scatter (`local_scatter`: amount, grain, fixed or boiling seed). AE parameter names; keyframable main amounts with eases; `region`/`feather` and `at` on all six. Zero amounts and 100% tiles leave the picture bit-identical. Tiles far larger than the frame render correctly at any resolution, within the time budget.
+- **Generate pack**: After Effects' Generate category as seven local effects, each drawn over the picture with a blend mode (normal, add, screen, multiply, overlay, soft_light, color_dodge and the other canvas composite modes) and a keyframable opacity from `at`:
+  - `local_fractal_noise`: Fractal Noise with basic, turbulent_smooth and turbulent_sharp types; block, linear, soft_linear and spline noise; invert, contrast, brightness and the clip, soft_clamp and wrap overflows; rotation, scale and offset; fractional complexity with sub influence, scaling and rotation; evolution plus speed at a steady pace; an exact `cycle` loop through 4-D noise; seed and tint. It is computed at most 480 px wide.
+  - `local_cell_pattern`: Cell Pattern with bubbles, crystals, plates and tubular; disperse, size, offset and a looping evolution.
+  - `local_gradient_ramp`: linear or radial, with ramp scatter.
+  - `local_four_color_gradient`: four keyframable points and colours, with blend and jitter.
+  - `local_grid`: anchor, width and height, border, feather, invert and colour.
+  - `local_radio_waves`: circle, square or polygon waves from a moving producer, with frequency, expansion, lifespan, a start-to-end width taper, and fade in and out.
+  - `local_lightning`: Advanced Lightning with the strike, breaking, bouncy, omni and anywhere types; keyframable conductivity; a core inside a two-layer glow that holds its strength out to its radius; forking, decay, turbulence, seed and flicker.
+
+  Opacity 0, or a time before `at`, leaves the frame bit-identical. Every effect costs well under 1.5 s per 1080p frame.
+- **Effect packs**: effects can now ship as packs (`web/fx_*.js` with a Python validator); the engine awaits them and
+  gives time effects the shot at other frames.
+
+## ComfyUI and agents
+
+- **`preview_effect`**: a short MP4 and a six-frame contact sheet of any shot effect, the packs included, on a moving
+  test card (grid, shapes, text, a light spot, a bouncing ball, a frame counter), a project image or a video excerpt.
+  Text effects use the project's fonts or a bundled OFL font. In ComfyUI it is the **OpenKatana · Preview effect** node.
+- Easier to find and try effects: a seventh saved ComfyUI App, "06 Preview an effect", runs preview_effect on its own node. You set the project ID, an effect name (default local_twirl), its params as JSON (default a Twirl eased in and out over 1.5 s) and an optional project image or video. It renders a short preview video and a 6-frame contact sheet of only that effect, and leaves the timeline untouched. The installer copies it with the other six Apps. examples/effects_reel.py with examples/effects_reel.json rebuilds the README effects reel (ae-packs.mp4 plus a GIF) with one command, drawing its own test plate. The agent skill now points to the After Effects-style effect packs and suggests preview_effect for checking a look first. A new test validates a preview of every registered local effect with its defaults, so a pack with a broken default is caught.
+
+## Docs
+
+- The README says why OpenKatana is different and how it is built, and shows the new effects; the launch-film
+  Koji clip now credits its Suno music.
+
 # OpenKatana 0.1.2
 
 After Effects-grade displacement, texture overlays and frame-level reference matching. 74 shared tools (two new:

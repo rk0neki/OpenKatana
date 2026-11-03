@@ -25,6 +25,13 @@ Before planning an edit, learn everything you can use:
 - The `timeline`, `composition`, `scene3d`, `webgl` and `animation` guides give
   the exact fields.
 
+Shot effects include six packs modelled on After Effects, with its parameter names:
+Distort, Light, Time, Blur & Sharpen, Stylize and Generate (36 effects). The playbook has a recipe for each. To check a look before committing it
+to the timeline, call `preview_effect` with the effect name and its params: it
+renders a short video and a contact sheet of that one effect on a moving test
+card or a project picture, and leaves the timeline untouched. Use it when it
+helps; it is a check, not a required step.
+
 Then follow the user's brief. Choose pacing, effects, fonts, sound, easing and
 slow motion to suit it; nothing in the playbook is compulsory, and a quiet edit
 can use none of the high-energy effects. When the user asks for a high-energy,

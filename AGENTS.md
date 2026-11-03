@@ -33,13 +33,20 @@ every effect and technique OpenKatana offers. It then follows the user's brief,
 source timing and accessibility preferences; nothing in the playbook is
 compulsory.
 
-Version 0.1.2 adds two tools, `shot_sheet` (one numbered picture per shot of a render
-or reference) and `eye_sheet` (eye crops across a take), for 74 in all
-(docs/TOOLS.md lists them). It also adds `analyze_reference` `measure` and
+Version 0.1.2 added two tools, `shot_sheet` (one numbered picture per shot of a render
+or reference) and `eye_sheet` (eye crops across a take). It also added `analyze_reference` `measure` and
 `compare_reference` side-by-side and look reports, and timeline effects with After
 Effects' controls: `local_turbulent_displace` (Turbulent Displace) and
 `local_displacement_map` (Displacement Map), texture `overlays`, adjustment layers
 and `local_curve` transitions (docs/TIMELINE.md, docs/EFFECTS-PLAYBOOK.md).
+
+Version 0.1.3 adds `preview_effect`, for 75 tools in all (docs/TOOLS.md lists them),
+and six effect packs with After Effects' controls: Distort (Wave Warp, Ripple,
+Shockwave, Twirl, Bulge, Polar Coordinates, Kaleidoscope, Mirror), Light (Deep Glow,
+Lens Flare, Light Rays, Light Sweep), Time (Echo, Time Displacement, Posterize Time,
+frame blending), Blur & Sharpen, Stylize (RGB split, Motion Tile, Mosaic and more) and
+Generate (Fractal Noise, Advanced Lightning, Radio Waves, gradients and more). Packs live in `openkatana/web/fx_*.js` with validation in
+`openkatana/fx_*.py`; add new effects the same way.
 
 One rule from the user always applies: analyse every reference video at 60 fps,
 never lower, so every motion is caught (whips, flashes, one-frame cuts, shakes,

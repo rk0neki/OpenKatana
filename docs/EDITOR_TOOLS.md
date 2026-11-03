@@ -1,6 +1,6 @@
 # Editor tools and reference matching
 
-OpenKatana has 74 shared MCP/CLI operations; [TOOLS.md](TOOLS.md) lists all of
+OpenKatana has 75 shared MCP/CLI operations; [TOOLS.md](TOOLS.md) lists all of
 them by area. Use the CLI catalog for exact signatures and check runtime
 readiness before invoking optional workflows.
 
@@ -29,6 +29,7 @@ readiness before invoking optional workflows.
 | Identity references | bind_reference, inspect_identity | Named references (identity, style, product, location) with asset hashes; a face-crop comparison sheet of an asset against them (visual only, no biometric score) with an accept/reject decision; strict mode refuses generated (Comfy-imported) clips until accepted against every identity reference |
 | Enforce a reference specification | save_reference_plan, audit_reference_plan | Checks the authored specification; the agent must first verify that specification against the reference |
 | Review frames and playback | preview_timeline, compare_reference, preview_segment | Client/model must support actual video/audio review; creation of previews is not review |
+| Try one effect before using it | preview_effect | One shot with only that effect on a project image/video or a built-in test card: an mp4 and a 6-frame contact sheet; at most 960 px wide and 120 frames; any shot fx name the timeline accepts, effect packs included |
 | Talk about shots by number | shot_sheet | A numbered sheet, one picture per shot of a render or reference, labelled with the start time; the person reviewing can answer "keep 4, replace 10" |
 | Check eyes before choosing a source window | eye_sheet | Crops around both eyes across frames of a clip (bundled YuNet landmarks) to see where the gaze holds the lens and spot face-replacement eye artefacts; visual only, no gaze score |
 | Optional strict gates | set_review_policy | With strict on, start_render needs every timeline source inspected (preview_source/source_contact_sheet) and the current revision previewed (preview_timeline); records are not proof of human review |
@@ -107,6 +108,37 @@ Measured on a 60-fps, 37.6 s music-video reference whose 39 cuts and two exposur
 (the one these tools were developed on): all 39 cuts found with no false cuts, one dip found two frames late and one reported as a cut;
 cadence 23.98 (gaps 2 and 3); the transition read 0.93 scale and 0.05 of the height high at the cut, a 0.037-height
 defocus clearing by frame 9 and 1.9x brightness easing to rest by frame 28, matching the hand measurement.
+
+## Previewing one effect
+
+`preview_effect` renders a shot with only the named effect, through the same validator and engine as a saved
+timeline, so a value that would fail there fails here first with the same message. It writes to the project's
+`.openkatana/effect-previews/<id>/`: `render/video.mp4`, `contact-sheet.png` (6 frames, labelled with frame and
+time), the `timeline.json` it rendered (a record: its generated source frames and copied fonts are deleted after
+encoding, so it is not meant to be rendered again) and the render receipt.
+
+```json
+{"project_id": "demo", "effect": "local_turbulent_displace",
+ "params": {"amount": [[0, 0], [1, 60]], "size": 120}, "seconds": 2, "fps": 30}
+```
+
+- `effect`: any shot `fx` name from [TIMELINE.md](TIMELINE.md) (camera moves, post effects, `local_*` effects and
+  the effect packs); an unknown name is rejected with close matches. `params`: the effect's fields; omit for
+  defaults; a `clip` field can name `source`.
+- Fonts: effects that draw text (`big`, `word`, `type`, `tag`, `local_scramble_text`, `burst` with `letters`) use
+  the `family` in `params`: a font the project's `timeline.json` declares under that family, else a bundled OFL font
+  of that name (Inter, Anton, Bebas Neue, ...). Without a `family` the preview uses the bundled Inter (warning
+  `font_default`); `params` in the result shows the family used.
+- `source`: a project-relative image or video. Without it the preview uses a built-in moving test card (grid,
+  colour shapes, text, a gradient, an overexposed light spot, a ball bouncing across the frame and a frame
+  counter), so effects that use earlier or later frames (`trail`, `stutter`, the Time pack) have motion to act on.
+  A still picture holds for the whole preview; a time effect on one gives warning `still_source`. `at` starts a
+  video source later; a short video ends the preview early (warning `source_short`).
+- Matte effects (`cutout`, `outline`, `contour`) need a clip with a subject mask, which a preview source does not
+  have: they render the source unchanged with warning `needs_matte`; try them in the project timeline on a masked
+  clip.
+- Size: `max_width` (64..960, default 960) limits both sides; `seconds` x `fps` is at most 120 frames. Rendered
+  and generated frames are deleted after encoding; for a video source the excerpt mp4 is kept.
 
 ## Batch import
 

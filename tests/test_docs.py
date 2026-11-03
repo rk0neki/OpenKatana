@@ -14,7 +14,8 @@ def read(rel):
 class DocLintTests(unittest.TestCase):
     def test_tool_counts_match(self):
         from openkatana.agent_api import TOOLS
-        for rel in ('README.md', 'docs/ROADMAP.md', 'docs/EDITOR_TOOLS.md', 'docs/VALIDATION.md', 'docs/AGENT_INTERFACE.md', 'docs/TOOLS.md'):
+        for rel in ('README.md', 'docs/ROADMAP.md', 'docs/EDITOR_TOOLS.md', 'docs/VALIDATION.md', 'docs/AGENT_INTERFACE.md', 'docs/TOOLS.md',
+                    'docs/COMFY_APPS.md'):
             for n in re.findall(r'(\d+)(?:-tool| tools| shared MCP| named operations)', read(rel)):
                 self.assertEqual(int(n), len(TOOLS), f'{rel} states {n} tools; code has {len(TOOLS)}')
 

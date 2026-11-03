@@ -1,7 +1,7 @@
 'use strict';
 // Navigation and agent handoff: no embedded model, credentials or remote calls.
 const families=[
- {id:'edit',name:'Editing & motion',glyph:'↗',line:'Cuts, pacing, transitions & camera moves.',guide:'effects',tools:['plan_edit','edit_timeline','build_recipe','plan_music_edit','analyze_energy','revise_motion']},
+ {id:'edit',name:'Editing & motion',glyph:'↗',line:'Cuts, pacing, transitions & camera moves.',guide:'effects',tools:['plan_edit','edit_timeline','build_recipe','plan_music_edit','analyze_energy','revise_motion','preview_effect']},
  {id:'3d',name:'3D & animation',glyph:'◇',line:'WebGL scenes, Blender & camera paths.',guide:'webgl',tools:['create_scene3d','inspect_model3d','import_model3d','check_scene3d','render_scene3d','render_blender','create_animation_kit','create_webgl_kit','build_display_atlas','assemble_blender_clips','assemble_render_clips','analyze_camera_motion','analyze_render_motion']},
  {id:'design',name:'Type & graphics',glyph:'Aa',line:'Shaped text, layouts & custom animation.',guide:'composition',tools:['shape_text','list_fonts','preview_fonts','make_captions','render_page','create_composition','save_composition','inspect_composition','render_composition','list_plugins','run_plugin_operator']},
  {id:'models',name:'Images & transforms',glyph:'◒',line:'Morphs, masks, generation & restoration.',guide:'comfy-models',tools:['morph_images','analyze_clip','build_workflow','check_workflow','submit_workflow','collect_workflow','import_workflow_output','process_clip','run_model_workflow','review_mask','bind_reference','inspect_identity']},

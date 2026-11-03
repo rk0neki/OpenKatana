@@ -17,7 +17,6 @@ SPECS = {
                                 'region feather seed at',
     'local_displacement_map': 'clip src speed loop amount amount_x amount_y x y neutral fit smooth edges quality region feather at',
 }
-NAMES = tuple(SPECS)
 RANGES = {'amount': (0, 1), 'd': (.001, 60), 'at': (0, 3600), 'spacing': (3, 200), 'mix': (0, 1), 'count': (1, 512),
           'opacity': (0, 1), 'inner': (0, 1), 'width': (.1, 50), 'seed': (-1e9, 1e9), 'every': (1, 60), 'n': (2, 64),
           'hue': (0, 360), 'tolerance': (0, 180), 'soft': (0, 90), 'min_sat': (0, 1), 'levels': (2, 64), 'margin': (0, .3),
@@ -119,6 +118,9 @@ def _displacement(k, v, loc):
 
 def local_effect(name, p, where):
     fields(p, SPECS[name], where)
+    for pack in PACKS:
+        if name in pack.SPECS:
+            return pack.validate(name, p, where)
     for k, v in p.items():
         loc = f'{where}.{k}'
         if name in ('local_turbulent_displace', 'local_displacement_map') and _displacement(k, v, loc):
@@ -177,3 +179,11 @@ def measured(value, where):
     for k, (lo, hi) in {'pan_x': (-1, 1), 'pan_y': (-1, 1), 'zoom': (-.9, 10), 'roll_deg': (-180, 180)}.items():
         if k in value:
             number(value[k], f'{where}.{k}', lo, hi)
+
+
+# Effect packs (web/fx_*.js), each validated by its own module; they may import the helpers above.
+from . import fx_blur, fx_distort, fx_generate, fx_light, fx_stylize, fx_time  # noqa: E402
+PACKS = (fx_distort, fx_light, fx_time, fx_blur, fx_stylize, fx_generate)
+for _pack in PACKS:
+    SPECS.update(_pack.SPECS)
+NAMES = tuple(SPECS)

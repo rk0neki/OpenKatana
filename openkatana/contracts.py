@@ -292,8 +292,8 @@ def validate(edit: dict, root: Path | None = None) -> dict:
                     if v.get('family') not in fonts:raise ContractError(f'{name}: requires an explicitly supplied font')
             if name=='local_scramble_text' and isinstance(v,dict) and v.get('family') not in fonts:
                 raise ContractError('local_scramble_text: family must be a declared font')
-            if name=='local_displacement_map' and isinstance(v,dict) and v.get('clip') not in clips:
-                raise ContractError(f'local_displacement_map: clip {v.get("clip")!r} is not in clips')
+            if name.startswith('local_') and isinstance(v,dict) and 'clip' in v and v.get('clip') not in clips:
+                raise ContractError(f'{name}: clip {v.get("clip")!r} is not in clips')
             if name in ('word','type','tag') and isinstance(v,dict) and v.get('family') not in fonts:
                 raise ContractError(f'{name}: family must be a declared font (or font_stacks)')
     from .stickers import validate as validate_stickers
