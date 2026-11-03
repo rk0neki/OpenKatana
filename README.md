@@ -58,6 +58,7 @@ frame blending. They join Turbulent Displace and Displacement Map, and each one 
 
 Try any of them in ComfyUI with the **OpenKatana · Preview effect** node, or ask your agent to call `preview_effect`.
 The [effects playbook](docs/EFFECTS-PLAYBOOK.md) has a recipe for each.
+Reproduce the reel with `python examples/effects_reel.py` (its effects are in `examples/effects_reel.json`; output in `work/effects-reel`).
 
 ## Quick start
 
