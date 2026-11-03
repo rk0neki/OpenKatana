@@ -175,7 +175,8 @@ def preview_effect(root, out, effect, params, source, seconds, fps, at, max_widt
         from .preview import flat_frames
         for flat in flat_frames(edit, picks, [str(frames_dir / f'{f:05d}.png') for f in picks]):
             warnings.append({'code': 'flat_frame', 'frame': flat['frame'], 'message': f"frame {flat['frame']} rendered as one flat colour rgb{tuple(flat['rgb'])}; check the effect's values"})
-        warnings += receipt['warnings']
+        # A still under a static effect is meant to hold; only report frozen runs for a moving source.
+        warnings += [w for w in receipt['warnings'] if not (still and w.get('code') == 'frozen_frames')]
     except BaseException:
         shutil.rmtree(out, ignore_errors=True)
         raise
