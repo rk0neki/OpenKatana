@@ -39,7 +39,7 @@ def templates():
         '04 Background job.app.json': app_workflow('OpenKatana · Background job', 'OpenKatanaJob',
             ['job_id'], [''], 'Read job status; never automatically repeat a submission.'),
         '05 Video to edit.app.json': video_edit_workflow(),
-        '07 Preview an effect.app.json': app_workflow('OpenKatana · Preview an effect', 'OpenKatana_preview_effect',
+        '06 Preview an effect.app.json': app_workflow('OpenKatana · Preview an effect', 'OpenKatana_preview_effect',
             ['project_id', 'effect', 'params', 'source'],
             ['my-film', '{}', 'local_twirl', json.dumps(PREVIEW_PARAMS), ''],
             'Try one effect before it goes in your timeline: a short video and a contact sheet of the moving test card '

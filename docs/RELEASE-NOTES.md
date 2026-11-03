@@ -38,11 +38,12 @@ effects), a ComfyUI node and App to preview any effect, and a reel of them all. 
 - **`preview_effect`**: a short MP4 and a six-frame contact sheet of any shot effect, the packs included, on a moving
   test card (grid, shapes, text, a light spot, a bouncing ball, a frame counter), a project image or a video excerpt.
   Text effects use the project's fonts or a bundled OFL font. In ComfyUI it is the **OpenKatana · Preview effect** node.
-- Easier to find and try effects: a seventh saved ComfyUI App, "07 Preview an effect", runs preview_effect on its own node. You set the project ID, an effect name (default local_twirl), its params as JSON (default a Twirl eased in and out over 1.5 s) and an optional project image or video. It renders a short preview video and a 6-frame contact sheet of only that effect, and leaves the timeline untouched. The installer copies it with the other six Apps. examples/effects_reel.py with examples/effects_reel.json rebuilds the README effects reel (ae-packs.mp4 plus a GIF) with one command, drawing its own test plate. The agent skill now points to the After Effects-style effect packs and suggests preview_effect for checking a look first. A new test validates a preview of every registered local effect with its defaults, so a pack with a broken default is caught.
+- Easier to find and try effects: a seventh saved ComfyUI App, "06 Preview an effect", runs preview_effect on its own node. You set the project ID, an effect name (default local_twirl), its params as JSON (default a Twirl eased in and out over 1.5 s) and an optional project image or video. It renders a short preview video and a 6-frame contact sheet of only that effect, and leaves the timeline untouched. The installer copies it with the other six Apps. examples/effects_reel.py with examples/effects_reel.json rebuilds the README effects reel (ae-packs.mp4 plus a GIF) with one command, drawing its own test plate. The agent skill now points to the After Effects-style effect packs and suggests preview_effect for checking a look first. A new test validates a preview of every registered local effect with its defaults, so a pack with a broken default is caught.
 
 ## Docs
 
-- The README says why OpenKatana is different and shows the new effects; the Koji clip credits its Suno music.
+- The README says why OpenKatana is different and how it is built, and shows the new effects; the launch-film
+  Koji clip now credits its Suno music.
 
 # OpenKatana 0.1.2
 

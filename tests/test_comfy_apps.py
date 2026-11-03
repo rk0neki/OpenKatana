@@ -138,7 +138,7 @@ class ComfyAppsTests(unittest.TestCase):
     def test_seven_apps_are_written_and_installed(self):
         names = sorted(templates())
         self.assertEqual(len(names), 7)
-        self.assertIn('07 Preview an effect.app.json', names)
+        self.assertIn('06 Preview an effect.app.json', names)
         folder = ROOT / 'comfy_nodes/example_workflows'
         self.assertEqual(sorted(p.name for p in folder.glob('*.app.json')), names)
         for name in names:   # scripts/build_comfy_apps.py output is current
@@ -157,7 +157,7 @@ class ComfyAppsTests(unittest.TestCase):
 
     def test_preview_effect_app(self):
         from openkatana.effect_preview import check_effect
-        workflow = templates()['07 Preview an effect.app.json']
+        workflow = templates()['06 Preview an effect.app.json']
         node = workflow['nodes'][0]
         self.assertEqual(node['type'], 'OpenKatana_preview_effect')
         self.assertIn('OpenKatana_preview_effect', bridge.NODE_CLASS_MAPPINGS)

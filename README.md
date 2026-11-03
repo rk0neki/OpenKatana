@@ -8,6 +8,7 @@ OpenKatana is an independent, open-source **editing engine your AI agent drives:
 
 [![Comfy Registry](https://img.shields.io/badge/Comfy_Registry-OpenKatana-00A67E)](https://registry.comfy.org/nodes/openkatana)
 [![Release v0.1.3](https://img.shields.io/badge/release-v0.1.3-blue)](https://github.com/rk0neki/OpenKatana/releases/tag/v0.1.3)
+[![75 tools](https://img.shields.io/badge/tools-75-6f42c1)](docs/TOOLS.md)
 [![CI](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml)
 [![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](docs/SETUP.md)
@@ -21,16 +22,6 @@ OpenKatana is an independent, open-source **editing engine your AI agent drives:
 
 **[Watch the anime edit with sound](docs/assets/koji-edit.mp4)** — the finale from the OpenKatana launch film.
 Source animation: [“Koji” by Ammonite & Zean](https://www.youtube.com/watch?v=61zI4eE92xM) (CC BY); music made with [Suno](https://suno.com); edited with OpenKatana.
-
-### Koji, cut by an agent with the 0.1.3 effects
-
-[![A 20-second Koji edit an agent cut with OpenKatana 0.1.3: radio waves, glow, shockwave, RGB split, echo, light rays, lens flare](docs/assets/koji-effects.gif)](docs/assets/koji-effects.mp4)
-
-**[Watch it with sound](docs/assets/koji-effects.mp4)**: an AI agent built this 20-second edit with OpenKatana's tools,
-and a second agent reviewed it frame by frame before a revision. Radio waves and glow on the eye, a shockwave drop, RGB
-split on the hits, echo and posterize-time trails, a twirl transition, light rays, a lens flare and a light sweep on
-the end card, cut to an original 140 BPM score made with `synthesize_score` (no samples, no AI model).
-Source animation: [“Koji” by Ammonite & Zean](https://www.youtube.com/watch?v=61zI4eE92xM) (CC BY).
 
 ### Motif
 
