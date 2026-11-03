@@ -121,8 +121,9 @@ to see or rewire the whole workflow. The six single-purpose Apps:
    requires a silent preset such as ramp-freeze (beat-montage requires music).
 6. **Preview an effect:** try one effect before it goes in your timeline. Set the
    project ID, an effect name and its fields as JSON in `params`; Run renders a
-   short video and a 6-frame contact sheet of the moving test card with only that
-   effect, shown in the preview area. It starts with an eased After Effects Twirl
+   short video of the moving test card with only that effect, shown in the
+   preview area, and a 6-frame contact sheet whose path is in the result JSON.
+   It starts with an After Effects Twirl, eased in and out
    (`local_twirl`); try `local_deep_glow`, `local_lens_flare`, `local_echo` or any
    shot effect in [the timeline guide](TIMELINE.md), with a recipe for each in the
    [effects playbook](EFFECTS-PLAYBOOK.md). Leave `params` empty for the effect's
@@ -130,7 +131,8 @@ to see or rewire the whole workflow. The six single-purpose Apps:
    The App runs the `preview_effect` tool on its own node,
    **OpenKatana · Preview effect**; its `arguments` JSON takes the other fields
    (`seconds`, `fps`, `at`, `max_width`). Nothing is added to the project timeline.
-   In Full workflow, the **Every tool** node runs `preview_effect` with the same
+   In Full workflow, the **Any of the 75 tools** node in the *Every tool* group
+   runs `preview_effect` with the same
    JSON arguments.
 
 Example: select `create_project`, set project ID `film`, and arguments

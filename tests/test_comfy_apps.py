@@ -170,6 +170,10 @@ class ComfyAppsTests(unittest.TestCase):
         self.assertEqual(values['effect'], 'local_twirl')
         params = json.loads(values['params'])
         self.assertIsInstance(params['angle'], list)          # eased keyframes
+        # a key's ease shapes the move to the next key (util.keyedT), so an ease on the last key would do nothing
+        self.assertEqual(params['angle'][0][2], 'inout3')
+        self.assertEqual([len(key) for key in params['angle'][1:]], [2])
+        self.assertIn(json.dumps(params['angle']), bridge.TYPED_FIELDS['preview_effect']['required']['params'][1]['tooltip'])
         self.assertIsInstance(check_effect(values['effect'], params), dict)
         # the node sends its fields as the tool's JSON arguments; empty fields are not sent
         def run(**kw):

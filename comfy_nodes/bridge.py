@@ -189,7 +189,7 @@ TYPED_FIELDS = {'preview_effect': {
         'effect': ('STRING', {'default': '', 'tooltip': 'A shot effect name, e.g. local_twirl, local_deep_glow, '
                               'local_echo or glow (docs/TIMELINE.md). Empty: the effect in arguments.'}),
         'params': ('STRING', {'default': '', 'multiline': True, 'tooltip': "The effect's fields as a JSON object, e.g. "
-                              '{"angle": [[0, 0], [1.5, 540, "inout3"]], "radius": 0.6}. Empty: its defaults.'})},
+                              '{"angle": [[0, 0, "inout3"], [1.5, 540]], "radius": 0.6}. Empty: its defaults.'})},
     'optional': {
         'source': ('STRING', {'default': '', 'tooltip': 'A project-relative image or video. Empty: the moving test card.'})}}}
 JSON_FIELDS = ('params',)
