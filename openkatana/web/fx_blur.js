@@ -109,8 +109,8 @@
   }});
 
   // local_radial_blur: After Effects' Radial Blur around `center` ([x, y] 0..1). spin: copies turned evenly over
-  // `amount` degrees (half each way); zoom: copies scaled from 1 to 1 + amount / 200 about the centre (streaks out from
-  // it). `quality` low spaces copies up to 2 px apart at the far corner, high .5 px. amount and center take keyframes.
+  // `amount` degrees (half each way); zoom: copies scaled about the centre over a ratio of 1 + amount / 200, evenly in
+  // ratio and centred on the picture's own size (streaks along the rays from the centre). `quality` low spaces copies up to 2 px apart at the far corner, high .5 px. amount and center take keyframes.
   register('local_radial_blur', {order: 52, draw(ctx, p, s) {
     const t = clock(p, s); if (t === null) return;
     const A = Math.max(0, keyedT(p.amount, t, 10));
@@ -122,13 +122,17 @@
     if (reach < .05) return;
     const k = Math.max(1, Math.ceil(Math.log2(reach / step))), N = 2 ** k, d = span / (N - 1);
     // spin: the canvas holds the whole disc of radius R round the centre, which every turn maps into itself
-    const pad = spin ? Math.max(0, Math.ceil(R - Math.min(cx, cy, w - cx, h - cy))) + 2 : 0;
+    // zoom: the copies are made 1x to (1 + amount / 200)x and then shrunk by its square root, which reads up to that much
+    // farther out
+    const pad = (spin ? Math.max(0, Math.ceil(R - Math.min(cx, cy, w - cx, h - cy))) : Math.ceil(R * (Math.exp(span / 2) - 1))) + 2;
     const ox = cx + pad, oy = cy + pad, src = padded(copy(ctx), w, h, pad, pad);
     const res = halving(src, k, spin ? (g, n) => { g.translate(ox, oy); g.rotate(n * d); g.translate(-ox, -oy); }
       : (g, n) => { const z = Math.exp(n * d); g.translate(ox, oy); g.scale(z, z); g.translate(-ox, -oy); });
     const out = buffer(w, h), g = out.getContext('2d');
     g.translate(-pad, -pad);
-    if (spin) { g.translate(ox, oy); g.rotate(-(N - 1) / 2 * d); g.translate(-ox, -oy); }
+    g.translate(ox, oy);
+    if (spin) g.rotate(-(N - 1) / 2 * d); else g.scale(Math.exp(-(N - 1) / 2 * d), Math.exp(-(N - 1) / 2 * d));
+    g.translate(-ox, -oy);
     g.drawImage(res, 0, 0);
     finish(ctx, out, p, s);
   }});

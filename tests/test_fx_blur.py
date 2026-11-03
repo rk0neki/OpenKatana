@@ -185,10 +185,11 @@ class BlurPackTests(unittest.TestCase):
         r = np.hypot(xx + .5 - 96, yy + .5 - 54)
         self.assertGreater(yy.max() - yy.min(), 20)              # spread along the arc
         self.assertGreater(r.min(), 37); self.assertLess(r.max(), 46)   # but on its radius (the dot spans 40..44)
-        # zoom streaks it outward (away from the centre), not around
+        # zoom streaks it along its ray from the centre, both ways (the copies span a ratio of 1.3 around 1), not around
         f = self.render('local_radial_blur', {'amount': 60, 'type': 'zoom', 'quality': 'high'})[0].sum(axis=2)
         xs = np.nonzero(f[54] > 3)[0]
-        self.assertGreater(xs.max(), 145); self.assertGreaterEqual(xs.min(), 134)
+        self.assertGreater(xs.max(), 144); self.assertLess(xs.min(), 134)
+        self.assertLess(abs((f[54] * np.arange(W)).sum() / f[54].sum() - 138.5), 1.5)
         self.assertEqual(f[:50].sum() + f[59:].sum(), 0)
 
     @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
