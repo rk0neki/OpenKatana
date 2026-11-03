@@ -368,7 +368,7 @@
     "openkatana/webgl_authoring.py": "64838eee8902f6eb86b3dc116d8e9f9b71bf15083e9f90883aee615592cac4bb",
     "openkatana/workflow_schema.py": "aa8e226896c8d41ca1f35969505cf264c082db96eec1e3e5f5ac0f827db1f23c",
     "openkatana/workflows.py": "1232e147e1561e4e284ca64fb9962ebdcc2d0b2646e0105b81ecb9ddecd90cd6",
-    "pyproject.toml": "9c46858dbe1cffefb38cc9544c50d24ebf0f5042d6d3752d36e54df43651f616",
+    "pyproject.toml": "791de3cf1d587a4a5448a5f74e18d488b5c4beb7646d6337044708c81d0e1abb",
     "requirements-lock.txt": "530c2cc266751cabb4b461457279fa11cac18afa2617e67ccf2dd06c095de4ac",
     "scripts/advanced_fixtures.py": "88d4bdaeccb7842c50aca348c5239a6e7557be757e1eaf289e1e8a209a019809",
     "scripts/build_comfy_apps.py": "e4425f1c2a56affc3b25b58b96f3642e40ada0e55585a13a9925c2acb5e128d7",
