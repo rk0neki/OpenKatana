@@ -196,6 +196,16 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 
 - **OpenKatana Time pack:** Time effects (After Effects' Time category). Echo trail: fx {"local_echo": {"echo_time": -0.067, "number_of_echoes": 4, "decay": 0.6, "operator": "maximum"}}; use "add" for glowing light trails and "composite_back" for solid ghost copies behind the subject. To echo only the picture and keep titles clean, put the echo in shot layers with "phase": "subject" instead of fx: by default (post phase) shot text and stickers are echoed too. Stop-motion trail: {"local_posterize_time": {"fps": 8}, "local_echo": {"echo_time": -0.125, "number_of_echoes": 3, "decay": 0.5}}; the echoes are the held frames, so the trail stays behind the subject. Slit-scan or time ripple: {"local_time_displacement": {"map": "horizontal", "max_displacement": 0.3, "levels": 16}}, or "radial" with a center, or "self" for brightness-driven time, or a clip id for a custom map. Choppy anime-style motion: {"local_posterize_time": {"fps": 12}}. Smear or long-shutter look: {"local_frame_blend": {"samples": 6, "shutter": 0.5}}; the trail length is shutter x (samples - 1) frames. Echo adds nothing before the edit or before the shot's source starts, so give a shot source handles (srcf > 0) if its first frames need a trail. Time effects do nothing on special shots. Cost at 1080p: about 0.4 s per frame for echo 16; stacking time displacement 16 levels with echo 16 is about 1.3-2 s per frame.
 
+- **OpenKatana Blur & Sharpen pack:** - **OpenKatana Blur & Sharpen pack:** After Effects' Blur & Sharpen category (orders 50-57). Put `local_gaussian_blur`, `local_directional_blur`, `local_radial_blur`, `local_camera_lens_blur`, `local_unsharp_mask`, `local_channel_blur` and `local_tilt_shift` in a shot's `fx` (or `layers`, or `post`); `true` uses the defaults, and each starts at `at`. All main amounts take eased keyframes, and every value gives its own result (sub-pixel blurs included), so keyframed blur-ins move smoothly from the first frame.
+      - Defocus-in title: `{"local_gaussian_blur": {"blurriness": [[0, 60], [.6, 0, "out3"]]}}`.
+      - Whip smear: `{"local_directional_blur": {"direction": 90, "blur_length": [[0, 0], [.1, 120, "in"], [.25, 0, "out"]]}}`.
+      - Speed-ramp punch-in: `{"local_radial_blur": {"type": "zoom", "amount": [[0, 0], [.15, 60], [.4, 0]], "quality": "high"}}`. Zoom streaks shapes outward from `center`, as in After Effects.
+      - Depth of field with bokeh: `{"local_camera_lens_blur": {"blur_radius": 40, "map": "vertical", "focal_distance": 255, "iris_shape": "hexagon", "highlight_gain": 40, "highlight_threshold": 220}}`. Lights become hexagons while the base keeps its brightness. Use a clip id as the map for a real depth pass.
+      - Crisp detail: `{"local_unsharp_mask": {"amount": 80, "radius": 1.5, "threshold": 4}}`.
+      - Chromatic soft fringe: `{"local_channel_blur": {"red_blurriness": 12, "blue_blurriness": 4}}`.
+      - Miniature city: `{"local_tilt_shift": {"center": .55, "band": .2, "blur_radius": 40, "saturation": 1.35}}`.
+      - Cost at 1080p: at most about 1 s per frame, for a spin of 100 degrees round a corner on high quality; most settings take 0.1-0.5 s.
+
 ### 4. 3D camera and object blur
 
 - Interface elements move in 3D:
@@ -356,6 +366,18 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 - **OpenKatana:** `local_speed_lines`. Particles come from overlay clips (timeline
   `overlays`) or a particle hook. Cel-shaded footage comes from generation.
 
+- **OpenKatana Generate pack:** - **OpenKatana Generate pack:** After Effects' Generate effects (`local_fractal_noise`, `local_cell_pattern`, `local_gradient_ramp`, `local_four_color_gradient`, `local_grid`, `local_radio_waves`, `local_lightning`) go in a shot's `fx` (or `layers`, or `post`). `true` uses the defaults. Each one draws over the picture with `blend` and `opacity` (keyframable) from `at`.
+      - Drifting smoke or haze: `{"local_fractal_noise": {"fractal_type": "turbulent_smooth", "tint": "#ffb070", "blend": "screen", "opacity": .5, "contrast": 150, "brightness": -20, "speed": .1, "scale": 300}}`.
+      - Light leak: the same idea with `"blend": "add"`, a warm `tint`, `"scale": 800` and a low `complexity` (2).
+      - Seamless looping texture: add `"cycle": 1` with `"speed": .25`, which loops exactly every 4 s.
+      - Organic overlay on footage: `{"local_cell_pattern": {"cell_pattern": "tubular", "blend": "overlay", "opacity": .4, "speed": .2}}`.
+      - Sky or vignette tint: `{"local_gradient_ramp": {"start_color": "#203060", "end_color": "#000000", "blend": "soft_light"}}`, or `"shape": "radial"` from the subject; add `ramp_scatter` .3 against banding.
+      - Colourful backdrop or grade wash: `{"local_four_color_gradient": {"blend": "overlay", "opacity": .6}}` with your own four colours.
+      - HUD or blueprint lines: `{"local_grid": {"width": 120, "border": 2, "color": "#60c0ff", "blend": "add", "opacity": .5}}`.
+      - Signal pulses from a point (a phone, a beacon): `{"local_radio_waves": {"producer": [.5, .4], "frequency": 1.5, "expansion": 400, "lifespan": 1.5, "end_width": 0, "stroke_color": "#80e0ff", "blend": "add"}}`.
+      - Lightning strike: `{"local_lightning": {"origin": [.5, 0], "direction": [.45, .8], "conductivity": [[0, 0], [1, 6]], "glow_opacity": .8, "glow_radius": 120, "blend": "add"}}`. Use `"flicker": 3` to strobe it, and keyframe `opacity` for the flash.
+      - Cost at 1080p: grid and radio waves are near free; the others add about 0.15-0.4 s a frame at their heaviest settings (fractal noise at complexity 20 with cycle, cell pattern at size 2).
+
 ## Colour
 
 ### 16. Grading per shot
@@ -484,6 +506,15 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 
 - Type-on at measured rates (2 characters per frame), ghost letters before a word lands,
   and a word changing colour from left to right.
+
+- **OpenKatana Stylize pack:** - **OpenKatana Stylize pack:** After Effects' Stylize category plus the RGB split (`local_rgb_split`, `local_motion_tile`, `local_find_edges`, `local_emboss`, `local_mosaic`, `local_scatter`). These go in a shot's `fx` (or `layers`, or `post`); `true` uses the defaults, each one starts at `at`, and `region`/`feather` limit it to part of the frame.
+      - Impact chromatic aberration on a hit: `{"local_rgb_split": {"amount": [[0, 0], [0.05, 40, "out3"], [0.4, 0]], "angle": 0}}`. Use `"mode": "radial", "quality": "high"` for a lens-edge fringe that grows towards the corners (quality only affects radial mode).
+      - Kaleidoscopic wallpaper or a sliding brick wall: `{"local_motion_tile": {"tile_width": 33.3, "tile_height": 33.3, "mirror_edges": true, "phase": [[0, 0], [2, 360]]}}`. Keyframe `tile_center` (for example from [.5, .5] to [1.5, .5]) to scroll the tiles endlessly.
+      - Pencil sketch or neon outline: `{"local_find_edges": true}` for dark lines on white, `{"local_find_edges": {"invert": true}}` for bright lines on black, or `"blend_with_original": 0.6` to keep the picture underneath.
+      - Metal-stamp relief: `{"local_emboss": {"direction": 135, "relief": 3, "contrast": 200}}`.
+      - Pixelate reveal or censor box: `{"local_mosaic": {"horizontal_blocks": [[0, 8], [0.6, 192, "in2"]], "vertical_blocks": [[0, 5], [0.6, 108, "in2"]]}}`. For a face blur, use `"region": [x0, y0, x1, y1]` with 12 x 12 blocks.
+      - Sand or frosted-glass dissolve: `{"local_scatter": {"scatter_amount": [[0, 0], [0.5, 80]], "randomize_every_frame": true}}`. `"grain": "horizontal"` gives a VHS-like smear that keeps horizontal lines.
+      - Cost at 1080p: each effect is well under 1.5 s per frame, including radial high quality, boiling scatter and tiles far larger than the frame.
 
 ## Interface scenes
 

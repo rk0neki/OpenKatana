@@ -39,18 +39,23 @@ A 24-second product film with procedural 3D objects, choreographed cameras, anim
   checks, so you and your agent can take turns on the same edit.
 - **Match a reference edit.** `analyze_reference` measures a reference at 60 fps (cuts versus flashes, picture cadence,
   the look of each shot, texture speed and the shape of each transition) and turns it into timeline settings.
-- **After Effects-grade effects, written as code.** Turbulent Displace, Displacement Map and the Distort, Light and
-  Time packs (Wave Warp, Ripple, Twirl, Deep Glow, Lens Flare, Echo, Time Displacement and more) take keyframes, eases
-  and antialiasing, each as a few lines of [timeline JSON](docs/TIMELINE.md).
+- **After Effects-grade effects, written as code.** Turbulent Displace, Displacement Map and six effect packs
+  (Distort, Light, Time, Blur & Sharpen, Stylize and Generate: Wave Warp, Twirl, Deep Glow, Lens Flare, Echo, Time
+  Displacement, RGB split, Fractal Noise, Advanced Lightning and more) take keyframes, eases and antialiasing, each as
+  a few lines of [timeline JSON](docs/TIMELINE.md).
 - **Open and local.** Apache-2.0, runs on your machine, no account. Models are optional and installed separately.
 
-## New in 0.1.3: After Effects' Distort, Light and Time effects
+## New in 0.1.3: six After Effects effect packs
 
-[![Wave Warp, Twirl, Polar Coordinates, Kaleidoscope, Lens Flare, Light Rays, Echo and Time Displacement, rendered by OpenKatana](docs/assets/ae-packs.gif)](docs/assets/ae-packs.mp4)
+[![Twirl, Polar Coordinates, Kaleidoscope, Lens Flare, Light Rays, Echo, RGB Split and Advanced Lightning, rendered by OpenKatana](docs/assets/ae-packs.gif)](docs/assets/ae-packs.mp4)
 
-**[Watch all 16 effects](docs/assets/ae-packs.mp4)**: Wave Warp, Ripple, Shockwave, Twirl, Bulge, Polar Coordinates,
-Kaleidoscope and Mirror; Deep Glow, Lens Flare, Light Rays and Light Sweep; Echo, Time Displacement, Posterize Time and
-frame blending. They join Turbulent Displace and Displacement Map, and each one is a few lines of timeline JSON:
+**[Watch all 37 effects](docs/assets/ae-packs.mp4)** or browse the **[effects gallery](docs/EFFECTS-GALLERY.md)**:
+Distort (Wave Warp, Ripple, Shockwave, Twirl, Bulge, Polar Coordinates, Kaleidoscope, Mirror), Light (Deep Glow, Lens
+Flare, Light Rays, Light Sweep), Time (Echo, Time Displacement, Posterize Time, frame blending), Blur & Sharpen
+(Gaussian, Directional, Radial and Camera Lens Blur, Unsharp Mask, Channel Blur, Tilt-Shift), Stylize (RGB Split,
+Motion Tile, Find Edges, Emboss, Mosaic, Scatter) and Generate (Fractal Noise, Advanced Lightning, Radio Waves, Cell
+Pattern, Gradient Ramp, 4-Color Gradient, Grid). They join Turbulent Displace and Displacement Map, and each one is a
+few lines of timeline JSON:
 
 ```json
 "fx": {"local_twirl": {"angle": [[0, 0, "ease"], [1, 240]], "radius": 0.45}}

@@ -13,6 +13,10 @@ guide with details and limits. Parameters ending in `?` are optional.
 - Distort pack, set in the timeline ([Timeline](TIMELINE.md)): `local_wave_warp`, `local_ripple`, `local_shockwave`, `local_twirl`, `local_bulge`, `local_polar`, `local_kaleidoscope` and `local_mirror`, with After Effects' parameter names, eased keyframes, edges and high quality.
 - Light pack: `local_deep_glow`, `local_lens_flare`, `local_light_rays` and `local_light_sweep`.
 - Time pack: `local_echo`, `local_time_displacement`, `local_posterize_time` and `local_frame_blend`; each reads other frames of its own shot.
+- Blur & Sharpen pack: `local_gaussian_blur`, `local_directional_blur`, `local_radial_blur`, `local_camera_lens_blur`, `local_unsharp_mask`, `local_channel_blur`, `local_tilt_shift`.
+- Stylize pack: `local_rgb_split`, `local_motion_tile`, `local_find_edges`, `local_emboss`, `local_mosaic`, `local_scatter`.
+- Generate pack: `local_fractal_noise`, `local_cell_pattern`, `local_gradient_ramp`, `local_four_color_gradient`, `local_grid`, `local_radio_waves`, `local_lightning`.
+- ComfyUI: a seventh saved App, **07 Preview an effect**; `examples/effects_reel.py` reproduces the README reel.
 - Recipes for every effect are in the [effects playbook](EFFECTS-PLAYBOOK.md); `preview_effect` shows any of them in ComfyUI or to an agent.
 
 ## Areas

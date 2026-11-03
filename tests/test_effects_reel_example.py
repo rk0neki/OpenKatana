@@ -44,7 +44,9 @@ class EffectsReelExampleTests(unittest.TestCase):
     def test_the_readme_spec_validates(self):
         from openkatana.contracts import validate
         effects = reel.load_spec(ROOT / 'examples/effects_reel.json')
-        self.assertEqual(len(effects), 16)
+        import re
+        stated = re.search(r'Watch all (\d+) effects', (ROOT / 'README.md').read_text(encoding='utf-8'))
+        self.assertEqual(len(effects), int(stated.group(1)))   # the README states how many effects the reel shows
         self.assertEqual(effects[3]['label'], 'Twirl')
         (self.root / 'plate').mkdir()
         reel.draw_plate(64, 36).save(self.root / 'plate' / '00000.png')
