@@ -20,7 +20,7 @@ OpenKatana is an independent, open-source **editing engine your AI agent drives:
 [![Finished Koji anime edit made with OpenKatana: cuts, effects and motion](docs/assets/koji-edit.gif)](docs/assets/koji-edit.mp4)
 
 **[Watch the anime edit with sound](docs/assets/koji-edit.mp4)** — the finale from the OpenKatana launch film.
-Source animation: [“Koji” by Ammonite & Zean](https://www.youtube.com/watch?v=61zI4eE92xM) (CC BY); edited with OpenKatana.
+Source animation: [“Koji” by Ammonite & Zean](https://www.youtube.com/watch?v=61zI4eE92xM) (CC BY); music made with [Suno](https://suno.com); edited with OpenKatana.
 
 ### Motif
 
@@ -29,6 +29,20 @@ Source animation: [“Koji” by Ammonite & Zean](https://www.youtube.com/watch?
 **[Watch or download MOTIF — 1080p, 60 fps, with sound](docs/assets/motif-1080p60.mp4)**
 
 A 24-second product film with procedural 3D objects, choreographed cameras, animated displays, typography and an original soundtrack. OpenKatana offers code-authored WebGL rendering for 3D scenes, with a Blender option available too. This MOTIF export used the Blender option; OpenKatana assembles and finishes the film. No video-generation model was used. The GIF shows an eight-second preview at reduced resolution and frame rate; the MP4 preserves the original 1080p/60fps export and audio. [Artwork and film credits](docs/assets/readme-visuals.json).
+
+## Why OpenKatana is different
+
+- **Your agent edits, with real tools.** Instead of one prompt-to-video model, your own AI agent cuts real footage
+  with OpenKatana's [editing tools](docs/TOOLS.md): timeline, typography, camera moves, audio, 3D and effects. The
+  result stays an editable project, not a flattened clip.
+- **One project, four ways in.** ComfyUI Apps, Studio, the CLI and MCP open the same project files with revision
+  checks, so you and your agent can take turns on the same edit.
+- **Match a reference edit.** `analyze_reference` measures a reference at 60 fps (cuts versus flashes, picture cadence,
+  the look of each shot, texture speed and the shape of each transition) and turns it into timeline settings.
+- **After Effects-grade effects, written as code.** Turbulent Displace, Displacement Map and the Distort, Light and
+  Time packs (Wave Warp, Ripple, Twirl, Deep Glow, Lens Flare, Echo, Time Displacement and more) take keyframes, eases
+  and antialiasing, each as a few lines of [timeline JSON](docs/TIMELINE.md).
+- **Open and local.** Apache-2.0, runs on your machine, no account. Models are optional and installed separately.
 
 ## Quick start
 
