@@ -3,6 +3,12 @@ window.OpenKatanaLocal = (() => {
   const orders = {local_selective_color:6, local_posterize:7, local_halftone:8, local_frame_slices:9, local_whip:16, local_zoom_blur:17,
                   local_scramble_text:58, local_speed_lines:25, local_paper_frame:30, local_curve:95, local_turbulent_displace:18, local_displacement_map:19};
   const phase = {local_scramble_text:'over', local_speed_lines:'final', local_paper_frame:'final', local_curve:'subject'};
+  // Effect packs (web/fx_*.js) register their effects here: name -> {order, phase?, time?, draw(ctx, p, s)}. The engine
+  // awaits a pack's draw with the canvas transform reset and p = the effect's parameters ({} for true), and passes
+  // s = {W, H, elapsed, duration, frame, fps, shot, clip, image(clipId, index), shotAt(frame)}: shotAt renders this shot
+  // at another frame into a canvas of its own (time effects; `time: true` marks them, and the nested renders skip them).
+  const packs = {};
+  function register(name, spec) { packs[name] = spec; orders[name] = spec.order; if (spec.phase) phase[name] = spec.phase; }
   const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
   const buffer = (w, h) => { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w)); c.height = Math.max(1, Math.ceil(h)); return c; };
   const copy = ctx => { const c = buffer(ctx.canvas.width, ctx.canvas.height); c.getContext('2d').drawImage(ctx.canvas, 0, 0); return c; };
@@ -472,5 +478,7 @@ window.OpenKatanaLocal = (() => {
     ctx.restore();
     return true;
   }
-  return {orders, phase, draw, mapFrame};
+  const util = {clamp, buffer, copy, rng, mirrorPad, exposure, hueSat, perlin, bezier, shape, keyedT, remap, inBox, reflect,
+                EDGES, luma, softened};
+  return {orders, phase, draw, mapFrame, register, pack: name => packs[name] ?? null, util};
 })();
