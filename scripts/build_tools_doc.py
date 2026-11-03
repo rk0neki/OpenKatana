@@ -21,7 +21,7 @@ GROUPS = [
      ['analyze_audio', 'plan_music_edit', 'plan_storyboard', 'fill_storyboard', 'list_sfx',
       'transcribe_audio', 'make_captions']),
     ('Analysis and effects', [('Effects', 'EXPANSION.md')],
-     ['analyze_clip', 'analyze_energy', 'review_mask', 'morph_images', 'render_page']),
+     ['analyze_clip', 'analyze_energy', 'review_mask', 'morph_images', 'render_page', 'preview_effect']),
     ('Match a reference', [('Editor tools', 'EDITOR_TOOLS.md')],
      ['analyze_reference', 'compare_reference', 'shot_sheet', 'eye_sheet', 'save_reference_plan', 'audit_reference_plan',
       'bind_reference', 'inspect_identity']),

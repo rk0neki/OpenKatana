@@ -1,12 +1,12 @@
 # Release readiness
 
 **0.1.2 targets an early-access local release; publication is a separate step.** The package includes the local Studio,
-74 shared MCP/CLI operations, agent skill, editable rendering templates and
+75 shared MCP/CLI operations, agent skill, editable rendering templates and
 licensed browser/font/model assets. FFmpeg, Chromium, optional Blender and
 generative weights are separate installations.
 
-The local [ComfyUI Apps integration](COMFY_APPS.md) offers the same 74 operations
-through 87 nodes and six saved Apps. It runs on the user's machine and needs no
+The local [ComfyUI Apps integration](COMFY_APPS.md) offers the same 75 operations
+through 88 nodes and six saved Apps. It runs on the user's machine and needs no
 paid hosting. Studio, CLI and MCP share its project files. Installed model/node
 requirements still apply; exposing a tool does not bundle every model.
 

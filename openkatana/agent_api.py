@@ -629,10 +629,10 @@ class AgentAPI:
         return preview_segment(self._source(source),self._output(root,'segment-previews'),start,duration,max_width)
 
     def preview_effect(self,project_id:str,effect:str,params:dict|None=None,source:str|None=None,seconds:float=2.0,fps:int=30,at:float=0.0,max_width:int=960) -> dict:
-        """Render a short preview (an mp4 and a 6-frame contact sheet) of ONE shot effect, e.g. local_turbulent_displace,
-        on a project image or video (source: project-relative path; at: start time in a video) or, without source, on a
-        built-in test card (grid, shapes, text, a light spot). effect: any shot fx name of docs/TIMELINE.md; params: its
-        fields (omit for defaults). At most 960 px and 120 frames (seconds x fps)."""
+        """See ONE timeline effect before using it: a short mp4 and a 6-frame contact sheet of a shot with only that effect.
+        effect: any shot fx name of docs/TIMELINE.md (local_turbulent_displace, glow, ...); params: its fields (omit
+        for defaults). source: a project-relative image or video (at: start time in a video); without it, a built-in
+        test card (grid, shapes, text, a light spot). At most 960 px wide (max_width) and 120 frames (seconds x fps)."""
         from .effect_preview import preview_effect
         root=self._project(project_id);projects.state(root)
         return preview_effect(root,self._output(root,'effect-previews'),effect,params,source,seconds,fps,at,max_width)
