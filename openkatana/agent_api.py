@@ -24,6 +24,7 @@ TOOLS += ('create_composition','save_composition','inspect_composition','render_
 TOOLS += ('create_animation_kit','build_display_atlas','synthesize_score','assemble_blender_clips','analyze_render_motion','analyze_camera_motion')
 TOOLS += ('create_webgl_kit','assemble_render_clips')
 TOOLS += ('shot_sheet','eye_sheet')
+TOOLS += ('preview_effect',)
 MEDIA={'.png','.jpg','.jpeg','.webp','.mp4','.mov','.mkv','.webm','.avi','.mxf','.wav','.mp3','.m4a','.flac','.ogg','.aac','.ttf','.otf','.ttc','.woff','.woff2'}
 
 class AgentAPI:
@@ -626,6 +627,15 @@ class AgentAPI:
         from .editor_tools import preview_segment
         root=self._project(project_id);projects.state(root)
         return preview_segment(self._source(source),self._output(root,'segment-previews'),start,duration,max_width)
+
+    def preview_effect(self,project_id:str,effect:str,params:dict|None=None,source:str|None=None,seconds:float=2.0,fps:int=30,at:float=0.0,max_width:int=960) -> dict:
+        """Render a short preview (an mp4 and a 6-frame contact sheet) of ONE shot effect, e.g. local_turbulent_displace,
+        on a project image or video (source: project-relative path; at: start time in a video) or, without source, on a
+        built-in test card (grid, shapes, text, a light spot). effect: any shot fx name of docs/TIMELINE.md; params: its
+        fields (omit for defaults). At most 960 px and 120 frames (seconds x fps)."""
+        from .effect_preview import preview_effect
+        root=self._project(project_id);projects.state(root)
+        return preview_effect(root,self._output(root,'effect-previews'),effect,params,source,seconds,fps,at,max_width)
 
     def compare_reference(self,project_id:str,reference:str,rendered:str,times:list[float]|None=None,render_offset:float=0,
                           side_by_side:bool=False,look:bool=False) -> dict:
