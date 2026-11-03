@@ -126,17 +126,34 @@
 
   // local_bulge: After Effects' Bulge. Magnifies an ellipse (horizontal_radius x vertical_radius px at 1080) round
   // `center` by `height` (-4..4: 1 doubles the middle, negative pinches); `taper` (0..1) softens its edge; `pin` holds
-  // the frame edges still. height and center take keyframes.
+  // the frame edges still. height and center take keyframes. A bulge samples the radius rho (0..1 across the ellipse) from
+  // G(rho) = rho / (1 + height (1 - rho^2)^(1 + 2 taper)), which only grows, so it never folds; a pinch is its exact
+  // inverse (looked up from a table), so it never folds either and still meets the untouched picture at the rim. Strong
+  // heights squeeze the source up to (1 + 2 |height|)x, so quality defaults to 'high' above |height| 1.
+  const PINCH_N = 1024;
+  function pinchRatio(a, ex) {   // source / output radius for a pinch of strength a > 0, at rho = j / PINCH_N
+    const M = 8 * PINCH_N, G = s => s / (1 + a * Math.pow(1 - s * s, ex)), lut = new Float64Array(PINCH_N + 1);
+    lut[0] = 1 + a;
+    let i = 0, g0 = 0, g1 = G(1 / M);
+    for (let j = 1; j <= PINCH_N; j++) {
+      const rho = j / PINCH_N;
+      while (g1 < rho && i < M - 1) { i++; g0 = g1; g1 = G((i + 1) / M); }
+      const src = (i + (g1 > g0 ? clamp((rho - g0) / (g1 - g0)) : 1)) / M;
+      lut[j] = src / rho;
+    }
+    return rho => { const u = rho * PINCH_N, j = Math.min(PINCH_N - 1, Math.floor(u)), f = u - j; return lut[j] + (lut[j + 1] - lut[j]) * f; };
+  }
   register('local_bulge', {order: 44, draw(ctx, p, s) {
     const t = clock(p, s); if (t === null) return;
     const {W: w, H: h} = s, k = h / 1080, hb = keyedT(p.height, t, 1);
     if (!(Math.abs(hb) > 1e-6)) return;
     const [cx, cy] = point(p.center, t, [.5, .5], w, h), rx = Math.max(1, (p.horizontal_radius ?? 300) * k), ry = Math.max(1, (p.vertical_radius ?? 300) * k);
-    const ex = 1 + 2 * (p.taper ?? 0), pin = p.pin ? pinWeight('all', w, h) : null;
-    warp(ctx, p, s, (x, y, D) => {
+    const ex = 1 + 2 * (p.taper ?? 0), pin = p.pin ? pinWeight('all', w, h) : null, pinch = hb < 0 ? pinchRatio(-hb, ex) : null;
+    const q = {...p, quality: p.quality ?? (Math.abs(hb) > 1 ? 'high' : 'low')};
+    warp(ctx, q, s, (x, y, D) => {
       const dx = x - cx, dy = y - cy, r2 = (dx / rx) ** 2 + (dy / ry) ** 2;
       if (r2 >= 1) { D[0] = 0; D[1] = 0; return; }
-      const b = Math.pow(1 - r2, ex), f = (hb > 0 ? 1 / (1 + hb * b) : 1 - hb * b) - 1, g = pin ? pin(x, y) : 1;
+      const f = (pinch ? pinch(Math.sqrt(r2)) : 1 / (1 + hb * Math.pow(1 - r2, ex))) - 1, g = pin ? pin(x, y) : 1;
       D[0] = dx * f * g; D[1] = dy * f * g;
     }, (x, y) => ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 >= 1);
   }});
@@ -164,7 +181,7 @@
   }});
 
   // local_kaleidoscope: CC Kaleida. Folds the picture round `center` into `segments` wedges (mirroring "on" flips every
-  // other wedge so the seams match; "off" repeats one) and folds the radius every `size` px (at 1080: the cell size), so
+  // other wedge so the seams match - with an odd count one seam, at the start of wedge 0, cannot match; "off" repeats one) and folds the radius every `size` px (at 1080: the cell size), so
   // the disc `size` round the centre is what is seen, tiled outward in rings. `rotation` (degrees) turns the wedge
   // that is sampled, as turning a kaleidoscope. rotation and center take keyframes.
   register('local_kaleidoscope', {order: 46, draw(ctx, p, s) {
@@ -173,9 +190,9 @@
     const [cx, cy] = point(p.center, t, [.5, .5], w, h), size = Math.max(1, (p.size ?? 360) * k), mirror = (p.mirroring ?? 'on') !== 'off';
     const base = rot - S / 2 - Math.PI / 2;   // wedge 0 is sampled from the wedge pointing up from the centre, turned by rotation
     warp(ctx, p, s, (x, y, D) => {
-      const dx = x - cx, dy = y - cy, a = Math.atan2(dy, dx) + Math.PI / 2 + S / 2;
+      const dx = x - cx, dy = y - cy, a0 = Math.atan2(dy, dx) + Math.PI / 2 + S / 2, a = a0 - TAU * Math.floor(a0 / TAU);   // 0..2pi
       let r = Math.hypot(dx, dy);
-      const i = Math.floor(a / S); let f = a - i * S;
+      const i = Math.min(n - 1, Math.floor(a / S)); let f = a - i * S;
       if (mirror && (i & 1)) f = S - f;
       const c = Math.floor(r / size); r -= c * size; if (c & 1) r = size - r;
       D[0] = cx + r * Math.cos(f + base) - x; D[1] = cy + r * Math.sin(f + base) - y;

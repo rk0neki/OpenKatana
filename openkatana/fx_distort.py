@@ -52,10 +52,15 @@ def validate(name, p, where):
             _keyed(v, loc, *KEYED[k])
         elif k in POINTS:
             if isinstance(v, list) and v and isinstance(v[0], list):
+                for i, key in enumerate(v):   # check the points first: _keyed's own message speaks of px at 1080
+                    if isinstance(key, list) and len(key) in (2, 3):
+                        _point(key[1], f'{loc}[{i}][1]')
                 _keyed(v, loc, 0, 1, point=True)
             else:
                 _point(v, loc)
         elif k == 'ease':
+            if v == 'hold':
+                raise ContractError(f'{loc}: the ring grows over d seconds; use an ease other than hold')
             _ease(v, loc)
         elif k == 'pin':
             if not isinstance(v, bool):

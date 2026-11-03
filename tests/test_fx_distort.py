@@ -29,7 +29,9 @@ class DistortPackTests(unittest.TestCase):
         noise = rng.integers(0, 256, (H, W, 3), dtype=np.uint8)            # every pixel distinct: any move shows
         cols = np.repeat(rng.integers(0, 256, (1, W, 3), dtype=np.uint8), H, 0)   # changes only along x
         grey = np.full((H, W, 3), 90, np.uint8); grey[:, ::6] = 230; grey[::6, :] = 230
-        self.images = {'N': noise, 'C': cols, 'G': grey}
+        yy, xx = np.mgrid[0:H, 0:W]
+        ramp = np.stack([xx, yy * 2, np.full_like(xx, 128)], 2).astype(np.uint8)   # red = x, green = 2y: a smooth map
+        self.images = {'N': noise, 'C': cols, 'G': grey, 'X': ramp}
         for name, a in self.images.items():
             (self.root / name).mkdir()
             Image.fromarray(a).save(self.root / name / '00000.png')
@@ -84,7 +86,9 @@ class DistortPackTests(unittest.TestCase):
                ('local_polar', {'conversion': 'polar'}, 'one of rect_to_polar'), ('local_kaleidoscope', {'segments': 2.5}, 'integer'),
                ('local_kaleidoscope', {'segments': 40}, 'out of range'), ('local_kaleidoscope', {'mirroring': True}, 'one of on'),
                ('local_mirror', {'reflection_angle': float('nan')}, ''), ('local_mirror', {'edges': 'mirror'}, 'one of reflect'),
-               ('local_mirror', {'region': [.5, .5, .4, .9]}, 'greater than'), ('local_twirl', {'at': -1}, 'out of range')]
+               ('local_mirror', {'region': [.5, .5, .4, .9]}, 'greater than'), ('local_twirl', {'at': -1}, 'out of range'),
+               ('local_shockwave', {'ease': 'hold'}, 'grows over d'), ('local_twirl', {'center': [[.2, .3]]}, r'center\[0\]\[1\]: expected \[x, y\] \(0\.\.1\)'),
+               ('local_mirror', {'reflection_center': [[0, [.2, 1.3]]]}, 'out of range'), ('local_ripple', {'center': [[0, 5]]}, r'\(0\.\.1\)')]
         for name, fx, error in bad:
             with self.assertRaisesRegex(ContractError, error, msg=f'{name} {fx}'):
                 validate(self.edit([(name, fx, 'N', 1)]), self.root)
@@ -139,6 +143,26 @@ class DistortPackTests(unittest.TestCase):
         outside = np.ones((H, W), bool); outside[int(H * .25) - 1:int(H * .75) + 2, int(W * .25) - 1:int(W * .75) + 2] = False
         self.assertEqual(np.abs(f[14] - N)[outside].max(), 0)               # region: nothing moves outside it
         self.assertGreater((np.abs(f[14] - N).sum(2) > 30).mean(), .1)
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_pinch_and_odd_kaleidoscope_have_no_folds_or_extra_seams(self):
+        X = self.images['X'].astype(int)
+        f = self.render([('local_bulge', {'height': -1, 'horizontal_radius': 500, 'vertical_radius': 500}, 'X', 1),
+                         ('local_bulge', {'height': -4, 'horizontal_radius': 500, 'vertical_radius': 500}, 'X', 1),
+                         ('local_bulge', {'height': -2.5, 'taper': .6, 'horizontal_radius': 600, 'vertical_radius': 400}, 'X', 1),
+                         ('local_kaleidoscope', {'segments': 3, 'size': 2000, 'rotation': 30}, 'X', 1),
+                         ('local_kaleidoscope', {'segments': 5, 'size': 2000}, 'X', 1)])
+        cx, cy = W // 2, H // 2
+        for i in range(3):                                   # a pinch samples ever further out along a row: no fold, no mirrored strip
+            row = f[i][cy, cx:, 0]
+            self.assertGreaterEqual(np.diff(row).min(), -1, msg=f'pinch {i}: {row.tolist()}')
+            self.assertGreater(row[12], X[cy, cx + 12, 0] + 2)    # and it does pull the picture inward
+            col = f[i][cy:, cx, 1]
+            self.assertGreaterEqual(np.diff(col).min(), -2, msg=f'pinch {i} column')
+            self.assertEqual(np.abs(f[i][:, :4] - X[:, :4]).max(), 0)   # the rim and beyond stay put
+        for i in (3, 4):                                     # odd mirrored wedges: no break along the row left of the centre
+            jump = np.abs(f[i][cy - 1, 4:cx - 12] - f[i][cy, 4:cx - 12]).max()
+            self.assertLessEqual(jump, 8, msg=f'kaleidoscope {i}')
 
     @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
     def test_shockwave_timing_and_split(self):
