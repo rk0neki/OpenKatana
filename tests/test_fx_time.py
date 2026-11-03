@@ -87,7 +87,10 @@ class TimeEffectTests(unittest.TestCase):
         for back, level in ((0, 255), (1, 128), (2, 64)):
             self.assertLessEqual(np.abs(f[6][self.square(6 - back)] - level).max(), 2, msg=f'{back} back')
         self.assertEqual(f[6][self.square(3)].max(), 0)                   # three back: not echoed
-        self.assertLessEqual(np.abs(f[0][self.square(0)] - 255).max(), 2)  # frame 0 echoes itself (clamped): added, still white
+        f = self.render(self.edit({'local_echo': {'number_of_echoes': 2, 'starting_intensity': .5}}, frames=3), 'start')
+        self.assertLessEqual(np.abs(f[0][self.square(0)] - 128).max(), 2)  # before the edit starts there is nothing to echo
+        self.assertLessEqual(np.abs(f[2][self.square(0)] - 128).max(), 2)  # intensity .5 x decay 1
+        self.assertLessEqual(np.abs(f[2][self.square(2)] - 128).max(), 2)
         # maximum: the trail keeps the brightest; minimum of a moving square on black is black
         f = self.render(self.edit({'local_echo': {'number_of_echoes': 2, 'decay': .5, 'operator': 'maximum'}}), 'max')
         self.assertLessEqual(np.abs(f[6][self.square(5)] - 128).max(), 2)

@@ -620,7 +620,7 @@ window.OpenKatana = (() => {
       if(pack){   // effect packs (web/fx_*.js); a time effect's nested renders skip time effects
         if(pack.time&&nestedTime)continue;
         ctx.save();ctx.resetTransform();
-        await pack.draw(ctx,item.params===true?{}:item.params,{W,H,elapsed,duration,frame,fps:edit.canvas.fps,shot,clip,
+        await pack.draw(ctx,item.params===true?{}:item.params,{W,H,elapsed,duration,frame,frames:edit.canvas.frames,fps:edit.canvas.fps,shot,clip,
           clips:edit.clips,image:(id,i)=>image(edit.clips[id],i),shotAt:f=>shotAt(shot,f,inTransition,index)});
         ctx.restore();continue;
       }
