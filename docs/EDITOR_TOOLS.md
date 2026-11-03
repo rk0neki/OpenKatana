@@ -114,7 +114,8 @@ defocus clearing by frame 9 and 1.9x brightness easing to rest by frame 28, matc
 `preview_effect` renders a shot with only the named effect, through the same validator and engine as a saved
 timeline, so a value that would fail there fails here first with the same message. It writes to the project's
 `.openkatana/effect-previews/<id>/`: `render/video.mp4`, `contact-sheet.png` (6 frames, labelled with frame and
-time), the `timeline.json` it rendered and the render receipt.
+time), the `timeline.json` it rendered (a record: its generated source frames and copied fonts are deleted after
+encoding, so it is not meant to be rendered again) and the render receipt.
 
 ```json
 {"project_id": "demo", "effect": "local_turbulent_displace",
@@ -123,13 +124,21 @@ time), the `timeline.json` it rendered and the render receipt.
 
 - `effect`: any shot `fx` name from [TIMELINE.md](TIMELINE.md) (camera moves, post effects, `local_*` effects and
   the effect packs); an unknown name is rejected with close matches. `params`: the effect's fields; omit for
-  defaults. Effects that need a font (`big`, `word`, `type`, `tag`, `local_scramble_text`) cannot be previewed this
-  way because the preview declares no fonts; a `clip` field can name `source`.
-- `source`: a project-relative image or video. Without it the preview uses a built-in test card (grid, colour
-  shapes, text, a gradient and an overexposed light spot). `at` starts a video source later; a short video ends
-  the preview early (warning `source_short`).
-- Size: `max_width` (64..960, default 960) limits both sides; `seconds` x `fps` is at most 120 frames. PNG frames
-  are deleted after encoding; for a video source the excerpt mp4 is kept.
+  defaults; a `clip` field can name `source`.
+- Fonts: effects that draw text (`big`, `word`, `type`, `tag`, `local_scramble_text`, `burst` with `letters`) use
+  the `family` in `params`: a font the project's `timeline.json` declares under that family, else a bundled OFL font
+  of that name (Inter, Anton, Bebas Neue, ...). Without a `family` the preview uses the bundled Inter (warning
+  `font_default`); `params` in the result shows the family used.
+- `source`: a project-relative image or video. Without it the preview uses a built-in moving test card (grid,
+  colour shapes, text, a gradient, an overexposed light spot, a ball bouncing across the frame and a frame
+  counter), so effects that use earlier or later frames (`trail`, `stutter`, the Time pack) have motion to act on.
+  A still picture holds for the whole preview; a time effect on one gives warning `still_source`. `at` starts a
+  video source later; a short video ends the preview early (warning `source_short`).
+- Matte effects (`cutout`, `outline`, `contour`) need a clip with a subject mask, which a preview source does not
+  have: they render the source unchanged with warning `needs_matte`; try them in the project timeline on a masked
+  clip.
+- Size: `max_width` (64..960, default 960) limits both sides; `seconds` x `fps` is at most 120 frames. Rendered
+  and generated frames are deleted after encoding; for a video source the excerpt mp4 is kept.
 
 ## Batch import
 

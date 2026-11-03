@@ -1,4 +1,5 @@
 """preview_effect: one shot effect rendered on a test card or a project picture, for agents and ComfyUI."""
+import json
 import shutil
 import tempfile
 import unittest
@@ -76,6 +77,53 @@ class PreviewEffectTests(unittest.TestCase):
         video = next(s for s in probe(Path(r['video']))['streams'] if s['codec_type'] == 'video')
         self.assertEqual((int(video['nb_read_frames']), video['width'], video['height']), (6, 192, 108))
         self.assertFalse((Path(r['video']).parent / 'frames').exists())   # PNG frames are not kept
+
+    def test_card_moves(self):
+        from openkatana.effect_preview import card_frame, test_card
+        base = np.asarray(test_card(192, 108)).astype(np.float32)
+        a, b = (np.asarray(card_frame(base, i, 15)).astype(int) for i in (0, 6))
+        self.assertGreater(np.abs(a - b).max(), 100)    # the ball moved: time effects have motion to act on
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_time_effect_on_moving_card(self):
+        # stutter n 3 step 2 loops source frames 0, 2, 4: output frames 0 and 3 match, 0 and 1 differ
+        r = self.api.preview_effect('p', 'stutter', {'n': 3, 'step': 2}, seconds=.4, fps=15, max_width=192)
+        with Image.open(r['contact_sheet']) as sheet:
+            a = np.asarray(sheet.convert('RGB')).astype(int)
+        tile = lambda i: a[44 + i // 3 * 202:224 + i // 3 * 202, i % 3 * 320:(i % 3 + 1) * 320]
+        self.assertGreater(np.abs(tile(0) - tile(1)).mean(), .3)
+        self.assertLess(np.abs(tile(0) - tile(3)).mean(), .3)
+        self.assertEqual(r['warnings'], [])
+        folder = Path(r['timeline']).parent / 'source'
+        self.assertEqual(list(folder.glob('*.jpg')), [])  # generated card frames are deleted after encoding
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_font_effects(self):
+        args = dict(seconds=.1, fps=15, max_width=128)
+        r = self.api.preview_effect('p', 'big', {'text': 'HI'}, **args)
+        self.assertEqual(r['params'], {'text': 'HI', 'family': 'Inter'})
+        self.assertEqual([w['code'] for w in r['warnings']], ['font_default'])
+        r = self.api.preview_effect('p', 'local_scramble_text', {'text': 'HI', 'family': 'Anton'}, **args)
+        self.assertEqual(r['warnings'], [])
+        self.assertFalse((Path(r['timeline']).parent / 'fonts').exists())
+        # a font the project's own timeline declares
+        from openkatana.bundled_fonts import FOLDER
+        (self.root / 'type').mkdir(); shutil.copyfile(FOLDER / 'anton_Anton-Regular.ttf', self.root / 'type' / 'house.ttf')
+        (self.root / 'timeline.json').write_text('{"fonts": [{"family": "House", "url": "type/house.ttf"}]}')
+        r = self.api.preview_effect('p', 'word', {'text': 'HI', 'family': 'House'}, **args)
+        self.assertEqual(json.loads(Path(r['timeline']).read_text())['fonts'], [{'family': 'House', 'url': 'fonts/house.ttf'}])
+        with self.assertRaisesRegex(ContractError, 'neither a font declared'):
+            self.api.preview_effect('p', 'word', {'text': 'HI', 'family': 'Nope'}, **args)
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_still_and_matte_warnings(self):
+        Image.new('RGB', (64, 36), (40, 90, 160)).save(self.root / 'still.png')
+        r = self.api.preview_effect('p', 'trail', source='still.png', seconds=.1, max_width=64)
+        self.assertIn('still_source', [w['code'] for w in r['warnings']])
+        r = self.api.preview_effect('p', 'cutout', seconds=.1, max_width=64)
+        matte = [w for w in r['warnings'] if w['code'] == 'needs_matte']
+        self.assertEqual(len(matte), 1)
+        self.assertIn('subject matte', matte[0]['message'])
 
     @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
     def test_preview_on_project_image(self):
