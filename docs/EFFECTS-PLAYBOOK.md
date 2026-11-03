@@ -318,6 +318,9 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
     and play it at speed 1.
   - Use real texture footage. Drawn dust and scratches read as fake.
 
+  - A glass, water or heat-haze plate can bend the picture instead of lying over it:
+    `local_displacement_map` (section 21).
+
   Also `local_halftone` and `film_overlay` (dust, scratch, weave). Inside letters, a
   hook masks the texture to the glyphs and multiplies it over their paint, loading the
   texture frames with `prepare()`.
@@ -433,6 +436,10 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
   - Burning ornaments: `twist` with a `drift` upwards.
   A project hook can still displace single glyphs. The `liquid` transition (`wobble`)
   and `lens_warp` cover a cut or a lens.
+- **Displacement by real footage:** `local_displacement_map` bends the picture by
+  another clip's channels (After Effects' Displacement Map): a heat-haze, glass, water
+  or ripple plate as the map, `x`/`y` channels (luma for a grey plate), `amount` in px
+  at 1080 and `smooth` to soften a noisy map.
 
 ### 22. Slash cuts, glitch slices and smears on type
 

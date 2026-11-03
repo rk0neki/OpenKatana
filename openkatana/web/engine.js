@@ -586,6 +586,11 @@ window.OpenKatana = (() => {
     if(clip.mask_dir){const pc=plateBuffer.getContext('2d');pc.globalCompositeOperation='copy';pc.drawImage(canvas,0,0);}
     for (const item of composition(shot,fx)) {
       if(OpenKatanaEffects.draw(ctx,item.type==='burst-letters'?'burst':item.type,item.params,{W,H,elapsed,duration,frame,boil:edit.canvas.boil??2,hash:noise,face,maskBuffer:mask?maskBuffer:null,lettersOnly:item.type==='burst-letters'}))continue;
+      if(item.type==='local_displacement_map'){   // the map is another clip's frame, decoded before the effect runs
+        const p=item.params,mc=edit.clips[p.clip],i=OpenKatanaLocal.mapFrame(p,mc,elapsed);
+        if(i!==null)OpenKatanaLocal.draw(ctx,item.type,p,{W,H,elapsed,duration,frame,fps:edit.canvas.fps,map:await image(mc,i)});
+        continue;
+      }
       if(OpenKatanaLocal.draw(ctx,item.type,item.params,{W,H,elapsed,duration,frame,fps:edit.canvas.fps}))continue;
       if(item.type==='stickers'){OpenKatanaStickers.draw(ctx,frame,edit.canvas.fps,W,H);continue;}
       if(OpenKatanaDecor.draw(ctx,item.type,item.params,{W,H,elapsed,duration,frame,face,matrix,fps:edit.canvas.fps}))continue;

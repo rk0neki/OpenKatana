@@ -1,3 +1,33 @@
+# Unreleased
+
+## Effects
+
+- **`local_turbulent_displace`**: After Effects-style Turbulent Displace for plates,
+  graphics and type. Turbulent, bulge, twist, horizontal, vertical and cross
+  displacement; amount (with keyframes), size, complexity, evolution, drift, a stepped
+  boil, edge pinning and a feathered region for one word.
+- **`local_displacement_map`**: After Effects' Displacement Map. Another clip's red,
+  green, blue, alpha or luma channel moves the picture, so real heat-haze, glass and
+  water plates bend the footage.
+- **Timeline `overlays`**: texture plates (dust, scratches, light leaks) with 13 blend
+  modes, keyframed opacity, their own picture rate (24p on a 60-fps canvas), black
+  floor, tint and fit; and **adjustment layers** that grade everything beneath them at
+  a partial strength.
+- **`local_curve`**: a cut transition given frame by frame (scale, offset, blur, glow,
+  exposure), as measured from a reference.
+- Hooks declare the images they need with `prepare()`; each is recorded with its
+  SHA-256 in the input manifest and the receipt.
+
+## Reference analysis
+
+- Every reference is analysed at **60 fps**, never lower, so every motion is caught.
+  `analyze_reference` `measure` runs on a 60-fps clock and returns cuts versus
+  exposure dips, picture cadence, look per shot, texture speck rate and the median cut
+  transition as `local_curve` arrays.
+- `compare_reference` adds a side-by-side video and a look comparison; `shot_sheet`
+  numbers the shots of a render or reference; `eye_sheet` crops the eyes across a take.
+- Timelines with NaN or Infinity anywhere are rejected; previews flag flat frames.
+
 # OpenKatana 0.1.1 — early access
 
 Six ComfyUI Apps and 85 nodes, an effects playbook for agents and complete

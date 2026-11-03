@@ -1,7 +1,7 @@
 // Local layer effects; parameters and defaults are documented in docs/TIMELINE.md.
 window.OpenKatanaLocal = (() => {
   const orders = {local_selective_color:6, local_posterize:7, local_halftone:8, local_frame_slices:9, local_whip:16, local_zoom_blur:17,
-                  local_scramble_text:58, local_speed_lines:25, local_paper_frame:30, local_curve:95, local_turbulent_displace:18};
+                  local_scramble_text:58, local_speed_lines:25, local_paper_frame:30, local_curve:95, local_turbulent_displace:18, local_displacement_map:19};
   const phase = {local_scramble_text:'over', local_speed_lines:'final', local_paper_frame:'final', local_curve:'subject'};
   const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
   const buffer = (w, h) => { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w)); c.height = Math.max(1, Math.ceil(h)); return c; };
@@ -181,7 +181,6 @@ window.OpenKatanaLocal = (() => {
       FX[j * gw + i] = dx * A * wgt; FY[j * gw + i] = dy * A * wgt;
     }
     const src = ctx.getImageData(0, 0, w, h), sd = src.data, out = ctx.createImageData(w, h), od = out.data;
-    const reflect = (v, m) => { if (m < 2) return 0; const period = 2 * (m - 1); v = Math.abs(v) % period; return v > m - 1 ? period - v : v; };
     // pixels outside the region and its feather keep their place (the grid would otherwise bleed one cell past it)
     const [bx0, by0, bx1, by1] = reg ? [rx0 - fe, ry0 - fe, rx1 + fe, ry1 + fe] : [-1, -1, w, h];
     for (let y = 0; y < h; y++) {
@@ -192,14 +191,57 @@ window.OpenKatanaLocal = (() => {
         const still = x < bx0 || x > bx1 || y < by0 || y > by1;
         const dx = still ? 0 : FX[a] * w00 + FX[a + 1] * w10 + FX[a + gw] * w01 + FX[a + gw + 1] * w11;
         const dy = still ? 0 : FY[a] * w00 + FY[a + 1] * w10 + FY[a + gw] * w01 + FY[a + gw + 1] * w11;
-        if (Math.abs(dx) < .002 && Math.abs(dy) < .002) { od[o] = sd[o]; od[o + 1] = sd[o + 1]; od[o + 2] = sd[o + 2]; od[o + 3] = sd[o + 3]; continue; }
-        const sx = reflect(x + dx, w), sy = reflect(y + dy, h), x0 = Math.min(w - 2, Math.floor(sx)), y0 = Math.min(h - 2, Math.floor(sy));
-        const ux = sx - x0, uy = sy - y0, b = (y0 * w + x0) * 4, r = w * 4;
-        const v00 = (1 - ux) * (1 - uy), v10 = ux * (1 - uy), v01 = (1 - ux) * uy, v11 = ux * uy;
-        for (let c = 0; c < 4; c++) od[o + c] = sd[b + c] * v00 + sd[b + 4 + c] * v10 + sd[b + r + c] * v01 + sd[b + r + 4 + c] * v11;
+        moveInto(od, o, sd, x, y, dx, dy, w, h);
       }
     }
     ctx.putImageData(out, 0, 0);
+  }
+  // out pixel (x, y) = the source at (x + dx, y + dy), bilinear and reflected at the edges; a negligible move copies
+  const reflect = (v, m) => { if (m < 2) return 0; const period = 2 * (m - 1); v = Math.abs(v) % period; return v > m - 1 ? period - v : v; };
+  function moveInto(od, o, sd, x, y, dx, dy, w, h) {
+    if (Math.abs(dx) < .002 && Math.abs(dy) < .002) { od[o] = sd[o]; od[o + 1] = sd[o + 1]; od[o + 2] = sd[o + 2]; od[o + 3] = sd[o + 3]; return; }
+    const sx = reflect(x + dx, w), sy = reflect(y + dy, h), x0 = Math.max(0, Math.min(w - 2, Math.floor(sx))), y0 = Math.max(0, Math.min(h - 2, Math.floor(sy)));
+    const ux = sx - x0, uy = sy - y0, b = (y0 * w + x0) * 4, r = w * 4;
+    const v00 = (1 - ux) * (1 - uy), v10 = ux * (1 - uy), v01 = (1 - ux) * uy, v11 = ux * uy;
+    for (let c = 0; c < 4; c++) od[o + c] = sd[b + c] * v00 + sd[b + 4 + c] * v10 + sd[b + r + c] * v01 + sd[b + r + 4 + c] * v11;
+  }
+  // local_displacement_map: After Effects' Displacement Map. A frame of another clip (`s.map`, loaded by the engine and
+  // stretched over the canvas, softened by `smooth` px at 1080) moves each pixel by (channel - 128) / 127 x `amount` px
+  // at 1080: `x` and `y` pick the channel for each axis (red, green, blue, alpha, luma or none), so mid grey keeps a pixel
+  // in place. `region` [x0, y0, x1, y1] with `feather` confines it. Heat haze, glass, water and ripple plates drive it.
+  const CHANNEL = {red: (d, i) => d[i], green: (d, i) => d[i + 1], blue: (d, i) => d[i + 2], alpha: (d, i) => d[i + 3],
+                   luma: (d, i) => .2126 * d[i] + .7152 * d[i + 1] + .0722 * d[i + 2]};
+  function displaceMap(ctx, p, s) {
+    const {W: w, H: h, map} = s, k = h / 1080, t = s.elapsed - (p.at ?? 0);
+    if (t < 0 || !map) return;
+    const A = keyedT(p.amount, t, 20) * k;
+    if (!(A > .02)) return;
+    const mb = buffer(w, h), mx = mb.getContext('2d'), sm = (p.smooth ?? 0) * k;
+    const pad = sm > .3 ? Math.max(0, Math.min(Math.min(w, h) - 1, Math.ceil(3 * sm) + 1)) : 0;
+    if (pad) { mx.filter = `blur(${sm}px)`; mx.drawImage(mirrorPad(map, w, h, pad), -pad, -pad); mx.filter = 'none'; }
+    else mx.drawImage(map, 0, 0, w, h);
+    const md = mx.getImageData(0, 0, w, h).data, sd = ctx.getImageData(0, 0, w, h).data, out = ctx.createImageData(w, h), od = out.data;
+    const cx = CHANNEL[p.x ?? 'red'], cy = CHANNEL[p.y ?? 'green'], val = (f, o) => Math.max(-1, (f(md, o) - 128) / 127);
+    const reg = p.region, fe = (p.feather ?? .02) * h;
+    const [rx0, ry0, rx1, ry1] = reg ? [reg[0] * w, reg[1] * h, reg[2] * w, reg[3] * h] : [0, 0, 0, 0];
+    const inside = (v, a, b) => fe > 0 ? clamp(1 - Math.max(a - v, v - b, 0) / fe) : (v >= a && v <= b ? 1 : 0);
+    for (let y = 0; y < h; y++) {
+      const wy = reg ? inside(y, ry0, ry1) : 1;
+      for (let x = 0; x < w; x++) {
+        const o = (y * w + x) * 4, wgt = reg ? wy * inside(x, rx0, rx1) : 1;
+        moveInto(od, o, sd, x, y, wgt && cx ? val(cx, o) * A * wgt : 0, wgt && cy ? val(cy, o) * A * wgt : 0, w, h);
+      }
+    }
+    ctx.putImageData(out, 0, 0);
+  }
+  // which frame of the map clip a local_displacement_map shows at shot time `elapsed` (null before `at`)
+  function mapFrame(p, clip, elapsed) {
+    const t = elapsed - (p.at ?? 0);
+    if (t < 0) return null;
+    const i = Math.floor(((p.src ?? 0) + (p.speed ?? 1) * t) * clip.fps + 1e-6), n = clip.n, mode = p.loop ?? 'loop';
+    if (mode === 'loop') return ((i % n) + n) % n;
+    if (mode === 'pingpong' && n > 1) { const period = 2 * (n - 1), q = ((i % period) + period) % period; return q < n ? q : period - q; }
+    return Math.max(0, Math.min(n - 1, i));
   }
   function draw(ctx, name, p, s) {
     if (!(name in orders)) return false;
@@ -288,6 +330,8 @@ window.OpenKatanaLocal = (() => {
       curve(ctx, p, s);
     } else if (name === 'local_turbulent_displace') {
       turbulent(ctx, p, s);
+    } else if (name === 'local_displacement_map') {
+      displaceMap(ctx, p, s);
     } else if (name === 'local_scramble_text') {
       const chars = [...p.text], n = chars.length, d = p.d ?? .6, age = t - (p.at ?? 0);
       if (age >= 0) {
@@ -300,5 +344,5 @@ window.OpenKatanaLocal = (() => {
     ctx.restore();
     return true;
   }
-  return {orders, phase, draw};
+  return {orders, phase, draw, mapFrame};
 })();

@@ -14,6 +14,7 @@ SPECS = {
     'local_scramble_text': 'text family size pos fill d at seed',
     'local_curve': 'scale dx dy blur glow exposure at mirror glow_radius glow_bright glow_contrast glow_mode',
     'local_turbulent_displace': 'displacement amount size complexity evolution speed offset drift every pin region feather seed at',
+    'local_displacement_map': 'clip src speed loop amount x y smooth region feather at',
 }
 NAMES = tuple(SPECS)
 RANGES = {'amount': (0, 1), 'd': (.001, 60), 'at': (0, 3600), 'spacing': (3, 200), 'mix': (0, 1), 'count': (1, 512),
@@ -27,6 +28,27 @@ MAX_CURVE = 600
 DISPLACEMENTS = ('turbulent', 'bulge', 'twist', 'horizontal', 'vertical', 'cross')
 PINS = ('all', 'none', 'horizontal', 'vertical')
 TURBULENT = {'size': (1, 4000), 'complexity': (1, 8), 'evolution': (-1e4, 1e4), 'speed': (-60, 60), 'feather': (0, 1)}
+CHANNELS = ('red', 'green', 'blue', 'alpha', 'luma', 'none')
+
+
+def _displacement_map(k, v, loc):
+    """local_displacement_map fields beyond those shared with local_turbulent_displace."""
+    if k == 'clip':
+        if not isinstance(v, str) or not v:
+            raise ContractError(f'{loc}: the id of a clip in clips (the map)')
+    elif k in ('x', 'y'):
+        if v not in CHANNELS:
+            raise ContractError(f'{loc}: one of {", ".join(CHANNELS)}')
+    elif k == 'loop':
+        if v not in ('loop', 'pingpong', 'clamp'):
+            raise ContractError(f'{loc}: loop, pingpong or clamp')
+    elif k == 'src':
+        number(v, loc, 0, 86400)
+    elif k == 'smooth':
+        number(v, loc, 0, 200)
+    else:
+        return False
+    return True
 
 
 def _turbulent(k, v, loc):
@@ -75,7 +97,9 @@ def local_effect(name, p, where):
     fields(p, SPECS[name], where)
     for k, v in p.items():
         loc = f'{where}.{k}'
-        if name == 'local_turbulent_displace' and _turbulent(k, v, loc):
+        if name in ('local_turbulent_displace', 'local_displacement_map') and _turbulent(k, v, loc):
+            continue
+        if name == 'local_displacement_map' and _displacement_map(k, v, loc):
             continue
         if k in ('ink', 'paper', 'color', 'fill'):
             color(v, loc)
@@ -113,6 +137,8 @@ def local_effect(name, p, where):
             number(v, loc, lo, hi, integer=k in INTEGER)
     if name == 'local_scramble_text' and not ('text' in p and 'family' in p):
         raise ContractError(f'{where}: text and family (a declared font) are required')
+    if name == 'local_displacement_map' and 'clip' not in p:
+        raise ContractError(f'{where}: clip (the id of the map clip in clips) is required')
 
 
 def measured(value, where):

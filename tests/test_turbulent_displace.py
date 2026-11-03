@@ -1,4 +1,5 @@
-"""local_turbulent_displace: After Effects-style turbulent displacement (fractal noise moving the pixels)."""
+"""local_turbulent_displace and local_displacement_map: After Effects-style displacement by fractal noise or by another
+clip's channels."""
 import json
 import shutil
 import tempfile
@@ -92,6 +93,47 @@ class TurbulentDisplaceTests(unittest.TestCase):
         orange = (np.abs(f - np.array([255, 120, 60])).sum(2) < 40)
         for y in range(0, H, 8):                                          # sideways moves keep each grid row whole
             self.assertGreater(orange[y].mean(), .6, msg=f'row {y}')
+
+
+
+class DisplacementMapTests(unittest.TestCase):
+    """local_displacement_map: another clip's channels move the pixels (After Effects' Displacement Map)."""
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory(); self.addCleanup(self.tmp.cleanup); self.root = Path(self.tmp.name)
+        (self.root / 'f').mkdir(); (self.root / 'm').mkdir()
+        a = np.zeros((H, W, 3), np.uint8); a[:, :, 0] = np.arange(W)[None, :]; a[:, :, 1] = np.arange(H)[:, None] * 2
+        self.source = a.astype(int)
+        Image.fromarray(a).save(self.root / 'f' / '00000.png')
+        for i, c in enumerate([(255, 128, 128), (128, 128, 128), (128, 255, 0)]):   # map frames: right, still, down
+            Image.new('RGB', (32, 18), c).save(self.root / 'm' / f'{i:05d}.png')
+
+    def edit(self, fx, frames=3):
+        return {'canvas': {'w': W, 'h': H, 'fps': 30, 'frames': frames},
+                'clips': {'A': {'frames_dir': 'f', 'n': 1, 'fps': 30, 'w': W, 'h': H},
+                          'M': {'frames_dir': 'm', 'n': 3, 'fps': 30, 'w': 32, 'h': 18}},
+                'shots': [{'f0': 0, 'f1': frames, 'clip': 'A', 'speed': 0, 'fx': {'local_displacement_map': fx}}]}
+
+    def test_validation(self):
+        validate(self.edit({'clip': 'M', 'src': .5, 'speed': .5, 'loop': 'pingpong', 'amount': [[0, 0], [1, 40]], 'x': 'luma',
+                            'y': 'none', 'smooth': 4, 'region': [0, 0, .5, 1], 'feather': .1, 'at': .1}), self.root)
+        for fx, error in (({}, 'clip .* is required'), ({'clip': 'Z'}, "clip 'Z' is not in clips"), ({'clip': 'M', 'x': 'hue'}, 'one of red'),
+                          ({'clip': 'M', 'loop': 'bounce'}, 'loop, pingpong or clamp'), ({'clip': 'M', 'smooth': -1}, 'out of range'),
+                          ({'clip': 'M', 'size': 3}, 'unsupported fields: size')):
+            with self.assertRaisesRegex(ContractError, error, msg=str(fx)):
+                validate(self.edit(fx), self.root)
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_channels_move_the_picture(self):
+        from openkatana.render import render
+        (self.root / 't.json').write_text(json.dumps(self.edit({'clip': 'M', 'amount': 100})))   # 100 px at 1080 = 10 px here
+        render(self.root / 't.json', self.root / 'o')
+        f = [np.asarray(Image.open(self.root / 'o' / 'frames' / f'{i:05d}.png').convert('RGB')).astype(int) for i in range(3)]
+        inner = (slice(12, H - 12), slice(12, W - 12))
+        # map frame 0, red 255: every pixel shows the source 10 px to its right; green 128 keeps the rows
+        self.assertEqual(np.abs(f[0][inner][:, :, 0] - (self.source[inner][:, :, 0] + 10)).max(), 0)
+        self.assertEqual(np.abs(f[0][inner][:, :, 1] - self.source[inner][:, :, 1]).max(), 0)
+        self.assertEqual(np.abs(f[1] - self.source).max(), 0)             # map frame 1, mid grey: nothing moves
+        self.assertEqual(np.abs(f[2][inner][:, :, 1] - (self.source[inner][:, :, 1] + 20)).max(), 0)   # 10 rows down
 
 
 if __name__ == '__main__':

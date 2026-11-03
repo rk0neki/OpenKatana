@@ -24,7 +24,8 @@ import/edit/save/render, external agent saves, unsaved human edit protection and
 390px layouts. These checks use synthetic inputs and no paid models. Timeline
 overlays (blend modes, floor, tint, keyframed opacity, stepped picture rate,
 adjustment layers), `local_curve`, `local_turbulent_displace` (keyframed amount,
-pinning, region, boil, single-axis moves), hook image preloading and the frame-level
+pinning, region, boil, single-axis moves), `local_displacement_map` (exact pixel
+shifts per channel), hook image preloading and the frame-level
 reference measurement (cuts and dips, cadence, textures and transitions, on a
 synthetic reference with known answers) have pixel- or value-level unit tests.
 
