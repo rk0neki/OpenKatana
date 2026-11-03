@@ -22,6 +22,16 @@ OpenKatana is an independent, open-source **editing engine your AI agent drives:
 **[Watch the anime edit with sound](docs/assets/koji-edit.mp4)** — the finale from the OpenKatana launch film.
 Source animation: [“Koji” by Ammonite & Zean](https://www.youtube.com/watch?v=61zI4eE92xM) (CC BY); music made with [Suno](https://suno.com); edited with OpenKatana.
 
+### Koji, cut by an agent with the 0.1.3 effects
+
+[![A 20-second Koji edit an agent cut with OpenKatana 0.1.3: radio waves, glow, shockwave, RGB split, echo, light rays, lens flare](docs/assets/koji-effects.gif)](docs/assets/koji-effects.mp4)
+
+**[Watch it with sound](docs/assets/koji-effects.mp4)**: an AI agent built this 20-second edit with OpenKatana's tools,
+and a second agent reviewed it frame by frame before a revision. Radio waves and glow on the eye, a shockwave drop, RGB
+split on the hits, echo and posterize-time trails, a twirl transition, light rays, a lens flare and a light sweep on
+the end card, cut to an original 140 BPM score made with `synthesize_score` (no samples, no AI model).
+Source animation: [“Koji” by Ammonite & Zean](https://www.youtube.com/watch?v=61zI4eE92xM) (CC BY).
+
 ### Motif
 
 [![Eight-second preview of MOTIF, made with OpenKatana and Blender; click for the full 24-second MP4](docs/assets/motif-preview.gif)](docs/assets/motif-1080p60.mp4)

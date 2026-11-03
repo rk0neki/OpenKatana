@@ -95,5 +95,26 @@
     "preview_settings": "Eight of the segments (Twirl, Polar Coordinates, Kaleidoscope, Lens Flare, Light Rays, Echo, RGB Split, Advanced Lightning); 480 px wide, 10 fps, 128-color GIF; Bayer dithering.",
     "preview_sha256": "6d3a09c2d09a023065f8e6ae7b78b9f6ecd6ceb3309b8559bd4a470376d75de4",
     "gallery": "docs/assets/gallery/*.jpg: frame 16 of each segment at 320x180, used by docs/EFFECTS-GALLERY.md."
+  },
+  "koji_effects": {
+    "file": "koji-effects.mp4",
+    "seconds": 19.7,
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "audio": true,
+    "source": "Cut by an AI agent with OpenKatana 0.1.3 tools (AgentAPI), reviewed by a second agent on the frames, then revised.",
+    "animation": {
+      "title": "Koji",
+      "creators": "Ammonite & Zean",
+      "url": "https://www.youtube.com/watch?v=61zI4eE92xM",
+      "license": "Creative Commons Attribution (CC BY)"
+    },
+    "music": "Original 140 BPM score made with OpenKatana's synthesize_score: oscillator and noise synthesis, no samples and no AI model.",
+    "effects": "radio waves, deep glow, fractal noise, RGB split, echo, posterize time, bulge, shockwave, light rays, lens flare, twirl, polar coordinates, light sweep",
+    "sha256": "cbc7a98f82c65621558d191a0468407d60096288f85f414a00f3bb84bda576b3",
+    "preview": "koji-effects.gif",
+    "preview_sha256": "374f440f1556eb4f0520e16729edc8549df0a8fdab3d2be06a849a6f7a4028c2",
+    "scope": "Source animation retains its own license; OpenKatana software licensing does not relicense it."
   }
 }
