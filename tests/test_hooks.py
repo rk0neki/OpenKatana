@@ -67,6 +67,31 @@ class HookTests(unittest.TestCase):
         self.assertEqual(px, (0, 255, 0))                                               # the hook still drew
 
     @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_prepared_images_are_loaded_before_draw_and_recorded(self):
+        from openkatana.render import render
+        (self.root / 'tex').mkdir()
+        for i, c in enumerate(((200, 0, 0), (0, 0, 200))):
+            Image.new('RGB', (8, 8), c).save(self.root / 'tex' / f'{i:05d}.png')
+        (self.root / 'hook.js').write_text(
+            "OpenKatanaHooks.layer('dots', {prepare(p, s) { return [`tex/0000${s.f % 2}.png`]; },"
+            " draw(ctx, p, s) { const im = s.images[`tex/0000${s.f % 2}.png`]; ctx.drawImage(im, 0, 0, s.W, s.H); }});"
+            "OpenKatanaHooks.layer('net', {draw(){}}); OpenKatanaHooks.text('caps', {draw(){}});", encoding='utf-8')
+        (self.root / 't.json').write_text(json.dumps(self.edit()))
+        r = render(self.root / 't.json', self.root / 'img')
+        px = [Image.open(self.root / 'img' / 'frames' / f'{f:05d}.png').convert('RGB').getpixel((32, 18)) for f in range(2)]
+        self.assertEqual(px, [(200, 0, 0), (0, 0, 200)])
+        self.assertEqual(sorted(r['hooks']['assets']), ['tex/00000.png', 'tex/00001.png'])
+        self.assertEqual(len(r['hooks']['assets']['tex/00000.png']), 64)
+        manifest = json.loads((self.root / 'img' / 'input-manifest.json').read_text())
+        self.assertIn('tex/00001.png', manifest)
+        for i, bad in enumerate(("'../t.json'", "'http://example.com/x.png'", "'hook.js'")):
+            (self.root / 'hook.js').write_text(
+                f"OpenKatanaHooks.layer('dots', {{prepare() {{ return [{bad}]; }}, draw() {{}}}});"
+                "OpenKatanaHooks.layer('net', {draw(){}}); OpenKatanaHooks.text('caps', {draw(){}});", encoding='utf-8')
+            with self.assertRaisesRegex(RuntimeError, 'not a project-relative'):
+                render(self.root / 't.json', self.root / f'bad{i}')
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
     def test_hook_errors_are_named(self):
         from openkatana.render import render
         for i, (script, error) in enumerate((("OpenKatanaHooks.layer('dots', {draw(){ throw Error('boom'); }});"

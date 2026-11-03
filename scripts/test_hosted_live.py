@@ -33,7 +33,9 @@ def browser_check(address, invite, root):
         page.wait_for_selector('#projectName:has-text("Hosted render")', state='attached')
         page.locator('.main-nav [data-view="tools"]').click()
         page.wait_for_selector('.tool-actions button:has-text("Run tool")')
-        assert page.locator('.tool-card').count() == 76
+        from openkatana.agent_api import TOOLS
+        from openkatana.hosted.dispatch import FILE_TOOLS
+        assert page.locator('.tool-card').count() == len(TOOLS) + len(FILE_TOOLS)   # every tool and hosted file tool
         page.locator('#toolSearch').fill('get_capabilities')
         card = page.locator('.tool-card').filter(has=page.get_by_text('Get capabilities', exact=True))
         assert card.count() == 1
@@ -159,7 +161,9 @@ s.cycles.samples=1
             checks['reusable_animation_kit_in_sandbox'] = animated['frames'] == 2
             headers = {'Accept': 'application/json, text/event-stream'}
             mcp = client.post('/mcp', headers=headers, json={'jsonrpc': '2.0', 'id': 1, 'method': 'tools/list'}); mcp.raise_for_status()
-            checks['real_http_mcp_catalog'] = len(mcp.json()['result']['tools']) == 78
+            from openkatana.agent_api import TOOLS
+            from openkatana.hosted.dispatch import FILE_TOOLS     # plus get_tool_job and cancel_tool_job
+            checks['real_http_mcp_catalog'] = len(mcp.json()['result']['tools']) == len(TOOLS) + len(FILE_TOOLS) + 2
             response = client.post('/mcp', headers=headers, json={'jsonrpc': '2.0', 'id': 2, 'method': 'tools/call', 'params': {'name': 'get_project', 'arguments': {'project_id': 'film'}}})
             response.raise_for_status(); mcp_job = response.json()['result']['structuredContent']
             for _ in range(150):

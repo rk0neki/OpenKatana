@@ -23,6 +23,7 @@ TOOLS += ('import_hdr_media','render_hdr','run_model_workflow')
 TOOLS += ('create_composition','save_composition','inspect_composition','render_composition','list_plugins','run_plugin_operator')
 TOOLS += ('create_animation_kit','build_display_atlas','synthesize_score','assemble_blender_clips','analyze_render_motion','analyze_camera_motion')
 TOOLS += ('create_webgl_kit','assemble_render_clips')
+TOOLS += ('shot_sheet','eye_sheet')
 MEDIA={'.png','.jpg','.jpeg','.webp','.mp4','.mov','.mkv','.webm','.avi','.mxf','.wav','.mp3','.m4a','.flac','.ogg','.aac','.ttf','.otf','.ttc','.woff','.woff2'}
 
 class AgentAPI:
@@ -229,6 +230,8 @@ class AgentAPI:
         from .warnings import timeline_warnings
         from .gates import record_preview
         result=timeline_frames(edit,root,self._output(root,'timeline-previews'),frames);result['warnings']=timeline_warnings(validate(edit,root),root)
+        for flat in result.pop('flat_frames'):
+            result['warnings'].append({'code':'flat_frame','frame':flat['frame'],'message':f"frame {flat['frame']} rendered as one flat colour rgb{tuple(flat['rgb'])} with no flat special scheduled; check the effect values that reach it"})
         record_preview(root,data['revision'],frames);return result
 
     def start_render(self,project_id:str,request_id:str) -> dict:
@@ -242,18 +245,31 @@ class AgentAPI:
         return start(root,request_id)
 
     def source_contact_sheet(self,project_id:str,source:str,start:float=0,end:float|None=None,step:float=.5,columns:int=4) -> dict:
-        """Inspect up to 96 timestamped source frames as contact sheets. Use smaller intervals around cut candidates."""
+        """Inspect up to 96 timestamped source frames as contact sheets. Use smaller intervals around cut candidates; for a
+        reference video, step 1/60 s (60 fps, never lower) through fast motion and cuts."""
         from .editor_tools import contact_sheet
         root=self._project(project_id);projects.state(root);src=self._source(source)
         result=contact_sheet(src,self._output(root,'contact-sheets'),start,end,step,columns)
         from .gates import record_inspection
         record_inspection(root,src,'source_contact_sheet');return result
 
-    def analyze_reference(self,project_id:str,source:str,start:float=0,duration:float=30,scene_threshold:float=.25) -> dict:
-        """Find scene-change and audio energy-rise candidates in up to 120 seconds. These are NOT verified cuts/beats/lyrics."""
+    def analyze_reference(self,project_id:str,source:str,start:float=0,duration:float=30,scene_threshold:float=.25,
+                          measure:list[Literal['cuts','cadence','look','textures','transitions']]|None=None) -> dict:
+        """Find scene-change and audio energy-rise candidates in up to 120 seconds. These are NOT verified cuts/beats/lyrics.
+
+        measure (frame-level on a 60-fps clock, the rate every reference is analysed at; a slower source repeats frames;
+        estimates to verify on the frames): cuts (cut or dip: an
+        exposure step or a picture that comes back), cadence (how often the picture steps: 24p on a 60p clock reads 24),
+        look (luma percentiles, saturation, shadow/highlight cast, overall and per shot), textures (how long overlay
+        specks persist), transitions (the median of the first frames after the cuts as local_curve arrays: scale, dx,
+        dy, blur, exposure)."""
         from .editor_tools import analyze_reference
-        root=self._project(project_id);projects.state(root)
-        return analyze_reference(self._source(source),self._output(root,'reference-analysis'),start,duration,scene_threshold)
+        root=self._project(project_id);projects.state(root);src=self._source(source);out=self._output(root,'reference-analysis')
+        result=analyze_reference(src,out,start,duration,scene_threshold)
+        if measure:
+            from .reference_measure import measure as measure_reference
+            result['measured']=measure_reference(src,out,start,duration,measure)
+        return result
 
     def analyze_audio(self,project_id:str,source:str,start:float=0,duration:float|None=None,fps:float|None=None,beats_per_bar:int=4) -> dict:
         """Measure music for cutting: BPM with octave candidates, a constant beat grid fitted to onsets, downbeats, onsets
@@ -611,11 +627,56 @@ class AgentAPI:
         root=self._project(project_id);projects.state(root)
         return preview_segment(self._source(source),self._output(root,'segment-previews'),start,duration,max_width)
 
-    def compare_reference(self,project_id:str,reference:str,rendered:str,times:list[float],render_offset:float=0) -> dict:
-        """See paired reference/render pictures at the same requested times (render time = reference time + offset)."""
+    def compare_reference(self,project_id:str,reference:str,rendered:str,times:list[float]|None=None,render_offset:float=0,
+                          side_by_side:bool=False,look:bool=False) -> dict:
+        """See paired reference/render pictures at the same requested times (render time = reference time + offset).
+        side_by_side: also a video, reference left and render right, with the reference's audio. look: tone,
+        saturation and colour-cast medians of both files and their difference (render minus reference)."""
         from .editor_tools import compare_frames
-        root=self._project(project_id);projects.state(root)
-        return compare_frames(self._source(reference),self._source(rendered),self._output(root,'comparisons'),times,render_offset)
+        from . import review_tools
+        root=self._project(project_id);projects.state(root);ref,ren=self._source(reference),self._source(rendered)
+        if not times and not side_by_side and not look:raise ContractError('Ask for times, side_by_side or look')
+        out=self._output(root,'comparisons')
+        result=compare_frames(ref,ren,out,times,render_offset) if times else {'preview_images':[]}
+        out.mkdir(parents=True,exist_ok=True)
+        if side_by_side:result['side_by_side']=review_tools.side_by_side(ref,ren,out,render_offset)
+        if look:result['look']=review_tools.look_difference(ref,ren)
+        return result
+
+    def shot_sheet(self,project_id:str,source:str,cuts:list[int]|None=None,fps:float|None=None,start_frame:int=0,
+                   position:float=.75,columns:int=5) -> dict:
+        """A numbered sheet with one picture per shot of a video (a render or a reference), labelled with the shot
+        number and start time, to talk about shots by number. cuts: the frames where shots start (default: the saved
+        timeline's shots, at its canvas fps); start_frame skips earlier shots; position: how far into each shot to look."""
+        from .review_tools import shot_sheet,frame_count
+        root=self._project(project_id);state=projects.state(root);src=self._source(source)
+        if cuts is None:
+            if not state['timeline']:raise ContractError('Give cuts, or save a timeline whose shots the video follows')
+            edit=state['timeline'];cuts=[s['f0'] for s in edit['shots']]+[edit['shots'][-1]['f1']];fps=edit['canvas']['fps']
+        else:
+            if fps is None:raise ContractError('fps: the frame rate the cuts count')
+            number(fps,'fps',1,240)
+            for c in cuts:number(c,'cuts',0,integer=True)
+            cuts=sorted(set([0,*cuts]));cuts.append(max(cuts[-1]+1,frame_count(src,fps)))
+        number(start_frame,'start_frame',0,integer=True)
+        keep=[i for i in range(len(cuts)-1) if cuts[i]>=start_frame]
+        if not keep:raise ContractError('No shots start at or after start_frame')
+        result=shot_sheet(src,self._output(root,'shot-sheets'),cuts[keep[0]:],fps,position,columns)
+        for s in result['shots']:s['n']+=keep[0]
+        return result
+
+    def eye_sheet(self,project_id:str,clip_id:str,frames:list[int]|None=None,start:int=0,end:int|None=None,step:int=2) -> dict:
+        """Crops around both eyes across frames of a clip of the saved timeline, to judge gaze direction and eye
+        artefacts (white or doubled eyes from face replacement) before choosing a source window. Visual only."""
+        from .review_tools import eye_sheet
+        root=self._project(project_id);state=projects.state(root)
+        if not state['timeline'] or clip_id not in state['timeline']['clips']:raise ContractError('clip_id: a clip of the saved timeline')
+        clip=state['timeline']['clips'][clip_id]
+        if frames is None:
+            number(start,'start',0,clip['n']-1,integer=True);number(step,'step',1,1000,integer=True)
+            stop=clip['n'] if end is None else number(end,'end',start+1,clip['n'],integer=True)
+            frames=list(range(start,stop,step))[:60]
+        return eye_sheet(root,clip,self._output(root,'eye-sheets'),frames)
 
     def save_reference_plan(self,project_id:str,plan:dict) -> dict:
         """Record verified reference timing/text/font/effect requirements. Read tool-audit guide for schema. Render blocks mismatches; do not invent or silently weaken requirements."""

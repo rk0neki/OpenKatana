@@ -1,11 +1,21 @@
 # Tool reference
 
-OpenKatana has 72 tools, shared by the CLI, the MCP server and the ComfyUI
+OpenKatana has 74 tools, shared by the CLI, the MCP server and the ComfyUI
 nodes. This page is generated from the tool catalog by
 `python scripts/build_tools_doc.py`; do not edit it by hand.
 
 For exact signatures and types, run `openkatana tools`. Each section links to the
 guide with details and limits. Parameters ending in `?` are optional.
+
+## New in 0.1.2
+
+- `shot_sheet`: A numbered sheet with one picture per shot of a video (a render or a reference), labelled with the shot number and start time, to talk about shots by number.
+- `eye_sheet`: Crops around both eyes across frames of a clip of the saved timeline, to judge gaze direction and eye artefacts (white or doubled eyes from face replacement) before choosing a source window.
+- `analyze_reference` `measure`: frame-level measurement on a 60-fps clock (every reference is analysed at 60 fps): cuts versus exposure dips, picture cadence, look per shot, texture speck rate and the median cut transition as `local_curve` arrays.
+- `compare_reference` `side_by_side` (a reference-left, render-right video) and `look` (tone, saturation and colour cast of both, and their difference).
+- New timeline effects, set in the timeline rather than called as tools ([Timeline](TIMELINE.md), [Effects playbook](EFFECTS-PLAYBOOK.md)): `local_turbulent_displace` (After Effects' Turbulent Displace: smoother modes, Cycle Evolution loops, eased keyframes, locked pins, high quality) and `local_displacement_map` (Displacement Map: any channel, per-axis amounts, stretch, centre or tile, wrap); texture `overlays` and adjustment layers; `local_curve` transitions measured from a reference.
+
+## Areas
 
 | Area | Tools | Guide |
 |---|---|---|
@@ -14,7 +24,7 @@ guide with details and limits. Parameters ending in `?` are optional.
 | [Author the timeline](#author-the-timeline) | 6 | [Timeline](TIMELINE.md), [Release tools](RELEASE-TOOLS.md) |
 | [Music, sound and captions](#music-sound-and-captions) | 7 | [Editor tools](EDITOR_TOOLS.md) |
 | [Analysis and effects](#analysis-and-effects) | 5 | [Effects](EXPANSION.md) |
-| [Match a reference](#match-a-reference) | 6 | [Editor tools](EDITOR_TOOLS.md) |
+| [Match a reference](#match-a-reference) | 8 | [Editor tools](EDITOR_TOOLS.md) |
 | [Fonts and text shaping](#fonts-and-text-shaping) | 3 | [Editor tools](EDITOR_TOOLS.md), [Release tools](RELEASE-TOOLS.md) |
 | [Compositions and plugins](#compositions-and-plugins) | 6 | [Compositions](COMPOSITIONS.md) |
 | [3D scenes and WebGL](#3d-scenes-and-webgl) | 7 | [3D](SCENE3D.md), [WebGL](WEBGL.md) |
@@ -94,8 +104,10 @@ Guide: [Editor tools](EDITOR_TOOLS.md)
 
 | Tool | What it does | Parameters |
 |---|---|---|
-| `analyze_reference` | Find scene-change and audio energy-rise candidates in up to 120 seconds. | `project_id`, `source`, `start?`, `duration?`, `scene_threshold?` |
-| `compare_reference` | See paired reference/render pictures at the same requested times (render time = reference time + offset). | `project_id`, `reference`, `rendered`, `times`, `render_offset?` |
+| `analyze_reference` | Find scene-change and audio energy-rise candidates in up to 120 seconds. | `project_id`, `source`, `start?`, `duration?`, `scene_threshold?`, `measure?` |
+| `compare_reference` | See paired reference/render pictures at the same requested times (render time = reference time + offset). | `project_id`, `reference`, `rendered`, `times?`, `render_offset?`, `side_by_side?`, `look?` |
+| `shot_sheet` | A numbered sheet with one picture per shot of a video (a render or a reference), labelled with the shot number and start time, to talk about shots by number. | `project_id`, `source`, `cuts?`, `fps?`, `start_frame?`, `position?`, `columns?` |
+| `eye_sheet` | Crops around both eyes across frames of a clip of the saved timeline, to judge gaze direction and eye artefacts (white or doubled eyes from face replacement) before choosing a source window. | `project_id`, `clip_id`, `frames?`, `start?`, `end?`, `step?` |
 | `save_reference_plan` | Record verified reference timing/text/font/effect requirements. | `project_id`, `plan` |
 | `audit_reference_plan` | Check saved timeline against exact cut frames, literal timed text, font file hashes and specified shot settings. | `project_id` |
 | `bind_reference` | Record a named reference (role identity, style, product or location) from imported assets, with their hashes. | `project_id`, `name`, `asset_ids`, `role?`, `subject_type?`, `description?` |

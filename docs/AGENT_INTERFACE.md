@@ -82,7 +82,7 @@ Do not publish, upload, download models or submit paid/hosted jobs automatically
 
 ## Same tools through the CLI
 
-`openkatana tools` lists the same 72 named operations and arguments as MCP (unknown arguments are rejected on both).
+`openkatana tools` lists the same 74 named operations and arguments as MCP (unknown arguments are rejected on both).
 Every operation can be called without an MCP connection:
 
 ```powershell
@@ -161,7 +161,7 @@ for runtime limits and unverified combinations.
 
 ## Compositions and plugin operations (2026-10-20)
 
-The current inventory is 72 operations. Read `read_guide(topic="composition")`
+The current inventory is 74 operations. Read `read_guide(topic="composition")`
 for responsive layouts and contextual text shaping. Use `create_composition`,
 `save_composition`, `inspect_composition`, `render_composition`, `list_plugins`
 and `run_plugin_operator`. Rendered compositions return normal timeline clips.

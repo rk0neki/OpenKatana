@@ -76,6 +76,7 @@ def video_edit_workflow():
 
 
 def full_workflow():
+    from .agent_api import TOOLS
     """Every App in one graph. One Project ID feeds every OpenKatana node, so Studio, the edit,
     the 3D starter and the tool all work on the same project. Video, music and a photo are uploaded in
     optional file nodes and imported as project assets; the photo joins the edit as an extra media ID.
@@ -120,7 +121,7 @@ def full_workflow():
             node(8, 'OpenKatanaScene', '6 · 3D starter', [1660, 460], [340, 300], [widget('project_id', 'STRING', 5)],
                  [out('result_json', 'STRING', [12])], ['my-film', 'product', 640, 360, 60, 30]),
             preview(9, '3D result · OpenKatana', [1660, 820], 12),
-            node(10, 'OpenKatanaTool', '7 · Any of the 72 tools', [1340, 80], [340, 220],
+            node(10, 'OpenKatanaTool', f'7 · Any of the {len(TOOLS)} tools', [1340, 80], [340, 220],
                  [inp('after', 'STRING', None), widget('project_id', 'STRING', 6)],
                  [out('result_json', 'STRING', [13])], ['get_capabilities', 'my-film', '{}']),
             preview(11, 'Tool result · OpenKatana', [1720, 80], 13),

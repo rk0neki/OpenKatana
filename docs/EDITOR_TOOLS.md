@@ -1,6 +1,6 @@
 # Editor tools and reference matching
 
-OpenKatana has 72 shared MCP/CLI operations; [TOOLS.md](TOOLS.md) lists all of
+OpenKatana has 74 shared MCP/CLI operations; [TOOLS.md](TOOLS.md) lists all of
 them by area. Use the CLI catalog for exact signatures and check runtime
 readiness before invoking optional workflows.
 
@@ -8,6 +8,7 @@ readiness before invoking optional workflows.
 |---|---|---|
 | Inspect footage | inspect_media, preview_source, source_contact_sheet | Up to 96 timestamped frames per sheet request; inspect adjacent frames for boundaries |
 | Find reference events | analyze_reference | Scene-change and audio-energy candidates; flashes can look like cuts; no OCR/transcription or semantic beat detection |
+| Measure a reference frame by frame | analyze_reference `measure` | Cuts and dips, picture cadence, look per shot, texture speck rate, and the median cut transition as `local_curve` arrays (see Measuring a reference); estimates to verify on the frames |
 | Measure reference energy | analyze_energy | Cuts, white/black flashes, shake bursts, pans, motion hits with ready timeline entries, per-second rates, 0.5 s curve, chart; `reference` adds a per-second check of a render; fast camera moves can still read as cuts, inspect frames |
 | Plan cuts to music | plan_music_edit | Beat-aligned cut list (tempo-aware pace per level section, half-beat burst after a drop), suggested specials/punch/shake, optional draft timeline from imported clips; a starting point, nothing saved |
 | Cut to music | analyze_audio | BPM + octave candidates, constant beat grid fitted to onsets, downbeats, onsets, level sections, silence, EBU R128 loudness, timeline image; estimates (constant tempo assumed), confirm by listening |
@@ -28,6 +29,8 @@ readiness before invoking optional workflows.
 | Identity references | bind_reference, inspect_identity | Named references (identity, style, product, location) with asset hashes; a face-crop comparison sheet of an asset against them (visual only, no biometric score) with an accept/reject decision; strict mode refuses generated (Comfy-imported) clips until accepted against every identity reference |
 | Enforce a reference specification | save_reference_plan, audit_reference_plan | Checks the authored specification; the agent must first verify that specification against the reference |
 | Review frames and playback | preview_timeline, compare_reference, preview_segment | Client/model must support actual video/audio review; creation of previews is not review |
+| Talk about shots by number | shot_sheet | A numbered sheet, one picture per shot of a render or reference, labelled with the start time; the person reviewing can answer "keep 4, replace 10" |
+| Check eyes before choosing a source window | eye_sheet | Crops around both eyes across frames of a clip (bundled YuNet landmarks) to see where the gaze holds the lens and spot face-replacement eye artefacts; visual only, no gaze score |
 | Optional strict gates | set_review_policy | With strict on, start_render needs every timeline source inspected (preview_source/source_contact_sheet) and the current revision previewed (preview_timeline); records are not proof of human review |
 | Render and review | start_render, get_render, review_render | Agent approval is not user approval; keep MCP connected while rendering |
 | Masks/face tracks/flow | analyze_clip | Face tracks use the bundled YuNet model (box, eyes, nose tip, mouth corners) or the OpenCV cascades (eyes); masks are local heuristics; all need visual checks; semantic weights are separate |
@@ -77,9 +80,33 @@ the agent render operation blocks mismatches. Changing the plan to hide a failed
 comparison is not a fix. It needs an explicit, documented change to the brief.
 
 `compare_reference` pairs images at supplied times; `render_offset` is added only
-to the render times. `preview_segment` returns a playable MP4 and, when audio is
+to the render times. `side_by_side` also writes a video with the reference on the
+left and the render on the right, at the same height, with the reference's audio;
+`look` returns tone, saturation and colour-cast medians of both files and their
+difference (render minus reference), the numbers to aim an adjustment layer at.
+`preview_segment` returns a playable MP4 and, when audio is
 present, a WAV/audio content block. If the client cannot play or hear them, report
 motion/listening review as unverified.
+
+## Measuring a reference
+
+`analyze_reference` with `measure` reads every frame of the window on a 60-fps clock (up to 120 s), the rate every
+reference is analysed at: a slower source repeats its frames (24p in a 2-3 pattern), so frame numbers and curves line up
+with a 60-fps timeline. The report gives `fps` (60) and the `source_fps`.
+Every answer is an estimate for the editor to check on the frames.
+
+| Measure | Returns | How |
+|---|---|---|
+| `cuts` | `{frame, time, kind}` per event; the report adds `structure`, `colour` and `luma_ratio` | A cut changes both the picture's structure (brightness-normalised thumbnails) and its colour distribution; flicker, whips, spins and blur bursts inside a shot change only the structure and are not reported. A brightness step with little structural change, or a change whose picture comes back within a few frames, is a `dip`. A dip that also changes the picture (an exposure drop during a camera move) can still read as a cut: `luma_ratio` shows the step |
+| `cadence` | `pictures_per_second`, `base_fps`, `gap_counts`, `pattern` | A frame changing clearly more than both neighbours is a new picture; the rate is the frame rate over the mean gap. 24p material on a 60p clock reads 24 with gaps of 2 and 3 about equally often, even when effects move on every frame |
+| `look` | overall and per-shot luma percentiles, saturation, shadow and highlight cast | Medians over the frames; per shot between the measured cuts |
+| `textures` | `overlap_by_lag`, `speck_pictures_per_second` | Small bright specks (dust, scratches); the share still there one to six frames later. Specks of a 24p overlay on a 60p clock overlap about 0.6 at one frame. Bright points in the footage persist too and pull the rate down |
+| `transitions` | `local_curve` arrays: `scale`, `dx`, `dy`, `blur`, `exposure` | For the real cuts followed by 12+ frames: the frame-to-frame affine move (ECC), the defocus radius (gradient spectrum against the shot's settled frame blurred by known radii) and the brightness against the settled frame, each the median across cuts so every shot's own camera move averages out. The arrays drop straight into a `local_curve` effect; `exposure` carries all the brightening, so lower it and raise `glow` to move part into a bloom |
+
+Measured on a 60-fps, 37.6 s music-video reference whose 39 cuts and two exposure dips were verified by hand
+(the one these tools were developed on): all 39 cuts found with no false cuts, one dip found two frames late and one reported as a cut;
+cadence 23.98 (gaps 2 and 3); the transition read 0.93 scale and 0.05 of the height high at the cut, a 0.037-height
+defocus clearing by frame 9 and 1.9x brightness easing to rest by frame 28, matching the hand measurement.
 
 ## Batch import
 

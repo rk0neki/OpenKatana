@@ -499,7 +499,7 @@
   },
   {
     "name": "source_contact_sheet",
-    "description": "Inspect up to 96 timestamped source frames as contact sheets. Use smaller intervals around cut candidates.",
+    "description": "Inspect up to 96 timestamped source frames as contact sheets. Use smaller intervals around cut candidates; for a\nreference video, step 1/60 s (60 fps, never lower) through fast motion and cuts.",
     "signature": "(project_id: str, source: str, start: float = 0, end: float | None = None, step: float = 0.5, columns: int = 4) -> dict",
     "parameters": {
       "project_id": {
@@ -534,8 +534,8 @@
   },
   {
     "name": "analyze_reference",
-    "description": "Find scene-change and audio energy-rise candidates in up to 120 seconds. These are NOT verified cuts/beats/lyrics.",
-    "signature": "(project_id: str, source: str, start: float = 0, duration: float = 30, scene_threshold: float = 0.25) -> dict",
+    "description": "Find scene-change and audio energy-rise candidates in up to 120 seconds. These are NOT verified cuts/beats/lyrics.\n\nmeasure (frame-level on a 60-fps clock, the rate every reference is analysed at; a slower source repeats frames;\nestimates to verify on the frames): cuts (cut or dip: an\nexposure step or a picture that comes back), cadence (how often the picture steps: 24p on a 60p clock reads 24),\nlook (luma percentiles, saturation, shadow/highlight cast, overall and per shot), textures (how long overlay\nspecks persist), transitions (the median of the first frames after the cuts as local_curve arrays: scale, dx,\ndy, blur, exposure).",
+    "signature": "(project_id: str, source: str, start: float = 0, duration: float = 30, scene_threshold: float = 0.25, measure: list[typing.Literal['cuts', 'cadence', 'look', 'textures', 'transitions']] | None = None) -> dict",
     "parameters": {
       "project_id": {
         "type": "<class 'str'>",
@@ -559,6 +559,11 @@
         "type": "<class 'float'>",
         "required": false,
         "default": 0.25
+      },
+      "measure": {
+        "type": "list[typing.Literal['cuts', 'cadence', 'look', 'textures', 'transitions']] | None",
+        "required": false,
+        "default": null
       }
     }
   },
@@ -641,8 +646,8 @@
   },
   {
     "name": "compare_reference",
-    "description": "See paired reference/render pictures at the same requested times (render time = reference time + offset).",
-    "signature": "(project_id: str, reference: str, rendered: str, times: list[float], render_offset: float = 0) -> dict",
+    "description": "See paired reference/render pictures at the same requested times (render time = reference time + offset).\nside_by_side: also a video, reference left and render right, with the reference's audio. look: tone,\nsaturation and colour-cast medians of both files and their difference (render minus reference).",
+    "signature": "(project_id: str, reference: str, rendered: str, times: list[float] | None = None, render_offset: float = 0, side_by_side: bool = False, look: bool = False) -> dict",
     "parameters": {
       "project_id": {
         "type": "<class 'str'>",
@@ -657,13 +662,24 @@
         "required": true
       },
       "times": {
-        "type": "list[float]",
-        "required": true
+        "type": "list[float] | None",
+        "required": false,
+        "default": null
       },
       "render_offset": {
         "type": "<class 'float'>",
         "required": false,
         "default": 0
+      },
+      "side_by_side": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": false
+      },
+      "look": {
+        "type": "<class 'bool'>",
+        "required": false,
+        "default": false
       }
     }
   },
@@ -2048,6 +2064,81 @@
         "type": "<class 'bool'>",
         "required": false,
         "default": true
+      }
+    }
+  },
+  {
+    "name": "shot_sheet",
+    "description": "A numbered sheet with one picture per shot of a video (a render or a reference), labelled with the shot\nnumber and start time, to talk about shots by number. cuts: the frames where shots start (default: the saved\ntimeline's shots, at its canvas fps); start_frame skips earlier shots; position: how far into each shot to look.",
+    "signature": "(project_id: str, source: str, cuts: list[int] | None = None, fps: float | None = None, start_frame: int = 0, position: float = 0.75, columns: int = 5) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "source": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "cuts": {
+        "type": "list[int] | None",
+        "required": false,
+        "default": null
+      },
+      "fps": {
+        "type": "float | None",
+        "required": false,
+        "default": null
+      },
+      "start_frame": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 0
+      },
+      "position": {
+        "type": "<class 'float'>",
+        "required": false,
+        "default": 0.75
+      },
+      "columns": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 5
+      }
+    }
+  },
+  {
+    "name": "eye_sheet",
+    "description": "Crops around both eyes across frames of a clip of the saved timeline, to judge gaze direction and eye\nartefacts (white or doubled eyes from face replacement) before choosing a source window. Visual only.",
+    "signature": "(project_id: str, clip_id: str, frames: list[int] | None = None, start: int = 0, end: int | None = None, step: int = 2) -> dict",
+    "parameters": {
+      "project_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "clip_id": {
+        "type": "<class 'str'>",
+        "required": true
+      },
+      "frames": {
+        "type": "list[int] | None",
+        "required": false,
+        "default": null
+      },
+      "start": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 0
+      },
+      "end": {
+        "type": "int | None",
+        "required": false,
+        "default": null
+      },
+      "step": {
+        "type": "<class 'int'>",
+        "required": false,
+        "default": 2
       }
     }
   }

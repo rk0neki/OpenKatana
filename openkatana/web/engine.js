@@ -1,7 +1,7 @@
 /* Independent OpenKatana renderer. Contract support is intentionally explicit. */
 'use strict';
 window.OpenKatana = (() => {
-  let edit, canvas, ctx, filterBuffer, plateBuffer, maskBuffer, subjectBuffer, outlineBuffer, bufA, bufB;
+  let edit, canvas, ctx, filterBuffer, plateBuffer, maskBuffer, subjectBuffer, outlineBuffer, bufA, bufB, overlayBuffer, holdBuffer;
   const images = new Map();
   const faceTracks = new Map();
   const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
@@ -272,7 +272,11 @@ window.OpenKatana = (() => {
   }
   async function image(clip, index) {
     const name = (clip.pattern ?? '%05d.png').replace('%05d', String(index).padStart(5, '0'));
-    const url = '/project/' + clip.frames_dir.split('/').map(encodeURIComponent).join('/') + '/' + name;
+    return projectImage(clip.frames_dir + '/' + name);
+  }
+  // A project image (source frames, overlay plates, hook assets), decoded once and kept in a small LRU cache.
+  async function projectImage(path) {
+    const url = '/project/' + path.split('/').map(encodeURIComponent).join('/');
     if (!images.has(url)) {
       let response;
       for (let attempt = 1; ; attempt++) {   // retry only transport failures of the loopback server, never HTTP errors
@@ -287,6 +291,65 @@ window.OpenKatana = (() => {
     }
     const result=images.get(url);images.delete(url);images.set(url,result);
     return result;
+  }
+  // Timeline overlays (docs/TIMELINE.md "Overlays"), drawn over the finished frame in array order. `clip` blends
+  // another clip over the picture (texture plates: dust, scratches, grain, light leaks); `adjust` is an adjustment
+  // layer: a look applied to everything beneath it, mixed back at `amt`.
+  const OVERLAY_OPS = {normal:'source-over', add:'lighter'};
+  function keyed(value, frame, fallback) {   // a number, or [[frame, value], ...] linear between keys, held at the ends
+    if (value == null) return fallback;
+    if (!Array.isArray(value)) return value;
+    if (frame <= value[0][0]) return value[0][1];
+    for (let i = 1; i < value.length; i++) if (frame <= value[i][0]) {
+      const [f0, a] = value[i-1], [f1, b] = value[i]; return a + (b - a) * (frame - f0) / (f1 - f0);
+    }
+    return value[value.length-1][1];
+  }
+  function fitRect(mode, w, h, W, H) {
+    if (mode === 'stretch') return [0, 0, W, H];
+    const s = mode === 'contain' ? Math.min(W/w, H/h) : Math.max(W/w, H/h);
+    return [(W - w*s)/2, (H - h*s)/2, w*s, h*s];
+  }
+  async function drawOverlays(frame) {
+    const W = canvas.width, H = canvas.height, fps = edit.canvas.fps;
+    for (const o of edit.overlays ?? []) {
+      if (frame < o.f0 || frame >= o.f1) continue;
+      ctx.save(); ctx.resetTransform(); ctx.filter = 'none'; ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+      if (o.type === 'adjust') {
+        const amt = clamp(keyed(o.amt, frame, 1), 0, 1);
+        if (amt > 0) {
+          const hold = holdBuffer.getContext('2d'); hold.clearRect(0, 0, W, H); hold.drawImage(canvas, 0, 0);
+          const elapsed = (frame + .5 - o.f0) / fps, duration = (o.f1 - o.f0) / fps, lk = animate(o.look, elapsed, duration);
+          if (lk.type === 'studio') OpenKatanaStudio.apply(ctx, lk, {W, H, frame, elapsed, duration, fps, hash:noise, mask:null});
+          else OpenKatanaEffects.look(ctx, lk, frame, noise);
+          if (amt < 1) {
+            ctx.resetTransform(); ctx.filter = 'none'; ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1 - amt;
+            ctx.drawImage(holdBuffer, 0, 0);
+          }
+        }
+      } else {
+        const clip = edit.clips[o.clip], opacity = clamp(keyed(o.opacity, frame, 1), 0, 1);
+        if (opacity > 0) {
+          // the same centre-of-frame timing as shots; `fps` steps the overlay to its own rate (24: a 2-3 cadence at 60)
+          let elapsed = (frame - o.f0 + .5) / fps;
+          if (o.fps) elapsed = (Math.floor(elapsed * o.fps) + .5) / o.fps;
+          const start = o.srcf != null ? o.srcf / clip.fps + 1e-7 : (o.src ?? 0);
+          const picture = await image(clip, wrap(Math.floor((start + (o.speed ?? 1) * elapsed) * clip.fps), clip.n, o.loop ?? 'loop'));
+          const oc = overlayBuffer.getContext('2d'), rect = fitRect(o.fit ?? 'cover', clip.w, clip.h, W, H), f = o.floor ?? 0;
+          oc.resetTransform(); oc.globalAlpha = 1; oc.globalCompositeOperation = 'source-over'; oc.clearRect(0, 0, W, H);
+          // floor: levels (x - f) / (1 - f), as brightness(k) then contrast(c) with c k = 1 / (1 - f), (1 - c) / 2 = -f / (1 - f)
+          if (f > 0) { const sl = 1 / (1 - f), c = 1 + 2 * f * sl; oc.filter = `brightness(${sl / c}) contrast(${c})`; }
+          oc.drawImage(picture, ...rect); oc.filter = 'none';
+          if (o.tint) {   // multiply by the tint, then restore the picture's own coverage (fit: contain leaves margins)
+            oc.globalCompositeOperation = 'multiply'; oc.fillStyle = o.tint; oc.fillRect(0, 0, W, H);
+            oc.globalCompositeOperation = 'destination-in'; oc.drawImage(picture, ...rect); oc.globalCompositeOperation = 'source-over';
+          }
+          ctx.globalCompositeOperation = OVERLAY_OPS[o.blend ?? 'screen'] ?? o.blend ?? 'screen'; ctx.globalAlpha = opacity;
+          ctx.drawImage(overlayBuffer, 0, 0);
+        }
+      }
+      ctx.restore();
+    }
   }
   // State handed to project hooks: canvas size, absolute time t (frame centre), frame f, fps, lt (s into the shot), dur.
   const hookInfo = (frame, elapsed, duration, face) => ({W:canvas.width, H:canvas.height, t:(frame+.5)/edit.canvas.fps, f:frame, fps:edit.canvas.fps, lt:elapsed, dur:duration, face, noise});
@@ -318,6 +381,7 @@ window.OpenKatana = (() => {
     [plateBuffer,maskBuffer,subjectBuffer,outlineBuffer]=Array.from({length:4},()=>buffer(canvas.width,canvas.height));
     outlineBuffer=buffer(canvas.width/2,canvas.height/2);
     [bufA,bufB]=[0,1].map(()=>{const c=buffer(canvas.width,canvas.height);c.getContext('2d',{willReadFrequently:true});return c;});
+    [overlayBuffer,holdBuffer]=[0,1].map(()=>buffer(canvas.width,canvas.height));
     ctx = canvas.getContext('2d');
     for(const [id,clip] of Object.entries(edit.clips))if(clip.faces) {
       const response=await fetch('/project/'+clip.faces.split('/').map(encodeURIComponent).join('/'));
@@ -442,11 +506,13 @@ window.OpenKatana = (() => {
     const insert = (edit.specials ?? []).find(s => s.f0 <= frame && frame < s.f1);
     if (insert) {   // top-level specials override whatever shot is beneath them
       const r = await renderSpecial(insert, insert, frame, false, edit.shots.find(s => s.f0 <= frame && frame < s.f1));
+      if (edit.overlays) await drawOverlays(frame);
       return {png:canvas.toDataURL('image/png').split(',')[1], sample:r.sample};
     }
     const t = edit.shots.some(s => s.transition) ? transitionAt(frame) : null;
     if (!t) {
       const r = await renderShot(edit.shots.find(s => s.f0 <= frame && frame < s.f1), frame, false);
+      if (edit.overlays) await drawOverlays(frame);
       return {png:canvas.toDataURL('image/png').split(',')[1], sample:r.sample, face:screenFace(r.face)};
     }
     // A plays past its out-point and B pre-rolls before its in-point; both run their full pipelines.
@@ -457,6 +523,7 @@ window.OpenKatana = (() => {
     OpenKatanaTransitions.draw(ctx, t.spec, bufA, bufB, p, {W, H, fps:edit.canvas.fps, frame, cut, w0:t.w0, w1:t.w1, n, split:(cut - t.w0) / n, noise});
     const owner = frame < cut ? [shotA, ra] : [shotB, rb];
     globalText(owner[0], owner[1].fx, frame, owner[1].face, W, H);
+    if (edit.overlays) await drawOverlays(frame);
     return {png:canvas.toDataURL('image/png').split(',')[1], sample:owner[1].sample, transition:{type:t.spec.type, p}, face:screenFace(owner[1].face)};
   }
   async function renderShot(shot, frame, inTransition) {
@@ -519,7 +586,12 @@ window.OpenKatana = (() => {
     if(clip.mask_dir){const pc=plateBuffer.getContext('2d');pc.globalCompositeOperation='copy';pc.drawImage(canvas,0,0);}
     for (const item of composition(shot,fx)) {
       if(OpenKatanaEffects.draw(ctx,item.type==='burst-letters'?'burst':item.type,item.params,{W,H,elapsed,duration,frame,boil:edit.canvas.boil??2,hash:noise,face,maskBuffer:mask?maskBuffer:null,lettersOnly:item.type==='burst-letters'}))continue;
-      if(OpenKatanaLocal.draw(ctx,item.type,item.params,{W,H,elapsed,duration,frame}))continue;
+      if(item.type==='local_displacement_map'){   // the map is another clip's frame, decoded before the effect runs
+        const p=item.params,mc=edit.clips[p.clip],i=OpenKatanaLocal.mapFrame(p,mc,elapsed);
+        if(i!==null)OpenKatanaLocal.draw(ctx,item.type,p,{W,H,elapsed,duration,frame,fps:edit.canvas.fps,map:await image(mc,i)});
+        continue;
+      }
+      if(OpenKatanaLocal.draw(ctx,item.type,item.params,{W,H,elapsed,duration,frame,fps:edit.canvas.fps}))continue;
       if(item.type==='stickers'){OpenKatanaStickers.draw(ctx,frame,edit.canvas.fps,W,H);continue;}
       if(OpenKatanaDecor.draw(ctx,item.type,item.params,{W,H,elapsed,duration,frame,face,matrix,fps:edit.canvas.fps}))continue;
       if(item.type==='graffiti') {
@@ -531,7 +603,10 @@ window.OpenKatana = (() => {
         continue;
       }
       if(item.type==='hook') {
-        OpenKatanaHooks.drawLayer(item.params.name,ctx,item.params.params ?? {},hookInfo(frame,elapsed,duration,face));
+        const info=hookInfo(frame,elapsed,duration,face),params=item.params.params ?? {};
+        info.images={};
+        for(const path of OpenKatanaHooks.prepare(item.params.name,params,info)){info.images[path]=await projectImage(path);OpenKatanaHooks.record(path);}
+        OpenKatanaHooks.drawLayer(item.params.name,ctx,params,info);
         continue;
       }
       if(item.type==='text') {

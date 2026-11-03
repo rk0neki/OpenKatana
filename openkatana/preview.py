@@ -45,4 +45,23 @@ def timeline_frames(edit,root,out,frames):
                     path.write_bytes(base64.b64decode(result['png']));images.append(str(path.resolve()))
             finally:browser.close()
     finally:server.shutdown();server.server_close();thread.join()
-    return {'frames':frames,'preview_images':images,'audio':'Preview frames are silent; review audio in the full render'}
+    return {'frames':frames,'preview_images':images,'audio':'Preview frames are silent; review audio in the full render',
+            'flat_frames':flat_frames(edit,frames,images)}
+
+
+FLAT_SPECIALS=('black','white','color','flash')
+
+
+def flat_frames(edit,frames,images):
+    """Previewed frames that came out as one flat colour (every channel within 2 levels) where no flat special is
+    scheduled: usually a broken effect value (a NaN in hook params paints nothing) rather than intent."""
+    from PIL import Image
+    flat=[]
+    for f,path in zip(frames,images):
+        specials=[s.get('type') for s in edit.get('specials',[]) if s['f0']<=f<s['f1']]
+        specials+=[s['special'].get('type') for s in edit['shots'] if s['f0']<=f<s['f1'] and isinstance(s.get('special'),dict)]
+        if any(t in FLAT_SPECIALS for t in specials):continue
+        with Image.open(path) as im:
+            ext=im.convert('RGB').getextrema()
+        if all(hi-lo<=2 for lo,hi in ext):flat.append({'frame':f,'rgb':[round((lo+hi)/2) for lo,hi in ext]})
+    return flat

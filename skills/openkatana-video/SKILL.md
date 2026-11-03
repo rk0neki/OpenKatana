@@ -29,9 +29,15 @@ Then follow the user's brief. Choose pacing, effects, fonts, sound, easing and
 slow motion to suit it; nothing in the playbook is compulsory, and a quiet edit
 can use none of the high-energy effects. When the user asks for a high-energy,
 aura-farm or launch-film edit, use the playbook's launch-film style as the
-reference. Inspect references at their native frame rate or a suitable sampling
-rate, increasing detail around fast motion and cuts. Duplicating frames to 60 fps
-does not recover motion absent from the source. Ask for missing assets only when
+reference. Analyse every reference video at 60 fps, never lower: at 60 fps you
+catch the full motion (whips, flashes, one-frame cuts, shakes, blur trails, speed
+ramps and the shape of every ease). A source shot at a lower rate repeats frames
+at 60; analyse them all anyway. Study frames at a readable size, not thumbnails.
+`analyze_reference` with `measure` reads cuts and exposure dips, picture cadence,
+look, texture speck rate and the median cut transition (as `local_curve` arrays)
+on that 60-fps clock; verify each on the frames. For textures, use real texture footage as timeline
+`overlays`, not drawn imitations; `shot_sheet` lets the user name shots by number.
+Ask for missing assets only when
 they matter to the requested result. Respect accessibility and reduced-motion
 needs.
 

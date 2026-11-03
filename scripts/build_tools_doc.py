@@ -23,7 +23,7 @@ GROUPS = [
     ('Analysis and effects', [('Effects', 'EXPANSION.md')],
      ['analyze_clip', 'analyze_energy', 'review_mask', 'morph_images', 'render_page']),
     ('Match a reference', [('Editor tools', 'EDITOR_TOOLS.md')],
-     ['analyze_reference', 'compare_reference', 'save_reference_plan', 'audit_reference_plan',
+     ['analyze_reference', 'compare_reference', 'shot_sheet', 'eye_sheet', 'save_reference_plan', 'audit_reference_plan',
       'bind_reference', 'inspect_identity']),
     ('Fonts and text shaping', [('Editor tools', 'EDITOR_TOOLS.md'), ('Release tools', 'RELEASE-TOOLS.md')],
      ['list_fonts', 'preview_fonts', 'shape_text']),
@@ -43,6 +43,22 @@ GROUPS = [
       'import_workflow_output', 'process_clip', 'run_model_workflow']),
     ('HDR', [('HDR', 'HDR.md')],
      ['import_hdr_media', 'render_hdr']),
+]
+
+# What the current release added, listed under the introduction. Update it with each release.
+NEW_IN = '0.1.2'
+NEW_TOOLS = ['shot_sheet', 'eye_sheet']
+NEW_NOTES = [
+    '`analyze_reference` `measure`: frame-level measurement on a 60-fps clock (every reference is analysed at 60 fps): '
+    'cuts versus exposure dips, picture cadence, look per shot, texture speck rate and the median cut transition as '
+    '`local_curve` arrays.',
+    '`compare_reference` `side_by_side` (a reference-left, render-right video) and `look` (tone, saturation and colour '
+    'cast of both, and their difference).',
+    'New timeline effects, set in the timeline rather than called as tools ([Timeline](TIMELINE.md), '
+    '[Effects playbook](EFFECTS-PLAYBOOK.md)): `local_turbulent_displace` (After Effects\' Turbulent Displace: smoother '
+    'modes, Cycle Evolution loops, eased keyframes, locked pins, high quality) and `local_displacement_map` (Displacement '
+    'Map: any channel, per-axis amounts, stretch, centre or tile, wrap); texture `overlays` and adjustment layers; '
+    '`local_curve` transitions measured from a reference.',
 ]
 
 
@@ -78,6 +94,13 @@ def render():
         '',
         'For exact signatures and types, run `openkatana tools`. Each section links to the',
         'guide with details and limits. Parameters ending in `?` are optional.',
+        '',
+        f'## New in {NEW_IN}',
+        '',
+        *[f'- `{name}`: {summary(rows[name]["description"])}' for name in NEW_TOOLS],
+        *[f'- {note}' for note in NEW_NOTES],
+        '',
+        '## Areas',
         '',
         '| Area | Tools | Guide |',
         '|---|---|---|',

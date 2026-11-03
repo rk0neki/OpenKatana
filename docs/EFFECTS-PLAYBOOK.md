@@ -19,12 +19,17 @@ refer to a 1920×1080 canvas; brightness values use a 0–255 scale.
 
 ## Suggested workflow for a high-energy edit
 
-### 1. Inspect the reference at an appropriate rate
+### 1. Analyse every reference at 60 fps
 
-Start at the source frame rate or a sampling rate suited to the edit. Inspect
-fast motion and cut boundaries frame by frame when useful. A 60 fps source may
-benefit from 60 fps inspection; resampling a 24 fps source to 60 fps repeats
-frames and does not reveal additional motion.
+Always extract and study each reference video at 60 frames per second, never
+lower. At 60 fps you capture the full motion: whips, flashes, one-frame cuts,
+shakes, blur trails, speed ramps and the shape of every ease.
+
+- Study the frames at a readable size, never from thumbnails or half-second tiles.
+- If a source was shot at a lower rate, some frames repeat at 60 fps. Analyse them
+  all anyway, and never sample below 60.
+- `analyze_reference` with `measure` measures cuts, cadence, look, textures and
+  the cut transition on this 60-fps clock.
 
 ### 2. Identify assets the edit needs
 
@@ -222,6 +227,10 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
   ×1.08). White haze frames sit between shots.
 - **OpenKatana:** the `flash` transition (`mode` exposure, screen, add or invert) and
   the studio `exposure` effect.
+- A cut that opens with a shake, a defocus and a deep glow together, frame by frame:
+  `local_curve` (scale, offset, blur, glow and exposure arrays from the shot start).
+  `analyze_reference` `measure: ["transitions"]` returns the reference's own curves in
+  that form; as a timeline `post` entry every shot opens with it.
 
 ### 8. Glow and deep glow
 
@@ -296,14 +305,25 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 - Film dust changes every two frames, with a random offset and flip each time.
 - Lens textures (dust, dirt, leaks) do not shake with the picture. Scene textures
   (sparks, fire) do.
-- **OpenKatana:** `local_halftone` and `film_overlay` (dust, scratch, weave). A project
-  hook can draw image textures:
-  - Load each texture synchronously on first use, so every frame has it and renders
-    stay deterministic.
-  - Draw it with an opacity and a blend mode.
-  - Inside letters, mask the texture to the glyphs and multiply it over their paint.
+- **OpenKatana:** a timeline overlay of `type` `clip` plays a texture video over the
+  finished frame (TIMELINE.md "Overlays"):
+  - `blend` screen for plates shot on black, multiply for paper and grunge, overlay
+    for halftone; `opacity` (or keyframes) for the strength.
+  - `fps` steps the plate to its own picture rate: 24 on a 60-fps canvas gives the
+    2-3 cadence of a 24p overlay. `analyze_reference` `measure: ["textures"]` reads
+    the reference's speck rate.
+  - `floor` cuts a hazy plate's black level so screen does not lift the blacks; `tint`
+    colours it.
+  - A plate that moves too fast: make a slow-motion copy with `analyze_clip` `retime`
+    and play it at speed 1.
+  - Use real texture footage. Drawn dust and scratches read as fake.
 
-  A built-in texture layer is a gap.
+  - A glass, water or heat-haze plate can bend the picture instead of lying over it:
+    `local_displacement_map` (section 21).
+
+  Also `local_halftone` and `film_overlay` (dust, scratch, weave). Inside letters, a
+  hook masks the texture to the glyphs and multiplies it over their paint, loading the
+  texture frames with `prepare()`.
 
 ### 13. VHS/CRT degradation and scanlines
 
@@ -324,8 +344,8 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 
 - Sparks, embers, smoke and fire over the footage; manga speed lines on slashes; and
   2D cel-shaded footage in the finale.
-- **OpenKatana:** `local_speed_lines`. Particles come from overlay clips or a particle
-  hook. Cel-shaded footage comes from generation.
+- **OpenKatana:** `local_speed_lines`. Particles come from overlay clips (timeline
+  `overlays`) or a particle hook. Cel-shaded footage comes from generation.
 
 ## Colour
 
@@ -344,6 +364,10 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
   | Gym | 21 | 27 | 0.67 |
 
 - **OpenKatana:** the studio `grade` and `duotone`, `vignette`, and the presets.
+- For a mood over the whole edit (or a section), add an adjustment layer: a timeline
+  overlay of `type` `adjust` with a look, mixed back at `amt`. Keep `amt` partial
+  (around 0.5) so no shot is pushed hard. `compare_reference` `look: true` gives the
+  render's tone, saturation and cast against the reference, the numbers to aim it at.
 
 ### 17. Colour invert
 
@@ -401,10 +425,29 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 - **For type:** slide rows sideways and columns up and down by a sum of three sine
   waves, with phases that change every frame. Use 3–22 px at 1080 and a wave size of
   0.25–0.8 of the cap height.
-- **OpenKatana:** type can be displaced from a project hook. Plates and graphics need a
-  built-in `turbulent_displace` effect (fractal-noise displacement with amount, size,
-  complexity and evolution). The `liquid` transition (`wobble`) and `lens_warp` cover
-  only part of it.
+- **OpenKatana:** `local_turbulent_displace`, the After Effects Turbulent Displace for
+  plates, graphics and type (TIMELINE.md):
+  - `displacement` turbulent, bulge or twist (each also `_smoother`), horizontal,
+    vertical or cross; `amount` in px at 1080, `size`, `complexity` (octaves, 1-10) and
+    `evolution` with `speed`. Amount, size, complexity, evolution and offset take
+    keyframes with eases (`ease` is Easy Ease, `hold`, or a cubic-bezier), e.g.
+    `[[0, 0, "ease"], [.25, 70], [1, 10]]` for a burst on a hit.
+  - A seamless loop: `cycle` 1 with `speed` 0.5 repeats every 2 s (Cycle Evolution).
+  - Big moves: a `_smoother` mode and `quality` `"high"` (antialiased); `pin`
+    `"all_locked"` keeps the frame edges and never pulls pixels from beyond them.
+  - A wavy line: `horizontal` or `vertical`, 3-22 px, `size` about the cap height.
+  - A word in rippling liquid: `region` around the word with a `feather`, `speed` 1-2.
+  - A boiling, hand-drawn edge: `complexity` 3-4, small `size`, `every` 2-3.
+  - Burning ornaments: `twist` with a `drift` upwards.
+  A project hook can still displace single glyphs. The `liquid` transition (`wobble`)
+  and `lens_warp` cover a cut or a lens.
+- **Displacement by real footage:** `local_displacement_map` bends the picture by
+  another clip's channels (After Effects' Displacement Map): a heat-haze, glass, water
+  or ripple plate as the map, `x`/`y` channels (luma for a grey plate), `amount` in px
+  at 1080 (`amount_x`/`amount_y` per axis) and `smooth` to soften a noisy map. `fit`
+  stretches, centres or tiles the map; `edges` `"wrap"` is Wrap Pixels Around. For a
+  plate shot on black (static, dust), set `neutral` to `"mean"` so it scatters pixels
+  instead of shifting the picture.
 
 ### 22. Slash cuts, glitch slices and smears on type
 
@@ -543,7 +586,7 @@ v15 adds to the table below:
 | 18 | Opacity | Partial: text, textures and glows have their own opacity; not audited per scene |
 | 19 | Letterbox | Done, including the finale's mode letterbox |
 | 20 | Word slams | Done |
-| 21 | Turbulent displacement | Done for type; plates and graphics remain an OpenKatana gap |
+| 21 | Turbulent displacement | Done for type; plates and graphics now have the built-in `local_turbulent_displace` |
 | 22 | Slash cuts, glitches, smears | Done |
 | 23 | 3D tracked text | Section not in the cut |
 | 24 | Typing, ghosting, split colour | Done |

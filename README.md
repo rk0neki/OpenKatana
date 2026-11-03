@@ -4,10 +4,10 @@
 
 # OpenKatana
 
-OpenKatana is an independent, open-source **editing engine your AI agent drives: your photos, footage and music in, a finished edit out; cuts, transitions, motion, typography and music in one shared project, all made with code.** Inspired by Higgsfield's Katana, built with the Comfy Developer Platform, with local open-weights workflows and optional authorized API models. **Version 0.1.1** [#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield/).
+OpenKatana is an independent, open-source **editing engine your AI agent drives: your photos, footage and music in, a finished edit out; cuts, transitions, motion, typography and music in one shared project, all made with code.** Inspired by Higgsfield's Katana, built with the Comfy Developer Platform, with local open-weights workflows and optional authorized API models. **Version 0.1.2** [#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield/).
 
 [![Comfy Registry](https://img.shields.io/badge/Comfy_Registry-OpenKatana-00A67E)](https://registry.comfy.org/nodes/openkatana)
-[![Release v0.1.1](https://img.shields.io/badge/release-v0.1.1-blue)](https://github.com/rk0neki/OpenKatana/releases/tag/v0.1.1)
+[![Release v0.1.2](https://img.shields.io/badge/release-v0.1.2-blue)](https://github.com/rk0neki/OpenKatana/releases/tag/v0.1.2)
 [![CI](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml)
 [![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](docs/SETUP.md)
@@ -35,7 +35,7 @@ A 24-second product film with procedural 3D objects, choreographed cameras, anim
 **ComfyUI Manager:** search **OpenKatana**, or run `comfy node install openkatana`
 with Comfy CLI configured for your ComfyUI installation. Then complete the
 [editor setup and Apps installation](docs/COMFY_APPS.md#comfy-registry-and-manager).
-Registry review is pending for 0.1.1; if Manager cannot resolve it, use the source install below.
+The Registry may list 0.1.1 until 0.1.2 is published there; for 0.1.2, or if Manager cannot resolve it, use the source install below.
 
 **With your agent:** copy and send the existing setup prompt:
 
@@ -83,11 +83,11 @@ above remains available.
 
 **Start with Apps → OpenKatana → 00 Full workflow.** It puts every App in one graph:
 one project ID feeds Open Studio, your video, music and photo uploads, Make edit →
-Render to video, a 3D starter and any of the 72 tools. Run it from App mode and
+Render to video, a 3D starter and any of the 74 tools. Run it from App mode and
 Studio opens in its own window.
 
 OpenKatana includes six saved Apps: **Full workflow**, plus **Open Studio**, **All tools**, **Make a 3D scene**, **Background job**
-and **Video to edit**. The integration offers 85 nodes for its tools plus project,
+and **Video to edit**. The integration offers 87 nodes for its tools plus project,
 job and media helpers.
 
 Connect a local model's image frames or video output to **Import media → Make edit
@@ -112,7 +112,7 @@ tools; you set the direction and refine the result in Studio.
 - **Finishing:** frame previews, motion checks, HDR workflows and video export.
   Restoration and generation adapters use separately installed or authorized models.
 
-OpenKatana offers **72 CLI/MCP tools** ([see them all](docs/TOOLS.md)). Your agent supplies the creative
+OpenKatana offers **74 CLI/MCP tools** ([see them all](docs/TOOLS.md)). Your agent supplies the creative
 decisions; OpenKatana executes them and keeps an editable project on your machine.
 
 ![OpenKatana capabilities: 3D and morphs, type and graphics, editing and sound](docs/assets/openkatana-capabilities.png)
