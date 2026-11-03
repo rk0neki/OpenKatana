@@ -33,7 +33,9 @@ def browser_check(address, invite, root):
         page.wait_for_selector('#projectName:has-text("Hosted render")', state='attached')
         page.locator('.main-nav [data-view="tools"]').click()
         page.wait_for_selector('.tool-actions button:has-text("Run tool")')
-        assert page.locator('.tool-card').count() == 76
+        from openkatana.agent_api import TOOLS
+        from openkatana.hosted.dispatch import FILE_TOOLS
+        assert page.locator('.tool-card').count() == len(TOOLS) + len(FILE_TOOLS)   # every tool and hosted file tool
         page.locator('#toolSearch').fill('get_capabilities')
         card = page.locator('.tool-card').filter(has=page.get_by_text('Get capabilities', exact=True))
         assert card.count() == 1
