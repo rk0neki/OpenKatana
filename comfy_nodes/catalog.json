@@ -499,7 +499,7 @@
   },
   {
     "name": "source_contact_sheet",
-    "description": "Inspect up to 96 timestamped source frames as contact sheets. Use smaller intervals around cut candidates.",
+    "description": "Inspect up to 96 timestamped source frames as contact sheets. Use smaller intervals around cut candidates; for a\nreference video, step 1/60 s (60 fps, never lower) through fast motion and cuts.",
     "signature": "(project_id: str, source: str, start: float = 0, end: float | None = None, step: float = 0.5, columns: int = 4) -> dict",
     "parameters": {
       "project_id": {

@@ -245,7 +245,8 @@ class AgentAPI:
         return start(root,request_id)
 
     def source_contact_sheet(self,project_id:str,source:str,start:float=0,end:float|None=None,step:float=.5,columns:int=4) -> dict:
-        """Inspect up to 96 timestamped source frames as contact sheets. Use smaller intervals around cut candidates."""
+        """Inspect up to 96 timestamped source frames as contact sheets. Use smaller intervals around cut candidates; for a
+        reference video, step 1/60 s (60 fps, never lower) through fast motion and cuts."""
         from .editor_tools import contact_sheet
         root=self._project(project_id);projects.state(root);src=self._source(source)
         result=contact_sheet(src,self._output(root,'contact-sheets'),start,end,step,columns)

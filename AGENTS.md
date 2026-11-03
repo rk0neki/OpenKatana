@@ -32,3 +32,10 @@ When an agent uses OpenKatana to make an edit, rather than to develop it, it fol
 every effect and technique OpenKatana offers. It then follows the user's brief,
 source timing and accessibility preferences; nothing in the playbook is
 compulsory.
+
+One rule from the user always applies: analyse every reference video at 60 fps,
+never lower, so every motion is caught (whips, flashes, one-frame cuts, shakes,
+blur trails, speed ramps and the shape of every ease). A source shot at a lower
+rate repeats frames at 60; analyse them all anyway. Study frames at a readable
+size, never from thumbnails or half-second tiles. `analyze_reference` with
+`measure` runs on this 60-fps clock.
