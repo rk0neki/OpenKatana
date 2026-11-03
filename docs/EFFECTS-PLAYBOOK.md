@@ -194,6 +194,8 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 - **OpenKatana:** `cam.shutter`; the studio `dirblur`, `smear`, `zoomblur` and
   `defocus` effects; and the `whip`, `push` and `slide` transitions.
 
+- **OpenKatana Time pack:** Time effects (After Effects' Time category). Echo trail: fx {"local_echo": {"echo_time": -0.067, "number_of_echoes": 4, "decay": 0.6, "operator": "maximum"}}; use "add" for glowing light trails and "composite_back" for solid ghost copies behind the subject. To echo only the picture and keep titles clean, put the echo in shot layers with "phase": "subject" instead of fx: by default (post phase) shot text and stickers are echoed too. Stop-motion trail: {"local_posterize_time": {"fps": 8}, "local_echo": {"echo_time": -0.125, "number_of_echoes": 3, "decay": 0.5}}; the echoes are the held frames, so the trail stays behind the subject. Slit-scan or time ripple: {"local_time_displacement": {"map": "horizontal", "max_displacement": 0.3, "levels": 16}}, or "radial" with a center, or "self" for brightness-driven time, or a clip id for a custom map. Choppy anime-style motion: {"local_posterize_time": {"fps": 12}}. Smear or long-shutter look: {"local_frame_blend": {"samples": 6, "shutter": 0.5}}; the trail length is shutter x (samples - 1) frames. Echo adds nothing before the edit or before the shot's source starts, so give a shot source handles (srcf > 0) if its first frames need a trail. Time effects do nothing on special shots. Cost at 1080p: about 0.4 s per frame for echo 16; stacking time displacement 16 levels with echo 16 is about 1.3-2 s per frame.
+
 ### 4. 3D camera and object blur
 
 - Interface elements move in 3D:
@@ -245,6 +247,13 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 - **OpenKatana:** the studio `glow` effect (`radii`, `weights`, `tint`), `contour_glow`
   and `bloom`. For per-element glow, use pages or compositions (`box-shadow`,
   `filter`).
+
+- **OpenKatana Light pack:** Light effects (`local_deep_glow`, `local_lens_flare`, `local_light_rays`, `local_light_sweep`) go in a shot's `fx` (or `layers`, or `post`); `true` uses the defaults, and each one starts at `at`.
+  - Glow a neon sign, sparks or a sun: `{"local_deep_glow": {"threshold": .7, "radius": 200, "exposure": 1.5}}`. Exposure 1 adds the bright parts once, so raise it for hotter blooms. On bright plates (sky, white backgrounds) set the threshold above the background's brightness.
+  - Flare on a light: `{"local_lens_flare": {"position": [[0, [.2, .3]], [2, [.6, .3]]], "lens": "35mm_prime", "streak": .5}}`. Keyframe `position` to follow the light.
+  - God rays from a window or sun: `{"local_light_rays": {"center": [.7, .2], "length": .6, "threshold": .5}}`.
+  - Logo shine: `{"local_light_sweep": {"d": .8, "angle": 30, "width": 120, "reception": "luma", "at": .5}}`.
+  - `tint` and `color` take "#rrggbb", rgb(), [r,g,b] or a "$palette" name.
 
 ### 9. Flicker
 
@@ -448,6 +457,17 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
   stretches, centres or tiles the map; `edges` `"wrap"` is Wrap Pixels Around. For a
   plate shot on black (static, dust), set `neutral` to `"mean"` so it scatters pixels
   instead of shifting the picture.
+
+- **OpenKatana Distort pack:** Distort pack (openkatana/web/fx_distort.js, openkatana/fx_distort.py). Each effect is a coordinate map over util.remap, so `edges` (reflect/clamp/wrap) and `quality` ('high' = 4 sub-pixel samples) work everywhere, and `region` [x0, y0, x1, y1] with `feather` confines the move. Recipes:
+  - Beat drop: {"local_shockwave": {"at": 2.0, "d": 0.5, "amount": 60, "width": 120, "split": 8}} on the shot that holds the drop.
+  - Underwater or heat haze: {"local_wave_warp": {"wave_type": "smooth_noise", "wave_height": 6, "wave_width": 220, "direction": 90, "wave_speed": 0.4, "pinning": "all"}}.
+  - Stone in a pond: {"local_ripple": {"center": [0.5, 0.6], "amplitude": [[0, 0], [0.3, 18], [2, 0]], "wavelength": 50, "conversion": "symmetric"}}.
+  - Portal or whirl-in transition: {"local_twirl": {"angle": [[0, 0], [0.6, 540, "inout3"]], "radius": 0.6}}.
+  - Fish-eye punch or pinch: {"local_bulge": {"height": [[0, 0], [0.15, 1.5, "out3"], [0.5, 0]], "horizontal_radius": 500, "vertical_radius": 500}}. Use a negative height to pinch; strong heights render at high quality automatically.
+  - Tiny planet: {"local_polar": {"interpolation": 1}} on a wide landscape shot.
+  - Kaleidoscope loop: {"local_kaleidoscope": {"segments": 8, "rotation": [[0, 0], [8, 360]], "size": 400}}. Prefer even segment counts with mirroring on; odd counts leave one seam.
+  - Symmetry shot: {"local_mirror": {"reflection_center": [0.5, 0.5], "reflection_angle": 0}} (left onto right).
+    Every main amount takes eased keyframes [[seconds, value, ease?], ...], and centres take [[seconds, [x, y]], ...].
 
 ### 22. Slash cuts, glitch slices and smears on type
 

@@ -1,15 +1,15 @@
 # Publishing a reviewed release
 
-Build and test before publishing. The current version is 0.1.2. Version 0.1.1
-was uploaded to the [Comfy Registry](https://registry.comfy.org/nodes/openkatana); on
-2026-10-29, the Registry API still marked it pending review. This does not establish
+Build and test before publishing. The current version is 0.1.3. Versions 0.1.1 and
+0.1.2 were uploaded to the [Comfy Registry](https://registry.comfy.org/nodes/openkatana); on
+2026-11-03, the Registry API still marked them flagged and pending review. This does not establish
 availability on PyPI or the existence of a GitHub release.
 
 ## Build and verify
 
 ```sh
 python -m unittest discover -s tests -q
-python scripts/release_bundle.py --out work/release-0.1.2
+python scripts/release_bundle.py --out work/release-0.1.3
 python -m build
 python -m twine check dist/*
 ```
@@ -19,7 +19,7 @@ The repeatable wheel check creates its own fresh environment and runs both
 bundled examples plus the browser workflow outside the checkout:
 
 ```sh
-python scripts/test_wheel_install.py --wheel dist/openkatana-0.1.2-py3-none-any.whl --out ../openkatana-wheel-check
+python scripts/test_wheel_install.py --wheel dist/openkatana-0.1.3-py3-none-any.whl --out ../openkatana-wheel-check
 ```
 
 Choose a new output directory on each run. Dependencies are downloaded; FFmpeg
@@ -41,7 +41,7 @@ Describe the competition inspiration with the README's independence statement.
 Do not imply endorsement or service compatibility. A privacy-history cleanup
 does not establish code provenance, copyright clearance or an isolated
 development process; describe only what the source and dependency records support.
-Use [release notes](RELEASE-NOTES.md) for `v0.1.2` and attach the source ZIP, wheel
+Use [release notes](RELEASE-NOTES.md) for `v0.1.3` and attach the source ZIP, wheel
 and `docs/assets/quick-edit.gif`. Confirm the current source and all historical
 commits are suitable for public release before changing repository visibility.
 Back up refs before any history rewrite; use a lease against the known remote
@@ -76,7 +76,7 @@ Publishing is manual. Merging a PR or changing the version does not publish.
 2. Finish the release checks for the commit on `main` and obtain the owner's
    explicit approval to publish that version.
 3. Open Actions → **Publish to Comfy Registry** → Run workflow, choose `main`,
-   and enter the approved version (`0.1.2` for this release).
+   and enter the approved version (`0.1.3` for this release).
    The workflow checks the publisher, node ID, version and source manifest
    before uploading. It only runs from `main`.
 4. Record the Registry URL returned by the publisher and confirm the version

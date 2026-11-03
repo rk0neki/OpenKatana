@@ -4,10 +4,10 @@
 
 # OpenKatana
 
-OpenKatana is an independent, open-source **editing engine your AI agent drives: your photos, footage and music in, a finished edit out; cuts, transitions, motion, typography and music in one shared project, all made with code.** Inspired by Higgsfield's Katana, built with the Comfy Developer Platform, with local open-weights workflows and optional authorized API models. **Version 0.1.2** [#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield/).
+OpenKatana is an independent, open-source **editing engine your AI agent drives: your photos, footage and music in, a finished edit out; cuts, transitions, motion, typography and music in one shared project, all made with code.** Inspired by Higgsfield's Katana, built with the Comfy Developer Platform, with local open-weights workflows and optional authorized API models. **Version 0.1.3** [#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield/).
 
 [![Comfy Registry](https://img.shields.io/badge/Comfy_Registry-OpenKatana-00A67E)](https://registry.comfy.org/nodes/openkatana)
-[![Release v0.1.2](https://img.shields.io/badge/release-v0.1.2-blue)](https://github.com/rk0neki/OpenKatana/releases/tag/v0.1.2)
+[![Release v0.1.3](https://img.shields.io/badge/release-v0.1.3-blue)](https://github.com/rk0neki/OpenKatana/releases/tag/v0.1.3)
 [![CI](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml)
 [![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](docs/SETUP.md)
@@ -44,12 +44,27 @@ A 24-second product film with procedural 3D objects, choreographed cameras, anim
   and antialiasing, each as a few lines of [timeline JSON](docs/TIMELINE.md).
 - **Open and local.** Apache-2.0, runs on your machine, no account. Models are optional and installed separately.
 
+## New in 0.1.3: After Effects' Distort, Light and Time effects
+
+[![Wave Warp, Twirl, Polar Coordinates, Kaleidoscope, Lens Flare, Light Rays, Echo and Time Displacement, rendered by OpenKatana](docs/assets/ae-packs.gif)](docs/assets/ae-packs.mp4)
+
+**[Watch all 16 effects](docs/assets/ae-packs.mp4)**: Wave Warp, Ripple, Shockwave, Twirl, Bulge, Polar Coordinates,
+Kaleidoscope and Mirror; Deep Glow, Lens Flare, Light Rays and Light Sweep; Echo, Time Displacement, Posterize Time and
+frame blending. They join Turbulent Displace and Displacement Map, and each one is a few lines of timeline JSON:
+
+```json
+"fx": {"local_twirl": {"angle": [[0, 0, "ease"], [1, 240]], "radius": 0.45}}
+```
+
+Try any of them in ComfyUI with the **OpenKatana · Preview effect** node, or ask your agent to call `preview_effect`.
+The [effects playbook](docs/EFFECTS-PLAYBOOK.md) has a recipe for each.
+
 ## Quick start
 
 **ComfyUI Manager:** search **OpenKatana**, or run `comfy node install openkatana`
 with Comfy CLI configured for your ComfyUI installation. Then complete the
 [editor setup and Apps installation](docs/COMFY_APPS.md#comfy-registry-and-manager).
-The Registry may list 0.1.1 until 0.1.2 is published there; for 0.1.2, or if Manager cannot resolve it, use the source install below.
+New Registry versions wait for Comfy's review; if Manager cannot resolve the latest version, use the source install below.
 
 **With your agent:** copy and send the existing setup prompt:
 

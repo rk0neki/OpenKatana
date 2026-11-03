@@ -1,3 +1,35 @@
+# OpenKatana 0.1.3
+
+After Effects' Distort, Light and Time effects, written as code, and a ComfyUI node to preview any effect. 75 shared
+tools (new: `preview_effect`) and 88 Comfy nodes.
+
+## Effects
+
+- **Distort pack**: Wave Warp, Ripple, Shockwave, Twirl, Bulge, Polar Coordinates, Kaleidoscope (CC Kaleida) and
+  Mirror (`local_wave_warp` ... `local_mirror`), with After Effects' parameter names, eased keyframes on the main
+  amounts, region and feather, reflect/clamp/wrap edges and antialiased high quality. A pinch (negative bulge) never
+  folds the picture.
+- **Light pack**: `local_deep_glow` (a multi-layer, energy-conserving bloom above a threshold, with tint and
+  saturation), `local_lens_flare` (procedural flares with the 50-300mm zoom, 35mm and 105mm prime ghost sets, halo,
+  rainbow ring, anamorphic streak and flicker), `local_light_rays` (CC Light Rays-style rays from bright areas) and
+  `local_light_sweep` (a CC Light Sweep shine). Nothing changes where nothing is bright enough.
+- **Time pack**: After Effects' Echo (all seven operators), Time Displacement (horizontal, vertical, radial, self or
+  clip maps, for slit-scan and time-ripple looks), Posterize Time and frame blending. Each reads other frames of its
+  own shot through a nested render that stops at the effect, so text and grades placed later are drawn once, on top;
+  posterize time followed by echo gives a stop-motion trail.
+- **Effect packs**: effects can now ship as packs (`web/fx_*.js` with a Python validator); the engine awaits them and
+  gives time effects the shot at other frames.
+
+## ComfyUI and agents
+
+- **`preview_effect`**: a short MP4 and a six-frame contact sheet of any shot effect, the packs included, on a moving
+  test card (grid, shapes, text, a light spot, a bouncing ball, a frame counter), a project image or a video excerpt.
+  Text effects use the project's fonts or a bundled OFL font. In ComfyUI it is the **OpenKatana · Preview effect** node.
+
+## Docs
+
+- The README says why OpenKatana is different and shows the new effects; the Koji clip credits its Suno music.
+
 # OpenKatana 0.1.2
 
 After Effects-grade displacement, texture overlays and frame-level reference matching. 74 shared tools (two new:
