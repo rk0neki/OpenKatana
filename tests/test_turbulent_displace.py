@@ -118,7 +118,8 @@ class DisplacementMapTests(unittest.TestCase):
                             'y': 'none', 'smooth': 4, 'region': [0, 0, .5, 1], 'feather': .1, 'at': .1}), self.root)
         for fx, error in (({}, 'clip .* is required'), ({'clip': 'Z'}, "clip 'Z' is not in clips"), ({'clip': 'M', 'x': 'hue'}, 'one of red'),
                           ({'clip': 'M', 'loop': 'bounce'}, 'loop, pingpong or clamp'), ({'clip': 'M', 'smooth': -1}, 'out of range'),
-                          ({'clip': 'M', 'size': 3}, 'unsupported fields: size')):
+                          ({'clip': 'M', 'size': 3}, 'unsupported fields: size'), ({'clip': 'M', 'neutral': 'median'}, 'a level 0..255 or "mean"'),
+                          ({'clip': 'M', 'neutral': 300}, 'out of range')):
             with self.assertRaisesRegex(ContractError, error, msg=str(fx)):
                 validate(self.edit(fx), self.root)
 
@@ -134,6 +135,18 @@ class DisplacementMapTests(unittest.TestCase):
         self.assertEqual(np.abs(f[0][inner][:, :, 1] - self.source[inner][:, :, 1]).max(), 0)
         self.assertEqual(np.abs(f[1] - self.source).max(), 0)             # map frame 1, mid grey: nothing moves
         self.assertEqual(np.abs(f[2][inner][:, :, 1] - (self.source[inner][:, :, 1] + 20)).max(), 0)   # 10 rows down
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_neutral_level(self):
+        from openkatana.render import render
+        for i in range(3):                                                # a dark plate, as shot on black
+            Image.new('RGB', (32, 18), (40, 40, 40)).save(self.root / 'm' / f'{i:05d}.png')
+        for neutral, still in (('mean', True), (40, True), (None, False)):
+            fx = {'clip': 'M', 'amount': 100, **({'neutral': neutral} if neutral is not None else {})}
+            (self.root / 't.json').write_text(json.dumps(self.edit(fx, frames=1)))
+            out = self.root / f'o-{neutral}'; render(self.root / 't.json', out)
+            f = np.asarray(Image.open(out / 'frames' / '00000.png').convert('RGB')).astype(int)
+            self.assertEqual(np.abs(f - self.source).max() == 0, still, msg=str(neutral))   # 128 shifts the picture
 
 
 if __name__ == '__main__':

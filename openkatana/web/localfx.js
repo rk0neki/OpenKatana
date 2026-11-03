@@ -208,7 +208,8 @@ window.OpenKatanaLocal = (() => {
   // local_displacement_map: After Effects' Displacement Map. A frame of another clip (`s.map`, loaded by the engine and
   // stretched over the canvas, softened by `smooth` px at 1080) moves each pixel by (channel - 128) / 127 x `amount` px
   // at 1080: `x` and `y` pick the channel for each axis (red, green, blue, alpha, luma or none), so mid grey keeps a pixel
-  // in place. `region` [x0, y0, x1, y1] with `feather` confines it. Heat haze, glass, water and ripple plates drive it.
+  // in place (`neutral` sets that level, or "mean" for the frame's mean). `region` [x0, y0, x1, y1] with `feather` confines
+  // it. Heat haze, glass, water and ripple plates drive it.
   const CHANNEL = {red: (d, i) => d[i], green: (d, i) => d[i + 1], blue: (d, i) => d[i + 2], alpha: (d, i) => d[i + 3],
                    luma: (d, i) => .2126 * d[i] + .7152 * d[i + 1] + .0722 * d[i + 2]};
   function displaceMap(ctx, p, s) {
@@ -221,7 +222,12 @@ window.OpenKatanaLocal = (() => {
     if (pad) { mx.filter = `blur(${sm}px)`; mx.drawImage(mirrorPad(map, w, h, pad), -pad, -pad); mx.filter = 'none'; }
     else mx.drawImage(map, 0, 0, w, h);
     const md = mx.getImageData(0, 0, w, h).data, sd = ctx.getImageData(0, 0, w, h).data, out = ctx.createImageData(w, h), od = out.data;
-    const cx = CHANNEL[p.x ?? 'red'], cy = CHANNEL[p.y ?? 'green'], val = (f, o) => Math.max(-1, (f(md, o) - 128) / 127);
+    const cx = CHANNEL[p.x ?? 'red'], cy = CHANNEL[p.y ?? 'green'];
+    // the channel level that keeps a pixel in place: 128, a given level, or this map frame's mean ("mean": a plate shot on
+    // black then moves pixels by its variation instead of shifting the whole picture one way)
+    const mean = f => { let sum = 0, n = 0; for (let i = 0; i < md.length; i += 64) { sum += f(md, i); n++; } return n ? sum / n : 128; };
+    const nx = cx ? (p.neutral === 'mean' ? mean(cx) : p.neutral ?? 128) : 128, ny = cy ? (p.neutral === 'mean' ? mean(cy) : p.neutral ?? 128) : 128;
+    const val = (f, o, n0) => Math.max(-1, Math.min(1, (f(md, o) - n0) / 127));
     const reg = p.region, fe = (p.feather ?? .02) * h;
     const [rx0, ry0, rx1, ry1] = reg ? [reg[0] * w, reg[1] * h, reg[2] * w, reg[3] * h] : [0, 0, 0, 0];
     const inside = (v, a, b) => fe > 0 ? clamp(1 - Math.max(a - v, v - b, 0) / fe) : (v >= a && v <= b ? 1 : 0);
@@ -229,7 +235,7 @@ window.OpenKatanaLocal = (() => {
       const wy = reg ? inside(y, ry0, ry1) : 1;
       for (let x = 0; x < w; x++) {
         const o = (y * w + x) * 4, wgt = reg ? wy * inside(x, rx0, rx1) : 1;
-        moveInto(od, o, sd, x, y, wgt && cx ? val(cx, o) * A * wgt : 0, wgt && cy ? val(cy, o) * A * wgt : 0, w, h);
+        moveInto(od, o, sd, x, y, wgt && cx ? val(cx, o, nx) * A * wgt : 0, wgt && cy ? val(cy, o, ny) * A * wgt : 0, w, h);
       }
     }
     ctx.putImageData(out, 0, 0);

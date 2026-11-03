@@ -14,7 +14,7 @@ SPECS = {
     'local_scramble_text': 'text family size pos fill d at seed',
     'local_curve': 'scale dx dy blur glow exposure at mirror glow_radius glow_bright glow_contrast glow_mode',
     'local_turbulent_displace': 'displacement amount size complexity evolution speed offset drift every pin region feather seed at',
-    'local_displacement_map': 'clip src speed loop amount x y smooth region feather at',
+    'local_displacement_map': 'clip src speed loop amount x y neutral smooth region feather at',
 }
 NAMES = tuple(SPECS)
 RANGES = {'amount': (0, 1), 'd': (.001, 60), 'at': (0, 3600), 'spacing': (3, 200), 'mix': (0, 1), 'count': (1, 512),
@@ -46,6 +46,11 @@ def _displacement_map(k, v, loc):
         number(v, loc, 0, 86400)
     elif k == 'smooth':
         number(v, loc, 0, 200)
+    elif k == 'neutral':
+        if v != 'mean' and (isinstance(v, (str, bool)) or not isinstance(v, (int, float))):
+            raise ContractError(f'{loc}: a level 0..255 or "mean"')
+        if v != 'mean':
+            number(v, loc, 0, 255)
     else:
         return False
     return True

@@ -439,7 +439,8 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 - **Displacement by real footage:** `local_displacement_map` bends the picture by
   another clip's channels (After Effects' Displacement Map): a heat-haze, glass, water
   or ripple plate as the map, `x`/`y` channels (luma for a grey plate), `amount` in px
-  at 1080 and `smooth` to soften a noisy map.
+  at 1080 and `smooth` to soften a noisy map. For a plate shot on black (static, dust),
+  set `neutral` to `"mean"` so it scatters pixels instead of shifting the picture.
 
 ### 22. Slash cuts, glitch slices and smears on type
 
