@@ -58,8 +58,8 @@ Technical passes do not establish human approval, legal clearance, general
 model fidelity or quality on arbitrary creative briefs.
 # ComfyUI Apps integration â€” 2026-10-21
 
-All 74 AgentAPI operations are exposed by the local Comfy adapter, plus four
-convenience nodes and the three existing tensor nodes (79 total). See
+All 72 AgentAPI operations of that build were exposed by the local Comfy adapter, plus
+four convenience nodes and the three existing tensor nodes (79 total). See
 [ComfyUI Apps](COMFY_APPS.md) and `comfy-apps-validation.json` for scope.
 
 On Windows, the final regression suite ran 265 tests with no failures and one
@@ -73,7 +73,7 @@ used. This is a queue/transport test, not a new quality test of every model.
 
 Browser verification covered saved Apps discovery, App Mode input controls,
 text-result display/download controls, Studio linking and a 640Ã—360 product video
-preview. An isolated wheel loaded its 74-tool catalog, four App workflows, frontend
+preview. An isolated wheel loaded its 72-operation catalog, four App workflows, frontend
 extension and guide. Linux integration with a running ComfyUI was not exercised
 in this round; the ordinary platform CI remains applicable to shared code.
 

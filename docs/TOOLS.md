@@ -7,6 +7,16 @@ nodes. This page is generated from the tool catalog by
 For exact signatures and types, run `openkatana tools`. Each section links to the
 guide with details and limits. Parameters ending in `?` are optional.
 
+## New in 0.1.2
+
+- `shot_sheet`: A numbered sheet with one picture per shot of a video (a render or a reference), labelled with the shot number and start time, to talk about shots by number.
+- `eye_sheet`: Crops around both eyes across frames of a clip of the saved timeline, to judge gaze direction and eye artefacts (white or doubled eyes from face replacement) before choosing a source window.
+- `analyze_reference` `measure`: frame-level measurement on a 60-fps clock (every reference is analysed at 60 fps): cuts versus exposure dips, picture cadence, look per shot, texture speck rate and the median cut transition as `local_curve` arrays.
+- `compare_reference` `side_by_side` (a reference-left, render-right video) and `look` (tone, saturation and colour cast of both, and their difference).
+- New timeline effects, set in the timeline rather than called as tools ([Timeline](TIMELINE.md), [Effects playbook](EFFECTS-PLAYBOOK.md)): `local_turbulent_displace` (After Effects' Turbulent Displace: smoother modes, Cycle Evolution loops, eased keyframes, locked pins, high quality) and `local_displacement_map` (Displacement Map: any channel, per-axis amounts, stretch, centre or tile, wrap); texture `overlays` and adjustment layers; `local_curve` transitions measured from a reference.
+
+## Areas
+
 | Area | Tools | Guide |
 |---|---|---|
 | [Start and discover](#start-and-discover) | 4 | [Agent guide](AGENT_INTERFACE.md) |

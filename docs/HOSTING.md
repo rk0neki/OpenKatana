@@ -12,7 +12,7 @@ these limits or promising rendering speed.
 
 ## Shared tools
 
-All 72 AgentAPI operations have hosted schemas, plus four file/preview helpers
+All 74 AgentAPI operations have hosted schemas, plus four file/preview helpers
 and two MCP queue helpers. Actual availability depends on installed models and
 services. Browser **Tools → Run tool** and MCP use the same account workspace.
 

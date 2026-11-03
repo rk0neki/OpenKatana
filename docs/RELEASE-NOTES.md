@@ -1,4 +1,7 @@
-# Unreleased
+# OpenKatana 0.1.2
+
+After Effects-grade displacement, texture overlays and frame-level reference matching. 74 shared tools (two new:
+`shot_sheet` and `eye_sheet`) and 87 Comfy nodes.
 
 ## Effects
 

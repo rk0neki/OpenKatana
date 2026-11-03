@@ -84,7 +84,7 @@ an environment with `python -m venv .venv`, then activate it using the platform
 commands above. Run these commands, substituting the downloaded wheel's actual path:
 
 ```sh
-python -m pip install "./openkatana-0.1.1-py3-none-any.whl[text,vision]"
+python -m pip install "./openkatana-0.1.2-py3-none-any.whl[text,vision]"
 python -m openkatana doctor
 python -m openkatana setup --project projects/my-film
 python -m openkatana studio projects/my-film
