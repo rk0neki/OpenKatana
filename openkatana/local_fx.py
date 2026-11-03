@@ -182,8 +182,8 @@ def measured(value, where):
 
 
 # Effect packs (web/fx_*.js), each validated by its own module; they may import the helpers above.
-from . import fx_distort, fx_light, fx_time  # noqa: E402
-PACKS = (fx_distort, fx_light, fx_time)
+from . import fx_blur, fx_distort, fx_generate, fx_light, fx_stylize, fx_time  # noqa: E402
+PACKS = (fx_distort, fx_light, fx_time, fx_blur, fx_stylize, fx_generate)
 for _pack in PACKS:
     SPECS.update(_pack.SPECS)
 NAMES = tuple(SPECS)
