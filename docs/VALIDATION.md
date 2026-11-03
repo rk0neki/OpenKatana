@@ -21,7 +21,11 @@ The suite checks supported contracts, revision conflicts, malformed inputs,
 frame scheduling, rendering, audio processing and network boundaries. Studio's
 walkthrough exercises setup/guide clipboard actions, fixed guide controls,
 import/edit/save/render, external agent saves, unsaved human edit protection and
-390px layouts. These checks use synthetic inputs and no paid models.
+390px layouts. These checks use synthetic inputs and no paid models. Timeline
+overlays (blend modes, floor, tint, keyframed opacity, stepped picture rate,
+adjustment layers), `local_curve`, hook image preloading and the frame-level
+reference measurement (cuts and dips, cadence, textures and transitions, on a
+synthetic reference with known answers) have pixel- or value-level unit tests.
 
 Each feature's JSON validation summary records the scope of its last fixture
 run; those are dated results, not proof every later source tree is identical.
@@ -50,7 +54,7 @@ Technical passes do not establish human approval, legal clearance, general
 model fidelity or quality on arbitrary creative briefs.
 # ComfyUI Apps integration â€” 2026-10-21
 
-All 72 AgentAPI operations are exposed by the local Comfy adapter, plus four
+All 74 AgentAPI operations are exposed by the local Comfy adapter, plus four
 convenience nodes and the three existing tensor nodes (79 total). See
 [ComfyUI Apps](COMFY_APPS.md) and `comfy-apps-validation.json` for scope.
 
@@ -65,7 +69,7 @@ used. This is a queue/transport test, not a new quality test of every model.
 
 Browser verification covered saved Apps discovery, App Mode input controls,
 text-result display/download controls, Studio linking and a 640Ã—360 product video
-preview. An isolated wheel loaded its 72-tool catalog, four App workflows, frontend
+preview. An isolated wheel loaded its 74-tool catalog, four App workflows, frontend
 extension and guide. Linux integration with a running ComfyUI was not exercised
 in this round; the ordinary platform CI remains applicable to shared code.
 

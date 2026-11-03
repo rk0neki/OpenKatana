@@ -231,7 +231,7 @@ def render(timeline: Path, output_dir: Path) -> dict:
     server = LocalHTTPServer(('127.0.0.1', 0), partial(Handler, project=root))
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
-    trace = []
+    trace, hook_assets = [], []
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch(executable_path=chrome_path(), headless=True, args=['--disable-gpu'])
@@ -252,11 +252,15 @@ def render(timeline: Path, output_dir: Path) -> dict:
                     trace.append({'frame': frame, **result['sample'], **({'transition': result['transition']} if result.get('transition') else {}),
                                   **({'face': result['face']} if result.get('face') else {})})
                 blocked += page.evaluate('() => OpenKatanaHooks.violations()')
+                hook_assets = page.evaluate('() => OpenKatanaHooks.assets()') if edit.get('hooks') else []
             finally:
                 browser.close()
     finally:
         server.shutdown(); server.server_close(); thread.join()
     write_json(output_dir / 'frame-trace.json', trace)
+    if hook_assets:   # images a hook's prepare() requested: known only after rendering, so the manifest is completed here
+        inputs.update({p: digest(local_path(root, p)) for p in hook_assets})
+        write_json(output_dir / 'input-manifest.json', inputs)
     c = edit['canvas']
     movie = output_dir / 'video.mp4'
     audio_mix=None
@@ -284,7 +288,8 @@ def render(timeline: Path, output_dir: Path) -> dict:
     from .warnings import timeline_warnings
     from .qa import render_qa
     qa = render_qa(edit, movie, trace, bool(edit.get('audio')))
-    hooks = {**edit['hooks'], 'sha256': inputs[edit['hooks']['src']], 'blocked_requests': blocked} if edit.get('hooks') else None
+    hooks = {**edit['hooks'], 'sha256': inputs[edit['hooks']['src']], 'blocked_requests': blocked,
+             'assets': {p: inputs[p] for p in hook_assets}} if edit.get('hooks') else None
     receipt = {'ok': ok, 'warnings': timeline_warnings(edit, root) + [{**w, 'source': 'render_qa'} for w in qa['warnings']], 'qa': qa, 'hooks': hooks, 'frames': count, 'width': video['width'], 'height': video['height'],
                'fps': video['r_frame_rate'], 'sha256': digest(movie), 'audio_stream_unchanged': audio_check, 'audio_copy': audio_copy,
                'contract_failures': failures, 'audio_mix':audio_mix, 'visual_review': 'not_performed', 'hosted_parity': 'not_tested', 'probe': info,

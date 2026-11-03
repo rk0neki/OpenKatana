@@ -23,7 +23,7 @@ GROUPS = [
     ('Analysis and effects', [('Effects', 'EXPANSION.md')],
      ['analyze_clip', 'analyze_energy', 'review_mask', 'morph_images', 'render_page']),
     ('Match a reference', [('Editor tools', 'EDITOR_TOOLS.md')],
-     ['analyze_reference', 'compare_reference', 'save_reference_plan', 'audit_reference_plan',
+     ['analyze_reference', 'compare_reference', 'shot_sheet', 'eye_sheet', 'save_reference_plan', 'audit_reference_plan',
       'bind_reference', 'inspect_identity']),
     ('Fonts and text shaping', [('Editor tools', 'EDITOR_TOOLS.md'), ('Release tools', 'RELEASE-TOOLS.md')],
      ['list_fonts', 'preview_fonts', 'shape_text']),

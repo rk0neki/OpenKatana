@@ -385,6 +385,15 @@ class Normalizer:
             defaults(item, self.palette)
             if item.get('type') == 'collage' and 'look' in item:
                 item['look'] = self.look(item['look'], where + '.look')
+        for i, item in enumerate(e.get('overlays', []) if isinstance(e.get('overlays'), list) else []):
+            if not isinstance(item, dict):
+                continue
+            where = f'overlays[{i}]'
+            self.span(item, where)
+            if 'tint' in item:
+                item['tint'] = self.colour(item['tint'], where + '.tint')
+            if item.get('type') == 'adjust' and 'look' in item:
+                item['look'] = self.look(item['look'], where + '.look')
         self.authoring_aliases(e)
         return e
 

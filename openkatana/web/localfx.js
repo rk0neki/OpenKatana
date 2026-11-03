@@ -1,8 +1,8 @@
 // Local layer effects; parameters and defaults are documented in docs/TIMELINE.md.
 window.OpenKatanaLocal = (() => {
   const orders = {local_selective_color:6, local_posterize:7, local_halftone:8, local_frame_slices:9, local_whip:16, local_zoom_blur:17,
-                  local_scramble_text:58, local_speed_lines:25, local_paper_frame:30};
-  const phase = {local_scramble_text:'over', local_speed_lines:'final', local_paper_frame:'final'};
+                  local_scramble_text:58, local_speed_lines:25, local_paper_frame:30, local_curve:95};
+  const phase = {local_scramble_text:'over', local_speed_lines:'final', local_paper_frame:'final', local_curve:'subject'};
   const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
   const buffer = (w, h) => { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w)); c.height = Math.max(1, Math.ceil(h)); return c; };
   const copy = ctx => { const c = buffer(ctx.canvas.width, ctx.canvas.height); c.getContext('2d').drawImage(ctx.canvas, 0, 0); return c; };
@@ -55,6 +55,53 @@ window.OpenKatanaLocal = (() => {
     ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath();
   }
 
+  // a w x h picture with p px of reflected edge on every side, so a zoom-out, slide or blur never shows a border
+  function mirrorPad(src, w, h, p) {
+    const c = buffer(w + 2 * p, h + 2 * p), x = c.getContext('2d');
+    for (const sx of [-1, 0, 1]) for (const sy of [-1, 0, 1]) {
+      x.save(); x.translate(p + sx * w + (sx ? w : 0), p + sy * h + (sy ? h : 0)); x.scale(sx ? -1 : 1, sy ? -1 : 1);
+      x.drawImage(src, 0, 0, w, h); x.restore();
+    }
+    return c;
+  }
+  // exposure k: above 1 the picture is added onto itself, below 1 it darkens toward black
+  function exposure(ctx, k, w, h) {
+    if (Math.abs(k - 1) < .002) return;
+    if (k > 1) { const src = copy(ctx); ctx.globalCompositeOperation = 'lighter';
+      for (let r = k - 1; r > 0; r -= 1) { ctx.globalAlpha = Math.min(1, r); ctx.drawImage(src, 0, 0); } }
+    else { ctx.globalAlpha = 1 - k; ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, w, h); }
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  }
+  // local_curve: a move given frame by frame from the shot start (or `at` s): scale about the centre, offset dx/dy and
+  // blur radius (fractions of the canvas height), a thresholded glow and an exposure factor. Past the end of an array its
+  // value is the identity. Measured transitions (analyze_reference measure "transitions") come out in this form.
+  function curve(ctx, p, s) {
+    const {W: w, H: h, elapsed, fps} = s, i = Math.floor((elapsed - (p.at ?? 0)) * fps + 1e-6);
+    if (i < 0) return;
+    const at = (a, d) => (a && i < a.length ? a[i] : d);
+    const sc = at(p.scale, 1), ox = at(p.dx, 0) * h, oy = at(p.dy, 0) * h, r = at(p.blur, 0) * h, g = at(p.glow, 0), e = at(p.exposure, 1);
+    if (Math.abs(sc - 1) > 1e-4 || Math.abs(ox) > .05 || Math.abs(oy) > .05 || r > .3) {
+      const src = copy(ctx), mirror = p.mirror !== false;
+      const pad = mirror ? Math.max(0, Math.min(Math.min(w, h) - 1,
+        Math.ceil(Math.max(w, h) / 2 * Math.max(0, 1 / sc - 1) + Math.max(Math.abs(ox), Math.abs(oy)) / sc + 3 * r / sc + 4))) : 0;
+      const pic = mirror ? mirrorPad(src, w, h, pad) : src;
+      ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, w, h);
+      ctx.filter = r > .3 ? `blur(${r}px)` : 'none';
+      ctx.setTransform(sc, 0, 0, sc, w / 2 * (1 - sc) + ox, h / 2 * (1 - sc) + oy); ctx.drawImage(pic, -pad, -pad);
+      ctx.resetTransform(); ctx.filter = 'none';
+    }
+    if (g > .002) {   // wide and soft, so built at quarter size: min(1, g x blur(contrast(brightness(picture))))
+      const q = 4, sw = Math.ceil(w / q), sh = Math.ceil(h / q), R = (p.glow_radius ?? 25 / 1080) * h / q;
+      const pp = Math.max(1, Math.min(Math.min(sw, sh) - 1, Math.ceil(3 * R + 2)));
+      const small = buffer(sw, sh); small.getContext('2d').drawImage(ctx.canvas, 0, 0, sw, sh);
+      const pad = mirrorPad(small, sw, sh, pp), glow = buffer(sw, sh), gx = glow.getContext('2d');
+      gx.filter = `brightness(${p.glow_bright ?? 2.4}) contrast(${p.glow_contrast ?? 2.2}) blur(${R}px) brightness(${g})`;
+      gx.drawImage(pad, -pp, -pp); gx.filter = 'none';
+      ctx.globalCompositeOperation = p.glow_mode === 'add' ? 'lighter' : 'screen'; ctx.drawImage(glow, 0, 0, w, h);
+      ctx.globalCompositeOperation = 'source-over';
+    }
+    exposure(ctx, e, w, h);
+  }
   function draw(ctx, name, p, s) {
     if (!(name in orders)) return false;
     p = p === true ? {} : p;
@@ -138,6 +185,8 @@ window.OpenKatanaLocal = (() => {
         ctx.save(); deckle(ctx, m, m, w - m, h - m, m * .7, p.seed ?? 3); ctx.clip();
         ctx.drawImage(src, m * .5, m * .5, w - m, h - m); ctx.restore();
       }
+    } else if (name === 'local_curve') {
+      curve(ctx, p, s);
     } else if (name === 'local_scramble_text') {
       const chars = [...p.text], n = chars.length, d = p.d ?? .6, age = t - (p.at ?? 0);
       if (age >= 0) {

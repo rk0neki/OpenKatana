@@ -222,6 +222,10 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
   ×1.08). White haze frames sit between shots.
 - **OpenKatana:** the `flash` transition (`mode` exposure, screen, add or invert) and
   the studio `exposure` effect.
+- A cut that opens with a shake, a defocus and a deep glow together, frame by frame:
+  `local_curve` (scale, offset, blur, glow and exposure arrays from the shot start).
+  `analyze_reference` `measure: ["transitions"]` returns the reference's own curves in
+  that form; as a timeline `post` entry every shot opens with it.
 
 ### 8. Glow and deep glow
 
@@ -296,14 +300,22 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 - Film dust changes every two frames, with a random offset and flip each time.
 - Lens textures (dust, dirt, leaks) do not shake with the picture. Scene textures
   (sparks, fire) do.
-- **OpenKatana:** `local_halftone` and `film_overlay` (dust, scratch, weave). A project
-  hook can draw image textures:
-  - Load each texture synchronously on first use, so every frame has it and renders
-    stay deterministic.
-  - Draw it with an opacity and a blend mode.
-  - Inside letters, mask the texture to the glyphs and multiply it over their paint.
+- **OpenKatana:** a timeline overlay of `type` `clip` plays a texture video over the
+  finished frame (TIMELINE.md "Overlays"):
+  - `blend` screen for plates shot on black, multiply for paper and grunge, overlay
+    for halftone; `opacity` (or keyframes) for the strength.
+  - `fps` steps the plate to its own picture rate: 24 on a 60-fps canvas gives the
+    2-3 cadence of a 24p overlay. `analyze_reference` `measure: ["textures"]` reads
+    the reference's speck rate.
+  - `floor` cuts a hazy plate's black level so screen does not lift the blacks; `tint`
+    colours it.
+  - A plate that moves too fast: make a slow-motion copy with `analyze_clip` `retime`
+    and play it at speed 1.
+  - Use real texture footage. Drawn dust and scratches read as fake.
 
-  A built-in texture layer is a gap.
+  Also `local_halftone` and `film_overlay` (dust, scratch, weave). Inside letters, a
+  hook masks the texture to the glyphs and multiplies it over their paint, loading the
+  texture frames with `prepare()`.
 
 ### 13. VHS/CRT degradation and scanlines
 
@@ -324,8 +336,8 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 
 - Sparks, embers, smoke and fire over the footage; manga speed lines on slashes; and
   2D cel-shaded footage in the finale.
-- **OpenKatana:** `local_speed_lines`. Particles come from overlay clips or a particle
-  hook. Cel-shaded footage comes from generation.
+- **OpenKatana:** `local_speed_lines`. Particles come from overlay clips (timeline
+  `overlays`) or a particle hook. Cel-shaded footage comes from generation.
 
 ## Colour
 
@@ -344,6 +356,10 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
   | Gym | 21 | 27 | 0.67 |
 
 - **OpenKatana:** the studio `grade` and `duotone`, `vignette`, and the presets.
+- For a mood over the whole edit (or a section), add an adjustment layer: a timeline
+  overlay of `type` `adjust` with a look, mixed back at `amt`. Keep `amt` partial
+  (around 0.5) so no shot is pushed hard. `compare_reference` `look: true` gives the
+  render's tone, saturation and cast against the reference, the numbers to aim it at.
 
 ### 17. Colour invert
 

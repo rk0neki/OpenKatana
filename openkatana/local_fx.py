@@ -12,13 +12,17 @@ SPECS = {
     'local_posterize': 'levels',
     'local_paper_frame': 'mode color margin seed',
     'local_scramble_text': 'text family size pos fill d at seed',
+    'local_curve': 'scale dx dy blur glow exposure at mirror glow_radius glow_bright glow_contrast glow_mode',
 }
 NAMES = tuple(SPECS)
 RANGES = {'amount': (0, 1), 'd': (.001, 60), 'at': (0, 3600), 'spacing': (3, 200), 'mix': (0, 1), 'count': (1, 512),
           'opacity': (0, 1), 'inner': (0, 1), 'width': (.1, 50), 'seed': (-1e9, 1e9), 'every': (1, 60), 'n': (2, 64),
           'hue': (0, 360), 'tolerance': (0, 180), 'soft': (0, 90), 'min_sat': (0, 1), 'levels': (2, 64), 'margin': (0, .3),
-          'size': (1, 2000)}
+          'size': (1, 2000), 'glow_radius': (.001, .5), 'glow_bright': (0, 10), 'glow_contrast': (0, 10)}
 INTEGER = ('count', 'seed', 'every', 'n', 'levels')
+# local_curve per-frame arrays (frame 0 = the shot start): scale, offsets and blur radius as fractions of the canvas height
+CURVES = {'scale': (.05, 20), 'dx': (-5, 5), 'dy': (-5, 5), 'blur': (0, .5), 'glow': (0, 4), 'exposure': (0, 8)}
+MAX_CURVE = 600
 
 
 def local_effect(name, p, where):
@@ -27,6 +31,18 @@ def local_effect(name, p, where):
         loc = f'{where}.{k}'
         if k in ('ink', 'paper', 'color', 'fill'):
             color(v, loc)
+        elif k in CURVES:
+            if not isinstance(v, list) or not 1 <= len(v) <= MAX_CURVE:
+                raise ContractError(f'{loc}: an array of 1..{MAX_CURVE} per-frame values')
+            lo, hi = CURVES[k]
+            for i, x in enumerate(v):
+                number(x, f'{loc}[{i}]', lo, hi)
+        elif k == 'mirror':
+            if not isinstance(v, bool):
+                raise ContractError(f'{loc}: expected boolean')
+        elif k == 'glow_mode':
+            if v not in ('screen', 'add'):
+                raise ContractError(f'{loc}: screen or add')
         elif k == 'continuous':
             if not isinstance(v, bool):
                 raise ContractError(f'{loc}: expected boolean')

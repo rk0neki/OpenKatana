@@ -83,7 +83,7 @@ above remains available.
 
 **Start with Apps → OpenKatana → 00 Full workflow.** It puts every App in one graph:
 one project ID feeds Open Studio, your video, music and photo uploads, Make edit →
-Render to video, a 3D starter and any of the 72 tools. Run it from App mode and
+Render to video, a 3D starter and any of the 74 tools. Run it from App mode and
 Studio opens in its own window.
 
 OpenKatana includes six saved Apps: **Full workflow**, plus **Open Studio**, **All tools**, **Make a 3D scene**, **Background job**
@@ -112,7 +112,7 @@ tools; you set the direction and refine the result in Studio.
 - **Finishing:** frame previews, motion checks, HDR workflows and video export.
   Restoration and generation adapters use separately installed or authorized models.
 
-OpenKatana offers **72 CLI/MCP tools** ([see them all](docs/TOOLS.md)). Your agent supplies the creative
+OpenKatana offers **74 CLI/MCP tools** ([see them all](docs/TOOLS.md)). Your agent supplies the creative
 decisions; OpenKatana executes them and keeps an editable project on your machine.
 
 ![OpenKatana capabilities: 3D and morphs, type and graphics, editing and sound](docs/assets/openkatana-capabilities.png)

@@ -91,13 +91,29 @@ def animated(value, where, low=None, high=None):
     return number(value, where, low, high)
 
 
+def finite_everywhere(value, where='timeline'):
+    """Python's json module reads and writes NaN and Infinity, which JSON itself does not allow. In a free-form field
+    (hook params, look values) one would reach the renderer and silently paint wrong frames, so none is accepted
+    anywhere in a timeline."""
+    stack = [(value, where)]
+    while stack:
+        item, at = stack.pop()
+        if isinstance(item, float) and not math.isfinite(item):
+            raise ContractError(f'{at}: {item} is not a finite number (NaN and Infinity are not allowed in a timeline)')
+        if isinstance(item, dict):
+            stack.extend((v, f'{at}.{k}') for k, v in item.items())
+        elif isinstance(item, list):
+            stack.extend((v, f'{at}[{i}]') for i, v in enumerate(item))
+
+
 def validate(edit: dict, root: Path | None = None) -> dict:
     """Check a timeline and return its canonical form (native authoring syntax rewritten by native.normalize)."""
     from .effects import camera, effects, transition, layers
     from .native import normalize
+    finite_everywhere(edit)
     canonical = normalize(edit, Path(root) if root is not None else None)
     edit = edit if canonical == edit else canonical   # an already-canonical timeline is returned as the same object
-    fields(edit, 'canvas clips shots text fonts audio cam post look specials hooks assets stickers', 'timeline')
+    fields(edit, 'canvas clips shots text fonts audio cam post look specials hooks assets stickers overlays', 'timeline')
     from .hooks import validate as validate_hooks, check_layer, check_text
     hook_layers, hook_texts = validate_hooks(edit, root)
     from .expanded import look
@@ -218,6 +234,8 @@ def validate(edit: dict, root: Path | None = None) -> dict:
     validate_transitions(edit)
     from .specials import validate_specials
     validate_specials(edit)
+    from .overlays import validate as validate_overlays
+    validate_overlays(edit, clips, canvas['frames'])
     fonts = {}
     for font in edit.get('fonts', []):
         fields(font, 'family url weight style', 'font')

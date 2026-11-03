@@ -31,7 +31,12 @@ can use none of the high-energy effects. When the user asks for a high-energy,
 aura-farm or launch-film edit, use the playbook's launch-film style as the
 reference. Inspect references at their native frame rate or a suitable sampling
 rate, increasing detail around fast motion and cuts. Duplicating frames to 60 fps
-does not recover motion absent from the source. Ask for missing assets only when
+does not recover motion absent from the source. `analyze_reference` with `measure`
+reads cuts and exposure dips, picture cadence, look, texture speck rate and the
+median cut transition (as `local_curve` arrays) at the reference's own frame rate;
+verify each on the frames. For textures, use real texture footage as timeline
+`overlays`, not drawn imitations; `shot_sheet` lets the user name shots by number.
+Ask for missing assets only when
 they matter to the requested result. Respect accessibility and reduced-motion
 needs.
 

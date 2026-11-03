@@ -36,6 +36,7 @@ retag HDR or report unrotated dimensions for an auto-rotated source.
 | Faces | Clip `faces` JSON, optional `faces_size`; shot `face.box` or `face:false` |
 | Mattes | Clip `mask_dir`: same-count, same-size alpha PNG frames |
 | Audio | `{src,mode:"copy"}`, `{mode:"mix",tracks:[...]}` (see expansion), or omit for silence |
+| Overlays | `overlays`: clip plates and adjustment layers stacked over the finished frame; see Overlays below |
 
 Canonical colors are six-digit hex (`rgba(r,g,b,a)` where a field allows
 transparency: tint, text fills); the native forms below are converted first. Text `pos` is a normalized two-coordinate array; font
@@ -395,6 +396,7 @@ The effects below work as shot `fx`, timeline `post` entries or shot `layers`
 | `local_posterize` | `levels` (4) | per-channel rounding to levels |
 | `local_paper_frame` | `mode` (paper / filmstrip), `color`, `margin` (.045), `seed` | torn paper edge or sprocket strip, final phase |
 | `local_scramble_text` | `text`, `family` (a declared font, required), `size` (12% of height, bold), `pos`, `fill`, `d` (.6 s), `at`, `seed` | letters resolve left to right over `d` |
+| `local_curve` | per-frame arrays from the shot start (or `at` s): `scale` (1), `dx`, `dy`, `blur` (fractions of the canvas height), `glow` (0..4), `exposure` (1); `glow_radius` (25/1080 of the height), `glow_bright` (2.4), `glow_contrast` (2.2), `glow_mode` (screen/add), `mirror` (true) | subject phase, under the text: scale about the centre, offset and defocus with mirrored edges, then a thresholded glow and an exposure factor; past the end of an array the value is the identity. A measured transition from `analyze_reference` `measure: ["transitions"]` comes out in this form; as a timeline `post` entry every shot opens with it |
 
 `cam.local_measured` `{f0, f1, pan_x, pan_y, zoom, roll_deg}` is a linear move over absolute frames `f0..f1-1`: pan by
 `pan_x` x width and `pan_y` x height, roll by `roll_deg`, zoom by `1 + zoom`, with a constant cover margin for the
@@ -418,6 +420,19 @@ OpenKatanaHooks.layer('k_crown', {phase: 'over', order: 22, draw(ctx, params, s)
 OpenKatanaHooks.text('k_text', {init(item, i) {}, draw(ctx, item, s, i) { /* item.t0/t1/text/params */ }});
 ```
 
+A layer that draws project images declares them per frame with `prepare(params, s)`, which returns up to 32
+project-relative `.png`, `.jpg` or `.webp` paths. The renderer loads and decodes them before `draw` runs, which finds
+them in `s.images[path]` (`draw` itself cannot wait for an image to decode). Each image a hook loads is added, with its
+SHA-256, to the input manifest and to `receipt.hooks.assets`.
+
+```js
+OpenKatanaHooks.layer('k_film', {phase: 'final',
+  prepare(p, s) { return [`textures/film/${String(s.f % 48).padStart(5, '0')}.png`]; },
+  draw(ctx, p, s) { ctx.globalCompositeOperation = 'screen'; ctx.drawImage(Object.values(s.images)[0], 0, 0, s.W, s.H); }});
+```
+
+For a texture plate over the whole edit, a timeline overlay (below) needs no script.
+
 `s` carries `W`, `H`, `t` (absolute seconds at the frame centre), `f`, `fps`, `lt` (seconds into the shot), `dur`,
 `face` and `noise(a, b, c)`. Register hooks through `OpenKatanaHooks` as above. The script
 runs in the headless render page under a same-origin Content-Security-Policy; every request that is not to the
@@ -425,6 +440,34 @@ loopback project server is blocked and listed in `receipt.hooks.blocked_requests
 frame so renders are reproducible; the script's SHA-256 is in the input manifest and `receipt.hooks`. A hook that
 throws, fails to load or does not register a declared name stops the render with a named error. There is no CPU
 time limit inside a frame: an endless loop in a hook stalls that render.
+
+## Overlays
+
+Top-level `overlays` are layers stacked over the finished frame, above every shot, transition, special, text event
+and shot layer. They are drawn in array order (later entries on top), each from `f0` to exclusive `f1` (or `t0`/`t1`
+seconds).
+
+```json
+"overlays": [
+  {"type": "clip", "clip": "dust", "f0": 0, "f1": 2255, "speed": 0.25, "blend": "screen", "opacity": 0.6,
+   "floor": 0.05, "tint": "#ffd6b3"},
+  {"type": "clip", "clip": "static", "f0": 0, "f1": 2255, "fps": 24, "speed": 0.8, "blend": "screen", "opacity": 0.35},
+  {"type": "adjust", "f0": 1115, "f1": 2255, "amt": [[1115, 0], [1130, 0.5]],
+   "look": {"type": "studio", "grade": {"sat": 1.2, "contrast": 1.08, "black": 0.02}}}
+]
+```
+
+| Type | Fields (defaults) | What it does |
+|---|---|---|
+| `clip` | `clip` (an id from `clips`), `f0`, `f1`, `src` s or `srcf`, `speed` (1), `fps`, `loop` (loop / pingpong / clamp), `blend` (screen), `opacity` (1), `floor` (0), `tint`, `fit` (cover / contain / stretch) | another clip blended over the picture: dust, film scratches, grain, light leaks. Sampling uses frame centres as shots do; `fps` steps the plate to its own picture rate (24 on a 60-fps canvas gives the 2-3 cadence of a 24p overlay); `floor` cuts the plate's black level ((x - floor) / (1 - floor)) so a hazy plate does not lift the blacks; `tint` multiplies the plate before blending |
+| `adjust` | `f0`, `f1`, `look` (any look: a studio grade, a preset or a filter look), `amt` (1) | an adjustment layer: the look is applied to everything beneath it and mixed back at `amt` |
+
+`blend` is one of normal, screen, add, multiply, overlay, soft-light, hard-light, lighten, darken, color-dodge,
+color-burn, difference and exclusion. `opacity` and `amt` take a number in 0..1 or keyframes `[[frame, value], ...]`
+in absolute output frames, linear between keys and held before the first and after the last. At most 64 overlays.
+Overlay clips are prepared like any other clip (`import_media`); for a smooth slower plate, make a slow-motion copy
+with `analyze_clip` `retime` and play it at speed 1, as `speed` picks whole source frames. An overlay's source frames
+are listed in the render's input manifest with the other clips.
 
 ## Alpha mattes and subject layers
 
