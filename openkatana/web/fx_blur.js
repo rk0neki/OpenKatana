@@ -13,15 +13,16 @@
   // sub-level precision and nothing drifts dark; elsewhere an ordinary 8-bit canvas
   const fine = (w, h) => { const c = buffer(w, h); c.getContext('2d', {colorType: 'float16'}); return c; };
 
-  // src (w x h) with px / py px of edge on each side: mirrored (repeat edge pixels, any width) or black
-  function padded(src, w, h, px, py, repeat = true) {
-    const c = fine(w + 2 * px, h + 2 * py), g = c.getContext('2d');
-    if (repeat && (px || py)) {
+  // src (w x h) with px / py px of edge on the left / top and qx / qy on the right / bottom (px / py by default):
+  // mirrored (repeat edge pixels, any width) or black
+  function padded(src, w, h, px, py, repeat = true, qx = px, qy = py) {
+    const c = fine(w + px + qx, h + py + qy), g = c.getContext('2d');
+    if (repeat && (px || py || qx || qy)) {
       const tile = buffer(2 * w, 2 * h), t = tile.getContext('2d');
       for (const sx of [0, 1]) for (const sy of [0, 1]) {
         t.save(); t.translate(sx ? 2 * w : 0, sy ? 2 * h : 0); t.scale(sx ? -1 : 1, sy ? -1 : 1); t.drawImage(src, 0, 0, w, h); t.restore();
       }
-      g.save(); g.translate(px, py); g.fillStyle = g.createPattern(tile, 'repeat'); g.fillRect(-px, -py, w + 2 * px, h + 2 * py); g.restore();
+      g.save(); g.translate(px, py); g.fillStyle = g.createPattern(tile, 'repeat'); g.fillRect(-px, -py, c.width, c.height); g.restore();
     } else { g.fillStyle = '#000000'; g.fillRect(0, 0, c.width, c.height); }
     g.drawImage(src, px, py, w, h);
     return c;
@@ -45,26 +46,61 @@
     const k = Math.max(1, Math.ceil(Math.log2(L / step))), N = 2 ** k, d = L / N;
     return {c: halving(c, k, (g, n) => g.translate(n * d * ux, n * d * uy)), off: -(N - 1) / 2 * d};
   }
-  // a gaussian blur of src (w x h): sigma sx across, sy down (one of them may be 0), edges mirrored or black. Both axes:
-  // the canvas blur filter (on a copy scaled so sigma is at most 16 px); one axis: three boxes of length 2 sigma
-  // (variance 3 x (2 sigma)^2 / 12 = sigma^2) moved only along that axis, so rows (or columns) never mix.
+  // a gaussian blur of src (w x h): sigma sx across, sy down (either may be 0), edges mirrored or black. Separable and
+  // continuous in sigma: per axis, up to 3 px the sampled gaussian itself (whole-pixel copies summed with its weights),
+  // above that three boxes, each 2^k copies spaced so its variance is sigma^2 / 3 (less the 1/6 px^2 the sub-pixel
+  // moves add); every copy moves only along its axis, so a one-axis blur never mixes rows (or columns). An axis whose
+  // sigma is above 8 px is first shrunk by halvings along that axis only, each the symmetric [1 3 3 1] / 8 kernel
+  // (pairs [1 2 1]-smoothed, then averaged), so nothing shifts; the result is stretched back (bilinear) at the end and
+  // the variance the shrinking and stretching add is taken off sigma.
   function gaussian(src, w, h, sx, sy, repeat = true) {
     const out = buffer(w, h), o = out.getContext('2d');
-    if (sx > .05 && sy > .05) {
-      const sg = Math.max(sx, sy), q = Math.min(1, 16 / sg), qw = Math.max(1, Math.round(w * q)), qh = Math.max(1, Math.round(h * q));
-      let pic = src;
-      if (q < 1) { pic = buffer(qw, qh); const g = pic.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(src, 0, 0, qw, qh); }
-      const pad = Math.ceil(3 * sg * q) + 2, big = padded(pic, qw, qh, pad, pad, repeat), b = buffer(qw, qh), g = b.getContext('2d');
-      g.filter = `blur(${sg * q}px)`; g.drawImage(big, -pad, -pad); g.filter = 'none';
-      o.imageSmoothingQuality = 'high'; o.drawImage(b, 0, 0, w, h);
-      return out;
+    sx = sx > .05 ? sx : 0; sy = sy > .05 ? sy : 0;
+    if (!sx && !sy) { o.drawImage(src, 0, 0); return out; }
+    let c = src, sw = w, sh = h, nx = 0, ny = 0;
+    const smooth = (c, ux, uy) => {   // [1 2 1] / 4 along (ux, uy): two half-alpha passes, one each way
+      for (const sgn of [1, -1]) {
+        const n = fine(c.width, c.height), g = n.getContext('2d');
+        g.drawImage(c, 0, 0); g.globalAlpha = .5; g.drawImage(c, sgn * ux, sgn * uy); c = n;
+      }
+      return c;
+    };
+    for (;;) {
+      const hx = sx * sw / w > 8, hy = sy * sh / h > 8;
+      if (!hx && !hy) break;
+      if (hx) c = smooth(c, 1, 0);
+      if (hy) c = smooth(c, 0, 1);
+      const nw = hx ? Math.max(1, Math.ceil(sw / 2)) : sw, nh = hy ? Math.max(1, Math.ceil(sh / 2)) : sh;
+      const n = fine(nw, nh), g = n.getContext('2d');
+      g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'low'; g.drawImage(c, 0, 0, sw, sh, 0, 0, nw, nh);
+      c = n; sw = nw; sh = nh; nx += hx; ny += hy;
     }
-    const horiz = sx > .05, sg = horiz ? sx : sy;
-    if (!(sg > .05)) { o.drawImage(src, 0, 0); return out; }
-    const pad = Math.ceil(6 * sg) + 2, px = horiz ? pad : 0, py = horiz ? 0 : pad;   // the copies reach 3 x 2 sigma one way
-    let c = padded(src, w, h, px, py, repeat), off = 0;
-    for (let i = 0; i < 3; i++) { const r = lineBox(c, 2 * sg, horiz ? 1 : 0, horiz ? 0 : 1); c = r.c; off += r.off; }
-    o.drawImage(c, -px + (horiz ? off : 0), -py + (horiz ? 0 : off));
+    // sigma in shrunk px, less the shrinking's .25 (1 - 4^-n) and the stretch's 1/6 px^2
+    const less = n => n ? .25 * (1 - 4 ** -n) + 1 / 6 : 0;
+    const gx = sx ? Math.sqrt(Math.max(.01, (sx * sw / w) ** 2 - less(nx))) : 0, gy = sy ? Math.sqrt(Math.max(.01, (sy * sh / h) ** 2 - less(ny))) : 0;
+    const px = gx ? Math.ceil(3 * gx) + 2 : 0, py = gy ? Math.ceil(3 * gy) + 2 : 0;
+    c = padded(c, sw, sh, px, py, repeat);
+    let ox = 0, oy = 0;
+    for (const [sg, ux, uy] of [[gx, 1, 0], [gy, 0, 1]]) {
+      if (!sg) continue;
+      if (sg <= 3) {   // the sampled kernel: integer moves, weights summed on a half-float canvas
+        const r = Math.ceil(3 * sg), wt = [];
+        for (let i = -r; i <= r; i++) wt.push(Math.exp(-i * i / (2 * sg * sg)));
+        // canvas alpha goes in 1/255 steps: the weights become whole 255ths summing to 255 (largest remainders)
+        const tot = wt.reduce((a, b) => a + b), q = wt.map(v => v / tot * 255), iq = q.map(Math.floor);
+        let left = 255 - iq.reduce((a, b) => a + b);
+        for (const j of q.map((v, j) => j).sort((x, y) => (q[y] - iq[y]) - (q[x] - iq[x]))) { if (left <= 0) break; iq[j]++; left--; }
+        const n = fine(c.width, c.height), g = n.getContext('2d');
+        g.globalCompositeOperation = 'lighter';
+        iq.forEach((v, j) => { if (v) { g.globalAlpha = v / 255; g.drawImage(c, (j - r) * ux, (j - r) * uy); } });
+        c = n; continue;
+      }
+      const sb = Math.sqrt(sg * sg - .5), k = Math.max(1, Math.ceil(Math.log2(Math.hypot(4 * sg, 1)))), N = 2 ** k, d = 2 * sb / Math.sqrt(N * N - 1);
+      for (let i = 0; i < 3; i++) c = halving(c, k, (g, n) => g.translate(n * d * ux, n * d * uy));
+      ox += 3 * (N - 1) / 2 * d * ux; oy += 3 * (N - 1) / 2 * d * uy;   // each box's copies reach (N - 1) d one way
+    }
+    o.imageSmoothingEnabled = true; o.imageSmoothingQuality = 'low';
+    o.drawImage(c, px + ox, py + oy, sw, sh, 0, 0, w, h);
     return out;
   }
   // put `out` into the frame: everywhere, or inside `region` [x0, y0, x1, y1] (0..1) fading out over `feather` (a
@@ -102,15 +138,17 @@
     const L = Math.max(0, keyedT(p.blur_length, t, 30)) * s.H / 1080;
     if (!(L > .05)) return;
     const th = keyedT(p.direction, t, 0) * RAD, ux = Math.sin(th), uy = -Math.cos(th), {W: w, H: h} = s;
-    const px = Math.ceil(2 * L * Math.abs(ux)) + 2, py = Math.ceil(2 * L * Math.abs(uy)) + 2;   // the copies reach 2 L one way
+    const px = Math.ceil(L * Math.abs(ux)) + 2, py = Math.ceil(L * Math.abs(uy)) + 2;   // the centred result reads L each way
     const r = lineBox(padded(copy(ctx), w, h, px, py), 2 * L, ux, uy), out = buffer(w, h);
     out.getContext('2d').drawImage(r.c, -px + r.off * ux, -py + r.off * uy);
     finish(ctx, out, p, s);
   }});
 
   // local_radial_blur: After Effects' Radial Blur around `center` ([x, y] 0..1). spin: copies turned evenly over
-  // `amount` degrees (half each way); zoom: copies scaled about the centre over a ratio of 1 + amount / 200, evenly in
-  // ratio and centred on the picture's own size (streaks along the rays from the centre). `quality` low spaces copies up to 2 px apart at the far corner, high .5 px. amount and center take keyframes.
+  // `amount` degrees (half each way); zoom: as After Effects, each pixel averages the picture along its ray toward the
+  // centre, over copies scaled about the centre from 1x to (1 + amount / 200)x, evenly in ratio (bright shapes streak
+  // outward; nothing is read from outside the frame). `quality` low spaces copies up to 2 px apart at the far corner,
+  // high .5 px. amount and center take keyframes.
   register('local_radial_blur', {order: 52, draw(ctx, p, s) {
     const t = clock(p, s); if (t === null) return;
     const A = Math.max(0, keyedT(p.amount, t, 10));
@@ -121,18 +159,27 @@
     const span = spin ? A * RAD : Math.log(1 + A / 200), reach = spin ? R * span : R * A / 200;
     if (reach < .05) return;
     const k = Math.max(1, Math.ceil(Math.log2(reach / step))), N = 2 ** k, d = span / (N - 1);
-    // spin: the canvas holds the whole disc of radius R round the centre, which every turn maps into itself
-    // zoom: the copies are made 1x to (1 + amount / 200)x and then shrunk by its square root, which reads up to that much
-    // farther out
-    const pad = (spin ? Math.max(0, Math.ceil(R - Math.min(cx, cy, w - cx, h - cy))) : Math.ceil(R * (Math.exp(span / 2) - 1))) + 2;
-    const ox = cx + pad, oy = cy + pad, src = padded(copy(ctx), w, h, pad, pad);
+    // spin: the canvas holds the frame turned by every angle within half the span each way (its corners' arcs, sampled
+    // finely, plus the arcs' sag between samples); zoom reads only between a pixel and the centre, inside the frame
+    let l = 2, tp = 2, r = 2, b = 2;
+    if (spin) {
+      let x0 = 0, y0 = 0, x1 = w, y1 = h;
+      for (let i = 0; i <= 256; i++) {
+        const a = (i / 256 - .5) * span, co = Math.cos(a), si = Math.sin(a);
+        for (const [x, y] of [[0, 0], [w, 0], [0, h], [w, h]]) {
+          const X = cx + (x - cx) * co - (y - cy) * si, Y = cy + (x - cx) * si + (y - cy) * co;
+          x0 = Math.min(x0, X); y0 = Math.min(y0, Y); x1 = Math.max(x1, X); y1 = Math.max(y1, Y);
+        }
+      }
+      const sag = R * (1 - Math.cos(span / 512)) + 2;
+      l = Math.ceil(-x0 + sag); tp = Math.ceil(-y0 + sag); r = Math.ceil(x1 - w + sag); b = Math.ceil(y1 - h + sag);
+    }
+    const ox = cx + l, oy = cy + tp, src = padded(copy(ctx), w, h, l, tp, true, r, b);
     const res = halving(src, k, spin ? (g, n) => { g.translate(ox, oy); g.rotate(n * d); g.translate(-ox, -oy); }
       : (g, n) => { const z = Math.exp(n * d); g.translate(ox, oy); g.scale(z, z); g.translate(-ox, -oy); });
     const out = buffer(w, h), g = out.getContext('2d');
-    g.translate(-pad, -pad);
-    g.translate(ox, oy);
-    if (spin) g.rotate(-(N - 1) / 2 * d); else g.scale(Math.exp(-(N - 1) / 2 * d), Math.exp(-(N - 1) / 2 * d));
-    g.translate(-ox, -oy);
+    g.translate(-l, -tp);
+    if (spin) { g.translate(ox, oy); g.rotate(-(N - 1) / 2 * d); g.translate(-ox, -oy); }
     g.drawImage(res, 0, 0);
     finish(ctx, out, p, s);
   }});
@@ -145,11 +192,13 @@
     if (!sg.some(v => v > .05)) return;
     const {W: w, H: h} = s, [dx, dy] = DIMS[p.dimensions ?? 'both'], src = copy(ctx), out = buffer(w, h), o = out.getContext('2d');
     o.fillStyle = '#000000'; o.fillRect(0, 0, w, h); o.globalCompositeOperation = 'lighter';
-    ['#ff0000', '#00ff00', '#0000ff'].forEach((mask, i) => {
-      const pic = sg[i] > .05 ? gaussian(src, w, h, sg[i] * dx, sg[i] * dy, p.repeat_edge_pixels ?? true) : copy(src.getContext('2d'));
+    const vals = sg.map(v => v > .05 ? v : 0);
+    for (const v of new Set(vals)) {   // channels that share a value are blurred together
+      const pic = v ? gaussian(src, w, h, v * dx, v * dy, p.repeat_edge_pixels ?? true) : copy(src.getContext('2d'));
+      const mask = '#' + vals.map(u => u === v ? 'ff' : '00').join('');
       const g = pic.getContext('2d'); g.globalCompositeOperation = 'multiply'; g.fillStyle = mask; g.fillRect(0, 0, w, h);
       o.drawImage(pic, 0, 0);
-    });
+    }
     finish(ctx, out, p, s);
   }});
 
@@ -199,14 +248,14 @@
   }});
 
   // local_camera_lens_blur: After Effects' Camera Lens Blur. Each pixel becomes the iris shape (`iris_shape` polygon,
-  // `iris_rotation` degrees, `iris_roundness` 0..100 % toward a circle) of radius `blur_radius` px at 1080, summed in
-  // linear light so bright points bloom into shaped bokeh. Pixels with luma above `highlight_threshold` (0..255) are
-  // boosted up to 1 + highlight_gain x .4 times before the blur (gain 0..100). A blur map sets the radius per pixel:
+  // `iris_rotation` degrees, `iris_roundness` 0..100 % toward a circle) of radius `blur_radius` px at 1080, averaged in
+  // the working (gamma) space as After Effects at 8/16 bpc, so the average brightness stays. Bright points bloom into
+  // shaped bokeh through the highlights: pixels with luma above `highlight_threshold` (0..255) are boosted up to
+  // 1 + highlight_gain x .4 times before the blur (gain 0..100). A blur map sets the radius per pixel:
   // `map` horizontal / vertical (black at the left / top) / radial (black at `center`) / clip (`clip`'s luma; src /
   // speed / loop as local_displacement_map); the map level `focal_distance` (0..255) is sharp and the blur grows to
   // the full radius at the far end of the map (`invert` flips it). Built on a scaled copy (radius >= 5 px there).
   const SIDES = {triangle: 3, square: 4, pentagon: 5, hexagon: 6, heptagon: 7, octagon: 8, nonagon: 9, decagon: 10};
-  const LIN = Float32Array.from({length: 256}, (_, v) => (v / 255) ** 2.2);
   const pixelsOf = (pic, w, h) => { const c = buffer(w, h), g = c.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(pic, 0, 0, w, h); return g.getImageData(0, 0, w, h).data; };
   async function blurMap(p, s, t) {   // the radius fraction 0..1 per frame pixel, null for a uniform blur, 'skip' for no map frame
     const kind = p.map ?? (p.clip ? 'clip' : null), {W: w, H: h} = s;
@@ -234,8 +283,10 @@
     if (!(R > .3)) return;
     const map = await blurMap(p, s, t);
     if (map === 'skip') return;
-    // working scale: about 6e7 tap-pixels at most, the radius at least 5 px there
-    const sc = Math.min(1, Math.max(Math.min(1, 5 / R), (6e7 / (Math.PI * w * h * R * R)) ** .25));
+    // working scale: about 6e7 tap-pixels at most (2.5e7 with a map, whose loop is per pixel), the radius at least 5 px
+    // there (3 with a map: its sharp parts come from the full-resolution picture)
+    const sc = map ? Math.min(1, Math.max(Math.min(1, 3 / R), (2.5e7 / (Math.PI * w * h * R * R)) ** .25))
+      : Math.min(1, Math.max(Math.min(1, 5 / R), (6e7 / (Math.PI * w * h * R * R)) ** .25));
     const ww = Math.max(1, Math.round(w * sc)), wh = Math.max(1, Math.round(h * sc)), Rw = R * ww / w;
     // the iris: taps (dx, dy) with their distance and the polygon's boundary radius in their direction (1 = circle); a
     // corner of the bokeh points up at rotation 0
@@ -247,13 +298,13 @@
       if (r <= Rw * b + .5) taps.push([dx, dy, r, b]);
     }
     taps.sort((x, y) => x[2] - y[2]);
-    // linear light, boosted highlights, edges repeated by P px
+    // 0..1 values, boosted highlights, edges repeated by P px
     const sd = pixelsOf(copy(ctx), ww, wh), pw = ww + 2 * P, ph = wh + 2 * P, lin = new Float32Array(pw * ph * 3);
     const gain = (p.highlight_gain ?? 0) * .4, thr = p.highlight_threshold ?? 255;
     for (let y = 0; y < ph; y++) for (let x = 0; x < pw; x++) {
       const i = (clamp(y - P, 0, wh - 1) * ww + clamp(x - P, 0, ww - 1)) * 4, o = (y * pw + x) * 3;
       const l = .2126 * sd[i] + .7152 * sd[i + 1] + .0722 * sd[i + 2], boost = gain > 0 && l > thr ? 1 + gain * Math.min(1, (l - thr) / Math.max(1, 255 - thr)) : 1;
-      lin[o] = LIN[sd[i]] * boost; lin[o + 1] = LIN[sd[i + 1]] * boost; lin[o + 2] = LIN[sd[i + 2]] * boost;
+      lin[o] = sd[i] / 255 * boost; lin[o + 1] = sd[i + 1] / 255 * boost; lin[o + 2] = sd[i + 2] / 255 * boost;
     }
     const acc = new Float32Array(ww * wh * 3), row = ww * 3;
     if (!map) {   // one kernel: tap by tap over whole rows
@@ -281,8 +332,7 @@
     }
     const small = buffer(ww, wh), sg = small.getContext('2d'), im = sg.createImageData(ww, wh), od = im.data;
     for (let i = 0, j = 0; i < acc.length; i += 3, j += 4) {
-      od[j] = Math.min(1, acc[i]) ** (1 / 2.2) * 255; od[j + 1] = Math.min(1, acc[i + 1]) ** (1 / 2.2) * 255;
-      od[j + 2] = Math.min(1, acc[i + 2]) ** (1 / 2.2) * 255; od[j + 3] = 255;
+      od[j] = acc[i] * 255; od[j + 1] = acc[i + 1] * 255; od[j + 2] = acc[i + 2] * 255; od[j + 3] = 255;   // clamped
     }
     sg.putImageData(im, 0, 0);
     const out = buffer(w, h), og = out.getContext('2d');

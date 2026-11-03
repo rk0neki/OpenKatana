@@ -185,12 +185,18 @@ class BlurPackTests(unittest.TestCase):
         r = np.hypot(xx + .5 - 96, yy + .5 - 54)
         self.assertGreater(yy.max() - yy.min(), 20)              # spread along the arc
         self.assertGreater(r.min(), 37); self.assertLess(r.max(), 46)   # but on its radius (the dot spans 40..44)
-        # zoom streaks it along its ray from the centre, both ways (the copies span a ratio of 1.3 around 1), not around
+        # zoom streaks it outward along its ray from the centre (as After Effects: each pixel reads toward the centre,
+        # copies 1x to 1.3x), never inward and never around
         f = self.render('local_radial_blur', {'amount': 60, 'type': 'zoom', 'quality': 'high'})[0].sum(axis=2)
         xs = np.nonzero(f[54] > 3)[0]
-        self.assertGreater(xs.max(), 144); self.assertLess(xs.min(), 134)
-        self.assertLess(abs((f[54] * np.arange(W)).sum() / f[54].sum() - 138.5), 1.5)
+        self.assertGreaterEqual(xs.min(), 135); self.assertGreater(xs.max(), 150); self.assertLess(xs.max(), 155)
+        self.assertGreater((f[54] * np.arange(W)).sum() / f[54].sum(), 141)
         self.assertEqual(f[:50].sum() + f[59:].sum(), 0)
+        # nothing comes in from outside the frame: a bright 2 px border leaves no inset ghost of itself
+        a = np.full((H, W, 3), 40, np.uint8); a[:2] = a[-2:] = 255; a[:, :2] = a[:, -2:] = 255
+        self.plate(a)
+        f = self.render('local_radial_blur', {'amount': 100, 'type': 'zoom', 'quality': 'high'})[0]
+        self.assertLess(np.abs(f[20:-20, 20:-20] - 40).max(), 3)
 
     @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
     def test_unsharp_increases_edge_contrast(self):
@@ -260,6 +266,48 @@ class BlurPackTests(unittest.TestCase):
         self.assertLess(np.abs(g - f).mean(), 1.5)
         g = self.render('local_camera_lens_blur', {'blur_radius': 100, 'map': 'horizontal', 'invert': True, 'focal_distance': 255})[0]
         self.assertLess(np.abs(g - f).mean(), 1.5)
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_small_and_keyframed_blurs_are_continuous(self):
+        # sigma below a pixel still blurs (a canvas blur filter ignores it), and every step of blurriness changes the
+        # frame, by more each time (the filter snaps sigma, so neighbouring values gave the same frame)
+        a = self.images['N']
+        diffs = []
+        for b in (8, 12, 16, 20, 26, 30, 36):   # sigma .4 to 1.8 px here
+            f = self.render('local_gaussian_blur', {'blurriness': b})[0]
+            diffs.append(np.abs(f - a).mean())
+        self.assertGreater(diffs[0], .5)
+        self.assertTrue(all(y > x + .2 for x, y in zip(diffs, diffs[1:])), diffs)
+        # a keyframed blur-in moves on every frame
+        f = self.render('local_gaussian_blur', {'blurriness': [[0, 0], [.5, 40, 'inout']]}, frames=12)
+        d = [np.abs(g - a).mean() for g in f[1:]]
+        self.assertTrue(all(y > x for x, y in zip(d, d[1:14])), d)
+        # Unsharp Mask at a sub-pixel radius (5 at 1080 is .5 px here) sharpens, and radius 8 differs from 10
+        f = self.render('local_unsharp_mask', {'amount': 100, 'radius': 5})[0]
+        self.assertGreater(np.abs(f - a).mean(), 3)
+        f8, f10 = self.render('local_unsharp_mask', {'radius': 8})[0], self.render('local_unsharp_mask', {'radius': 10})[0]
+        self.assertGreater(np.abs(f8 - f10).mean(), .5)
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_brightness_kept_and_off_centre_spin_covered(self):
+        # 2 px black / white checks: every blur keeps the mean (lens blur averaged in linear light lifted it to 186)
+        yy, xx = np.mgrid[0:H, 0:W]
+        self.plate(np.repeat((((yy // 2 + xx // 2) % 2) * 255).astype(np.uint8)[..., None], 3, 2))
+        for name, fx in (('local_camera_lens_blur', {'blur_radius': 40}), ('local_camera_lens_blur', {'blur_radius': 100, 'map': 'radial'}),
+                         ('local_gaussian_blur', {'blurriness': 40}), ('local_gaussian_blur', {'blurriness': 300, 'dimensions': 'vertical'}),
+                         ('local_tilt_shift', {'blur_radius': 60})):
+            f = self.render(name, fx)[0]
+            self.assertLess(abs(f.mean() - 127.5), 1.5, msg=f'{name} {fx} {f.mean()}')
+        # a flat plate under a spin round an off-centre point stays flat: the canvas reaches every turned sample
+        self.plate(np.full((H, W, 3), 200, np.uint8))
+        for c in ([0, 0], [.1, .1], [.9, .2], [1, 1]):
+            f = self.render('local_radial_blur', {'amount': 100, 'center': c, 'quality': 'high'})[0]
+            self.assertLess(np.abs(f - 200).max(), 2, msg=str(c))
+        # Channel Blur with one value everywhere is Gaussian Blur
+        self.plate(self.images['M'] // 2 + np.random.default_rng(6).integers(0, 128, (H, W, 3), dtype=np.uint8))
+        f = self.render('local_channel_blur', {'red_blurriness': 30, 'green_blurriness': 30, 'blue_blurriness': 30})[0]
+        g = self.render('local_gaussian_blur', {'blurriness': 30})[0]
+        self.assertEqual(np.abs(f - g).max(), 0)
 
     @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
     def test_region_confines_the_blur(self):
