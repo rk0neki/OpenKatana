@@ -45,7 +45,11 @@ def check_effect(effect, params):
     if params is not None and not isinstance(params, dict):
         raise ContractError('params: an object of the effect\'s fields (or omit it for the defaults)')
     value = True if not params else params
-    effects({effect: value}, 'params')
+    # A font effect without a family previews in the bundled default (see _font), so check it as it will render.
+    checked = value
+    if effect in FONT_EFFECTS and not (isinstance(value, dict) and 'family' in value):
+        checked = {**(value if isinstance(value, dict) else {}), 'family': DEFAULT_FAMILY}
+    effects({effect: checked}, 'params')
     return value
 
 
@@ -211,6 +215,16 @@ def contact_sheet(frames_dir, picks, fps, path, label):
     return path
 
 
+def preview_timeline(effect, value, clip, count, fps, still, fonts=()):
+    """The one-shot timeline a preview renders: the source as clip "source" with only this effect on it."""
+    edit = {'canvas': {'w': clip['w'], 'h': clip['h'], 'fps': fps, 'frames': count},
+            'clips': {'source': clip},
+            'shots': [{'f0': 0, 'f1': count, 'clip': 'source', 'speed': 0 if still else 1, 'fx': {effect: value}}]}
+    if fonts:
+        edit['fonts'] = list(fonts)
+    return edit
+
+
 def preview_effect(root, out, effect, params, source, seconds, fps, at, max_width):
     value = check_effect(effect, params)
     number(seconds, 'seconds', .01, 60)
@@ -247,12 +261,7 @@ def preview_effect(root, out, effect, params, source, seconds, fps, at, max_widt
             warnings.append({'code': 'still_source', 'message': f'{effect} works on earlier or later source frames and a still '
                              'picture has none, so it shows no change here; preview it on a video source or on the moving '
                              'test card (omit source)'})
-        edit = {'canvas': {'w': clip['w'], 'h': clip['h'], 'fps': fps, 'frames': count},
-                'clips': {'source': clip},
-                'shots': [{'f0': 0, 'f1': count, 'clip': 'source', 'speed': 0 if still else 1, 'fx': {effect: value}}]}
-        if fonts:
-            edit['fonts'] = fonts
-        edit = validate(edit, out)
+        edit = validate(preview_timeline(effect, value, clip, count, fps, still, fonts), out)
         write_json(out / 'timeline.json', edit)
         receipt = render(out / 'timeline.json', out / 'render')
         picks = sorted({round(i * (count - 1) / (SHEET_FRAMES - 1)) for i in range(SHEET_FRAMES)}) if count > 1 else [0]

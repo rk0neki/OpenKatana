@@ -182,8 +182,41 @@ class OpenKatanaScene(OpenKatanaTool):
                                width=width, height=height, frames=frames, fps=fps))
 
 
+# Tools whose node also shows their main arguments as fields, after `arguments` so saved graphs keep their values.
+# An empty field is not sent; a field and the same key in the JSON arguments must agree.
+TYPED_FIELDS = {'preview_effect': {
+    'required': {
+        'effect': ('STRING', {'default': '', 'tooltip': 'A shot effect name, e.g. local_twirl, local_deep_glow, '
+                              'local_echo or glow (docs/TIMELINE.md). Empty: the effect in arguments.'}),
+        'params': ('STRING', {'default': '', 'multiline': True, 'tooltip': "The effect's fields as a JSON object, e.g. "
+                              '{"angle": [[0, 0], [1.5, 540, "inout3"]], "radius": 0.6}. Empty: its defaults.'})},
+    'optional': {
+        'source': ('STRING', {'default': '', 'tooltip': 'A project-relative image or video. Empty: the moving test card.'})}}}
+JSON_FIELDS = ('params',)
+
+
+def typed_arguments(args, fields):
+    for name, text in fields.items():
+        if not isinstance(text, str) or not text.strip():
+            continue
+        if name in JSON_FIELDS:
+            try:
+                value = json.loads(text)
+            except ValueError:
+                value = None
+            if not isinstance(value, dict):
+                raise ValueError(f'{name} must be a JSON object')
+        else:
+            value = text.strip()
+        if name in args and args[name] != value:
+            raise ValueError(f'{name} field and JSON {name} disagree')
+        args[name] = value
+    return args
+
+
 def tool_class(row):
     tool = row['name']
+    typed = TYPED_FIELDS.get(tool, {})
 
     class Tool(OpenKatanaTool):
         DESCRIPTION = row['description'] + '\n\n' + row['signature']
@@ -193,10 +226,16 @@ def tool_class(row):
         def INPUT_TYPES(cls):
             value = OpenKatanaTool.INPUT_TYPES()
             del value['required']['tool']
+            value['required'].update(typed.get('required', {}))
+            value['optional'] = {**typed.get('optional', {}), **value['optional']}
             return value
 
-        def execute(self, project_id, arguments, after=None):
-            return super().execute(tool, project_id, arguments, after)
+        def execute(self, project_id, arguments, after=None, **fields):
+            unknown = set(fields) - set(typed.get('required', {})) - set(typed.get('optional', {}))
+            if unknown:
+                raise TypeError(f'unexpected inputs: {", ".join(sorted(unknown))}')
+            args = typed_arguments(arguments_for(tool, project_id, arguments), fields)
+            return response(invoke('call', tool=tool, arguments=args))
     return Tool
 
 

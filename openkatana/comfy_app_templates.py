@@ -1,4 +1,5 @@
 """Original App Mode graphs. ComfyUI frontend 1.55's public workflow format."""
+import json
 import uuid
 
 
@@ -37,7 +38,17 @@ def templates():
             'Render an editable WebGL product, morph or physics starter locally. No model or credits.'),
         '04 Background job.app.json': app_workflow('OpenKatana · Background job', 'OpenKatanaJob',
             ['job_id'], [''], 'Read job status; never automatically repeat a submission.'),
-        '05 Video to edit.app.json': video_edit_workflow()}
+        '05 Video to edit.app.json': video_edit_workflow(),
+        '07 Preview an effect.app.json': app_workflow('OpenKatana · Preview an effect', 'OpenKatana_preview_effect',
+            ['project_id', 'effect', 'params', 'source'],
+            ['my-film', '{}', 'local_twirl', json.dumps(PREVIEW_PARAMS), ''],
+            'Try one effect before it goes in your timeline: a short video and a contact sheet of the moving test card '
+            '(or a project image or video in source) with only that effect. Effect names and fields: docs/TIMELINE.md; '
+            'a recipe for each: docs/EFFECTS-PLAYBOOK.md. Empty params use the effect defaults.')}
+
+
+# 07's starting look: After Effects' Twirl, eased in over 1.5 s (docs/EFFECTS-PLAYBOOK.md)
+PREVIEW_PARAMS = {'angle': [[0, 0], [1.5, 540, 'inout3']], 'radius': 0.6}
 
 
 def video_edit_workflow():
