@@ -45,3 +45,6 @@ def validate(name, p, where):
             raise ContractError(f'{where}: map "clip" needs clip (the id of the map clip in clips)')
         if 'clip' in p and p.get('map', 'clip') != 'clip':
             raise ContractError(f'{where}: clip is the map clip; it goes with map "clip"')
+        extra = [k for k in ('src', 'speed', 'loop') if k in p]
+        if extra and 'clip' not in p:
+            raise ContractError(f'{where}: {", ".join(extra)} set where the map clip plays; they need clip and map "clip"')

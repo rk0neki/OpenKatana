@@ -15,7 +15,8 @@
   // local_echo: After Effects' Echo. Image k (k = 0 the frame itself, 1..number_of_echoes the frames echo_time seconds
   // apart; negative looks back) has intensity starting_intensity x decay^k, and the images are combined by `operator`:
   // add, maximum, minimum, screen, blend (intensity-weighted mean), composite_back (echoes behind the frame, the newest
-  // on top) or composite_front (echoes over it, the oldest on top), over black. Echo times outside the edit add nothing.
+  // on top) or composite_front (echoes over it, the oldest on top), over black. Echo times outside the edit, or where the
+  // shot has no source frame (before its source starts or after it ends, no loop), add nothing.
   async function echo(ctx, p, s) {
     const {W: w, H: h, fps} = s, t = s.elapsed - (p.at ?? 0);
     if (t < 0) return;
@@ -25,6 +26,7 @@
     for (let k = 0; k <= n; k++) {
       const I = I0 * decay ** k, f = s.frame + Math.round(k * step);
       if (f < 0 || f >= (s.frames ?? Infinity)) continue;   // before the edit starts or after it ends: nothing to echo
+      if (k && s.hasFrame && !s.hasFrame(f)) continue;     // before the shot's source starts or after it ends: likewise
       if (I > 1 / 512 || op === 'minimum') images.push([I, await frameAt(s, here, f - s.frame)]);
     }
     if (op === 'composite_back' || op === 'composite_front') {   // alpha-over, drawn back to front

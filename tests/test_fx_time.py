@@ -67,6 +67,8 @@ class TimeEffectTests(unittest.TestCase):
                           ({'local_time_displacement': {'map': 'clip'}}, 'needs clip'),
                           ({'local_time_displacement': {'map': 'self', 'clip': 'M'}}, 'goes with map "clip"'),
                           ({'local_time_displacement': {'clip': 'Z'}}, "clip 'Z' is not in clips"),
+                          ({'local_time_displacement': {'src': 1}}, 'need clip'),
+                          ({'local_time_displacement': {'map': 'horizontal', 'speed': 2, 'loop': 'loop'}}, 'speed, loop set where'),
                           ({'local_time_displacement': {'levels': 1}}, 'out of range'),
                           ({'local_time_displacement': {'max_displacement': [[0, 1], [0, 2]]}}, 'must increase'),
                           ({'local_time_displacement': {'invert': 1}}, 'boolean'),
@@ -115,6 +117,31 @@ class TimeEffectTests(unittest.TestCase):
             f = self.render(e, name)
             self.assertLessEqual(np.abs(f[5][:, :3] - bg).max(), 1, msg=name)     # the background keeps one wash
             self.assertGreater(np.abs(f[5] - plain[5]).max(), 50, msg=name)       # while the square echoes
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_echo_of_posterized_frames(self):
+        # posterize time (15 fps, pairs) then echo one frame back: the echo is the held picture of the frame before, so at
+        # frame 8 it shows the square of frame 6, never the live square of frame 7 (which would lead the held subject)
+        f = self.render(self.edit({'local_posterize_time': {'fps': 15},
+                                   'local_echo': {'echo_time': -1 / 30, 'number_of_echoes': 1, 'decay': .5, 'operator': 'maximum'}}), 'pe')
+        self.assertLessEqual(np.abs(f[8][self.square(8)] - 255).max(), 2)
+        self.assertLessEqual(np.abs(f[8][self.square(6)] - 128).max(), 2)
+        self.assertEqual(f[8][self.square(7)].max(), 0)
+        self.assertLessEqual(np.abs(f[9][self.square(8)] - 255).max(), 2)     # frame 9 holds 8, its echo (8) is the same
+        self.assertEqual(f[9][self.square(6)].max(), 0)
+
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_echo_before_the_source_starts(self):
+        # a second shot from source frame 0 (no handles): its first frame has nothing to echo, not three copies of frame 0;
+        # from source frame 2 the handles are echoed
+        for srcf, want in ((0, {0: 64}), (2, {2: 64, 1: 64, 0: 64})):
+            e = self.edit({}, frames=8)
+            e['shots'] = [{'f0': 0, 'f1': 6, 'clip': 'A'},
+                          {'f0': 6, 'f1': 8, 'clip': 'A', 'srcf': srcf,
+                           'fx': {'local_echo': {'number_of_echoes': 2, 'starting_intensity': .25}}}]
+            f = self.render(e, f's{srcf}')[6]
+            for square, level in want.items():
+                self.assertLessEqual(np.abs(f[self.square(square)] - level).max(), 2, msg=f'srcf {srcf} square {square}')
 
     @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
     def test_posterize_time(self):
