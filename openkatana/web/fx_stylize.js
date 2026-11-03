@@ -30,7 +30,8 @@
   // opposite directions and green stays: mode "linear" moves red along `angle` (degrees clockwise from the +x axis: 0
   // moves red right and blue left, 90 red down), mode "radial" moves red outward from `center` and blue inward by
   // amount x the distance from the centre / the distance to the farthest corner (a lens's lateral aberration). Bilinear;
-  // beyond the frame by `edges`; quality "high" averages four sub-pixel samples (radial). Region weights the move.
+  // beyond the frame by `edges`; quality "high" averages four sub-pixel samples in radial mode only (a linear split
+  // is one uniform shift, which bilinear sampling already renders exactly). Region weights the move.
   register('local_rgb_split', {order: 60, draw(ctx, p, s) {
     const t = clock(p, s); if (t === null) return;
     const {W: w, H: h} = s, A = keyedT(p.amount, t, 10) * h / 1080;
@@ -81,7 +82,9 @@
     // one tile exactly over the frame (any phase moves only the columns or rows beside it): untouched
     if (Math.abs(TW - w) < 1e-6 && Math.abs(TH - h) < 1e-6 && Math.abs(x0) < 1e-6 && Math.abs(y0) < 1e-6 && L === 0 && T === 0) return;
     confined(ctx, p, s, () => {
-      const tw = Math.max(1, Math.round(TW)), th = Math.max(1, Math.round(TH)), src = copy(ctx);
+      // the tile buffer never exceeds the frame (the pattern is resampled anyway): huge tiles stay within the
+      // canvas size limits and the time budget, and the extra scale goes into the pattern matrix
+      const tw = Math.max(1, Math.min(w, Math.round(TW))), th = Math.max(1, Math.min(h, Math.round(TH))), src = copy(ctx);
       const tile = buffer(tw * (mirror ? 2 : 1), th * (mirror ? 2 : 1)), g = tile.getContext('2d');
       g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
       for (const [fx, fy] of mirror ? [[0, 0], [1, 0], [0, 1], [1, 1]] : [[0, 0]]) {   // flipped copies in the right / lower halves

@@ -189,5 +189,28 @@ class StylizePackTests(unittest.TestCase):
         self.assertLess(np.abs(hist(sc[0]).mean(0) - hist(N).mean(0)).max(), 6)
 
 
+    @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
+    def test_motion_tile_huge_tiles(self):
+        """Tiles far larger than the frame at 1080p (mirrored 580% once came out all black: the tile buffer passed
+        Chrome's canvas size limit). The tile buffer is now capped at the frame size."""
+        from openkatana.render import render
+        w, h = 1920, 1080
+        step = np.full((h, w, 3), 120, np.uint8); step[:, w // 2:] = 220
+        (self.root / 'B').mkdir(); Image.fromarray(step).save(self.root / 'B' / '00000.png')
+        fxs = [{'tile_width': 580, 'tile_height': 580, 'mirror_edges': True}, {'tile_width': 1000, 'tile_height': 1000},
+               {'tile_width': 1000, 'tile_height': 1000, 'mirror_edges': True}]
+        tl = {'canvas': {'w': w, 'h': h, 'fps': 30, 'frames': len(fxs), 'bg': '#000000'},
+              'clips': {'B': {'frames_dir': 'B', 'n': 1, 'fps': 30, 'w': w, 'h': h}},
+              'shots': [{'f0': i, 'f1': i + 1, 'clip': 'B', 'speed': 0, 'fx': {'local_motion_tile': fx}} for i, fx in enumerate(fxs)]}
+        validate(tl, self.root)
+        (self.root / 'big.json').write_text(json.dumps(tl))
+        render(self.root / 'big.json', self.root / 'big')
+        for i, fx in enumerate(fxs):   # the centre tile covers the frame: the step, magnified about the centre
+            f = np.asarray(Image.open(self.root / 'big' / 'frames' / f'{i:05d}.png').convert('RGB')).astype(int)
+            self.assertEqual(np.abs(f[:, :w // 2 - 40] - 120).max(), 0, msg=fx)
+            self.assertEqual(np.abs(f[:, w // 2 + 40:] - 220).max(), 0, msg=fx)
+        shutil.rmtree(self.root / 'big', ignore_errors=True)
+
+
 if __name__ == '__main__':
     unittest.main()
