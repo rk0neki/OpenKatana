@@ -19,12 +19,17 @@ refer to a 1920×1080 canvas; brightness values use a 0–255 scale.
 
 ## Suggested workflow for a high-energy edit
 
-### 1. Inspect the reference at an appropriate rate
+### 1. Analyse every reference at 60 fps
 
-Start at the source frame rate or a sampling rate suited to the edit. Inspect
-fast motion and cut boundaries frame by frame when useful. A 60 fps source may
-benefit from 60 fps inspection; resampling a 24 fps source to 60 fps repeats
-frames and does not reveal additional motion.
+Always extract and study each reference video at 60 frames per second, never
+lower. At 60 fps you capture the full motion: whips, flashes, one-frame cuts,
+shakes, blur trails, speed ramps and the shape of every ease.
+
+- Study the frames at a readable size, never from thumbnails or half-second tiles.
+- If a source was shot at a lower rate, some frames repeat at 60 fps. Analyse them
+  all anyway, and never sample below 60.
+- `analyze_reference` with `measure` measures cuts, cadence, look, textures and
+  the cut transition on this 60-fps clock.
 
 ### 2. Identify assets the edit needs
 

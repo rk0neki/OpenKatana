@@ -70,7 +70,8 @@ class ReferenceMeasureTests(unittest.TestCase):
         self.assertAlmostEqual(next(c for c in report['cuts'] if c['frame'] == 90)['luma_ratio'], .5, delta=.08)
 
     def test_cadence_reads_24p_on_a_60p_clock(self):
-        self.assertEqual(self.m['cadence']['base_fps'], 23.976)
+        self.assertIn(self.m['cadence']['base_fps'], (23.976, 24))   # 0.1 % apart; the cuts and dip pull the rate a little
+        self.assertAlmostEqual(self.m['cadence']['pictures_per_second'], 24, delta=.5)
         g = self.m['cadence']['gap_counts']
         self.assertGreater(g['2'], 10); self.assertGreater(g['3'], 10)
 
@@ -119,6 +120,29 @@ class ReferenceMeasureTests(unittest.TestCase):
         with self.assertRaisesRegex(ContractError, 'times, side_by_side or look'):
             api.compare_reference('p', str(self.video), str(self.video))
         self.assertIn('look', api.compare_reference('p', str(self.video), str(self.video), look=True))
+
+
+@unittest.skipUnless(cv2 is not None and shutil.which('ffmpeg'), 'needs the vision extra and ffmpeg')
+class SixtyFpsClockTests(unittest.TestCase):
+    def test_a_24p_source_is_measured_on_a_60_fps_clock(self):
+        """Three one-second shots at 24 fps: the cuts at 1 s and 2 s land on 60-fps frames 60 and 120."""
+        rng = np.random.default_rng(3)
+        with tempfile.TemporaryDirectory() as d:
+            video = Path(d) / 'ref24.mp4'
+            p = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}', '-r', '24',
+                                  '-i', '-', '-c:v', 'libx264', '-crf', '12', '-pix_fmt', 'yuv420p', str(video)], stdin=subprocess.PIPE)
+            for t in [(1, .7, .5), (.5, .8, 1), (.7, 1, .6)]:
+                base = cv2.GaussianBlur(rng.random((H, W + 80)).astype(np.float32), (0, 0), 9)
+                base = (base - base.min()) / (base.max() - base.min())
+                shot = np.dstack([base * c for c in t]) * 200 + 20
+                for k in range(24):
+                    p.stdin.write(np.clip(shot[:, 3 * k:3 * k + W], 0, 255).astype(np.uint8).tobytes())
+            p.stdin.close(); p.wait()
+            from openkatana.reference_measure import measure
+            m = measure(video, Path(d) / 'm', 0, 10, ['cuts', 'cadence'])
+        self.assertEqual((m['fps'], m['source_fps'], m['frames']), (60, 24, 180))
+        self.assertEqual([c['frame'] for c in m['cuts'] if c['kind'] == 'cut'], [60, 120])
+        self.assertEqual(m['cadence']['base_fps'], 24)
 
 
 @unittest.skipUnless(cv2 is not None, 'needs the vision extra')

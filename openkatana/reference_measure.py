@@ -1,5 +1,8 @@
 """Frame-level reference measurement (analyze_reference `measure`, docs/EDITOR_TOOLS.md): what a reference edit does at
-every frame of its own clock. Estimates for the editor to verify by eye, not a reconstruction.
+every frame of a 60-fps clock. OpenKatana analyses every reference at 60 fps, never lower, so whips, flashes, one-frame
+cuts, shakes and the shape of every ease are all seen; a slower source repeats frames on that clock (24p in a 2-3
+pattern) and frame numbers and curves line up with a 60-fps timeline. Estimates for the editor to verify by eye, not a
+reconstruction.
 
   cuts         cuts from the frame-to-frame change of brightness-normalised thumbnails. A change whose picture comes
                back within a few frames (only the exposure or focus moved) is reported as a `dip`, not a cut.
@@ -20,6 +23,7 @@ from .render import write_json
 
 MEASURES = ('cuts', 'cadence', 'look', 'textures', 'transitions')
 LW = np.array([.2126, .7152, .0722], np.float32)
+CLOCK = 60                                              # the analysis clock: every reference is measured at 60 fps
 
 
 def _cv():
@@ -42,11 +46,12 @@ def _probe(source):
 
 
 def _frames(source, start, duration, w, h, fmt):
-    """Decode every frame of the window (no resampling of the frame rate) as uint8 arrays."""
+    """Decode the window on the 60-fps analysis clock as uint8 arrays: a 60-fps source passes through frame for frame,
+    a slower one repeats its frames."""
     channels = {'gray': 1, 'rgb24': 3}[fmt]
     size = w * h * channels
     p = subprocess.Popen(['ffmpeg', '-v', 'error', '-nostdin', '-ss', str(start), '-t', str(duration), '-i', str(source),
-                          '-an', '-fps_mode', 'passthrough', '-vf', f'scale={w}:{h}:flags=area', '-f', 'rawvideo', '-pix_fmt', fmt, '-'],
+                          '-an', '-fps_mode', 'passthrough', '-vf', f'scale={w}:{h}:flags=area,fps={CLOCK}', '-f', 'rawvideo', '-pix_fmt', fmt, '-'],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     try:
         while True:
@@ -55,7 +60,7 @@ def _frames(source, start, duration, w, h, fmt):
                 break
             yield np.frombuffer(b, np.uint8).reshape((h, w, channels) if channels > 1 else (h, w))
     finally:
-        p.stdout.close(); err = p.stderr.read().decode('utf-8', 'replace'); p.wait()
+        p.stdout.close(); err = p.stderr.read().decode('utf-8', 'replace'); p.stderr.close(); p.wait()
     if p.returncode:
         raise ContractError('Decoding the reference failed: ' + err[-1500:])
 
@@ -125,7 +130,8 @@ def _cadence(diffs, fps):
         peak[i] = d[i] > 1 and d[i] > 1.5 * max(d[i - 1], d[i + 1])
     idx = np.flatnonzero(peak); gaps = np.diff(idx); regular = gaps[(gaps >= 1) & (gaps <= 4)]
     rate = float(fps / regular.mean()) if len(regular) >= 4 else None
-    base = next((b for b in (23.976, 24, 25, 29.97, 30) if rate and abs(rate - b) / b < .06), None)
+    near = min((23.976, 24, 25, 29.97, 30, 50, 59.94, 60), key=lambda b: abs(rate - b) / b) if rate else None
+    base = near if near and abs(rate - near) / near < .06 else None
     a = int(idx[0]) if len(idx) else 0
     return {'pictures_per_second': round(rate, 2) if rate else None, 'base_fps': base,
             'gap_counts': {str(k): int((regular == k).sum()) for k in (1, 2, 3, 4)},
@@ -202,7 +208,7 @@ def measure(source, out, start, duration, measures, max_transition_frames=36):
     bad = [m for m in measures if m not in MEASURES]
     if bad or not measures:
         raise ContractError(f'measure: one or more of {", ".join(MEASURES)}')
-    fps, sw, sh = _probe(source)
+    source_fps, sw, sh = _probe(source); fps = CLOCK
     out.mkdir(parents=True, exist_ok=True)
     tw = 192; th = max(2, int(round(tw * sh / sw / 2)) * 2)
     thumbs, hists, lumas, diffs, looks, prev = [], [], [], [], [], None
@@ -221,9 +227,11 @@ def measure(source, out, start, duration, measures, max_transition_frames=36):
     for c in cuts:
         c['time'] = round(start + c['frame'] / fps, 4)
     real = [c['frame'] for c in cuts if c['kind'] == 'cut']
-    report = {'source': str(source), 'start': start, 'duration': round(n / fps, 4), 'fps': round(fps, 4), 'frames': n,
-              'note': 'Frame numbers count from the first frame of the window. Estimates: verify them on the frames.'}
-    summary = {'fps': report['fps'], 'frames': n}
+    report = {'source': str(source), 'start': start, 'duration': round(n / fps, 4), 'fps': fps,
+              'source_fps': round(source_fps, 4), 'frames': n,
+              'note': 'Measured on a 60-fps clock (a slower source repeats frames). Frame numbers count from the first frame '
+                      'of the window. Estimates: verify them on the frames.'}
+    summary = {'fps': fps, 'source_fps': report['source_fps'], 'frames': n}
     if 'cuts' in measures or 'transitions' in measures or 'look' in measures:
         report['cuts'] = cuts
         summary['cuts'] = [{k: c[k] for k in ('frame', 'time', 'kind')} for c in cuts]

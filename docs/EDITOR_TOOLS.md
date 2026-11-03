@@ -90,7 +90,9 @@ motion/listening review as unverified.
 
 ## Measuring a reference
 
-`analyze_reference` with `measure` reads every frame of the window at the source's own frame rate (up to 120 s).
+`analyze_reference` with `measure` reads every frame of the window on a 60-fps clock (up to 120 s), the rate every
+reference is analysed at: a slower source repeats its frames (24p in a 2-3 pattern), so frame numbers and curves line up
+with a 60-fps timeline. The report gives `fps` (60) and the `source_fps`.
 Every answer is an estimate for the editor to check on the frames.
 
 | Measure | Returns | How |

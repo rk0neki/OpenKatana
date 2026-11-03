@@ -256,7 +256,8 @@ class AgentAPI:
                           measure:list[Literal['cuts','cadence','look','textures','transitions']]|None=None) -> dict:
         """Find scene-change and audio energy-rise candidates in up to 120 seconds. These are NOT verified cuts/beats/lyrics.
 
-        measure (frame-level, at the source's own frame rate; estimates to verify on the frames): cuts (cut or dip: an
+        measure (frame-level on a 60-fps clock, the rate every reference is analysed at; a slower source repeats frames;
+        estimates to verify on the frames): cuts (cut or dip: an
         exposure step or a picture that comes back), cadence (how often the picture steps: 24p on a 60p clock reads 24),
         look (luma percentiles, saturation, shadow/highlight cast, overall and per shot), textures (how long overlay
         specks persist), transitions (the median of the first frames after the cuts as local_curve arrays: scale, dx,
