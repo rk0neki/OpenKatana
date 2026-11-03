@@ -164,6 +164,25 @@ Studio, ComfyUI Apps, CLI and optional MCP work with the same project. You can
 move between agent instructions and hands-on review without starting over.
 The two AI-generated illustrations explain the product; the films above show actual rendered output.
 
+## How it's built
+
+```mermaid
+flowchart LR
+  agent["Your AI agent<br/>(CLI or MCP)"] --> api
+  comfy["ComfyUI Apps<br/>(Comfy SDK nodes)"] --> api
+  studio["Studio<br/>(browser editor)"] --> api
+  api["OpenKatana AgentAPI<br/>75 tools, strict JSON contracts"] --> project[("Project files<br/>timeline, media, revisions")]
+  project --> engine["Render engine<br/>headless Chrome: Canvas 2D, WebGL,<br/>effect packs (web/fx_*.js)"]
+  engine --> ffmpeg["FFmpeg<br/>MP4 export"]
+  api -. optional .-> models["ComfyUI model workflows<br/>(local or authorized API)"]
+  api -. optional .-> blender["Blender"]
+```
+
+Every entry point calls the same AgentAPI, so an agent, a ComfyUI App and Studio edit one project with revision
+checks. A timeline is plain JSON, validated against strict contracts (unknown fields are rejected). The engine draws
+each frame in headless Chrome, where effects such as the After Effects packs register from `web/fx_*.js`, and FFmpeg
+encodes the result. The ComfyUI integration is built on the official Comfy SDK; model jobs run through ComfyUI.
+
 ## Documentation and compatibility
 
 - [Setup](docs/SETUP.md) · [Studio](docs/STUDIO.md) · [Agent guide](docs/AGENT_INTERFACE.md) · [All tools](docs/TOOLS.md)
