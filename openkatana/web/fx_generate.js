@@ -145,7 +145,7 @@
       const px = ((x + .5) / sc - W / 2 - ox) / size, py = ((y + .5) / sc - H / 2 - oy) / size;
       const ci = Math.floor(px), cj = Math.floor(py);
       let f1 = 9, f2 = 9, id = 0;
-      for (let jj = -1; jj <= 1; jj++) for (let ii = -1; ii <= 1; ii++) {
+      for (let jj = -2; jj <= 2; jj++) for (let ii = -2; ii <= 2; ii++) {   // 5 x 5: the second nearest too
         pt(ci + ii, cj + jj, P);
         const dd = Math.hypot(px - P[0], py - P[1]);
         if (dd < f1) { f2 = f1; f1 = dd; id = hash4(ci + ii, cj + jj, 4, 0, sd); } else if (dd < f2) f2 = dd;
