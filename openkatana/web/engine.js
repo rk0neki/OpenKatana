@@ -503,6 +503,7 @@ window.OpenKatana = (() => {
   async function render(frame) {
     if (!Number.isInteger(frame) || frame < 0 || frame >= edit.canvas.frames) throw Error('Frame out of range');
     if (edit.hooks) Math.random = seededRandom(frame*2654435761 + 97);
+    timeCache.clear();
     const insert = (edit.specials ?? []).find(s => s.f0 <= frame && frame < s.f1);
     if (insert) {   // top-level specials override whatever shot is beneath them
       const r = await renderSpecial(insert, insert, frame, false, edit.shots.find(s => s.f0 <= frame && frame < s.f1));
@@ -527,24 +528,34 @@ window.OpenKatana = (() => {
     return {png:canvas.toDataURL('image/png').split(',')[1], sample:owner[1].sample, transition:{type:t.spec.type, p}, face:screenFace(owner[1].face)};
   }
   // A time effect's view of its shot at another frame f (rounded, clamped to the edit): the shot rendered into a canvas
-  // of its own with time effects skipped, while the frame being drawn (canvas, plate and mask buffers) is kept.
+  // of its own, while the frame being drawn (canvas, plate and mask buffers, hooks' Math.random) is kept. The nested
+  // render stops at `cutoff`, the time effect's place in the shot's composition, so it holds exactly what the effect sees
+  // on its own frame (later items such as text 'over' layers or a final letterbox are drawn once, on top), and it skips
+  // time effects. Results are cached for the frame being rendered; effects must not draw into them.
   let nestedTime = 0;
-  async function shotAt(shot, f, inTransition) {
+  const timeCache = new Map();
+  async function shotAt(shot, f, inTransition, cutoff) {
     f = Math.max(0, Math.min(edit.canvas.frames - 1, Math.round(f)));
+    const key = `${edit.shots.indexOf(shot)}|${f}|${cutoff}|${inTransition ? 1 : 0}`;
+    if (timeCache.has(key)) return timeCache.get(key);
     const kept = [canvas, plateBuffer, maskBuffer], keep = kept.map(c => {const b = buffer(c.width, c.height); b.getContext('2d').drawImage(c, 0, 0); return b;});
+    const random = Math.random;
+    if (edit.hooks) Math.random = seededRandom(f*2654435761 + 97);
     nestedTime++;
     try {
-      await renderShot(shot, f, inTransition);
+      await renderShot(shot, f, inTransition, cutoff);
       const out = buffer(canvas.width, canvas.height); out.getContext('2d').drawImage(canvas, 0, 0);
+      if (timeCache.size >= 48) timeCache.delete(timeCache.keys().next().value);
+      timeCache.set(key, out);
       return out;
     } finally {
-      nestedTime--;
+      nestedTime--; Math.random = random;
       kept.forEach((c, i) => {const x = c.getContext('2d'); x.save(); x.resetTransform(); x.globalAlpha = 1; x.filter = 'none';
         x.globalCompositeOperation = 'copy'; x.drawImage(keep[i], 0, 0); x.restore();});
       ctx.resetTransform(); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none';
     }
   }
-  async function renderShot(shot, frame, inTransition) {
+  async function renderShot(shot, frame, inTransition, cutoff = Infinity) {
     if (shot.special) return renderSpecial(shot.special, shot, frame, inTransition, shot);
     const clip = edit.clips[shot.clip], pick = sample(shot, clip, frame);
     const a = await image(clip, pick.i0), b = pick.weight ? await image(clip, pick.i1) : null;
@@ -602,14 +613,15 @@ window.OpenKatana = (() => {
     if(lk&&lk.type==='studio')OpenKatanaStudio.apply(ctx,lk,{W,H,frame,elapsed,duration,fps:edit.canvas.fps,hash:noise,mask:mask?maskBuffer:null});
     else OpenKatanaEffects.look(ctx,lk,frame,noise);
     if(clip.mask_dir){const pc=plateBuffer.getContext('2d');pc.globalCompositeOperation='copy';pc.drawImage(canvas,0,0);}
-    for (const item of composition(shot,fx)) {
+    for (const [index, item] of composition(shot,fx).entries()) {
+      if(index>=cutoff)break;   // a time effect's nested render: only what comes before the effect
       if(OpenKatanaEffects.draw(ctx,item.type==='burst-letters'?'burst':item.type,item.params,{W,H,elapsed,duration,frame,boil:edit.canvas.boil??2,hash:noise,face,maskBuffer:mask?maskBuffer:null,lettersOnly:item.type==='burst-letters'}))continue;
       const pack=OpenKatanaLocal.pack(item.type);
       if(pack){   // effect packs (web/fx_*.js); a time effect's nested renders skip time effects
         if(pack.time&&nestedTime)continue;
         ctx.save();ctx.resetTransform();
         await pack.draw(ctx,item.params===true?{}:item.params,{W,H,elapsed,duration,frame,fps:edit.canvas.fps,shot,clip,
-          image:(id,i)=>image(edit.clips[id],i),shotAt:f=>shotAt(shot,f,inTransition)});
+          clips:edit.clips,image:(id,i)=>image(edit.clips[id],i),shotAt:f=>shotAt(shot,f,inTransition,index)});
         ctx.restore();continue;
       }
       if(item.type==='local_displacement_map'){   // the map is another clip's frame, decoded before the effect runs
