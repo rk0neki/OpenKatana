@@ -23,9 +23,11 @@ walkthrough exercises setup/guide clipboard actions, fixed guide controls,
 import/edit/save/render, external agent saves, unsaved human edit protection and
 390px layouts. These checks use synthetic inputs and no paid models. Timeline
 overlays (blend modes, floor, tint, keyframed opacity, stepped picture rate,
-adjustment layers), `local_curve`, `local_turbulent_displace` (keyframed amount,
-pinning, region, boil, single-axis moves), `local_displacement_map` (exact pixel
-shifts per channel), hook image preloading and the frame-level
+adjustment layers), `local_curve`, `local_turbulent_displace` (keyframed and held amount,
+pinning and locked pins, region, boil, single-axis moves, a Cycle Evolution loop that
+returns to its first frame, smoother and high-quality modes), `local_displacement_map`
+(exact pixel shifts per channel, full and half, per-axis amounts, an eased amount,
+reflect, clamp and wrap edges, centred and tiled maps), hook image preloading and the frame-level
 reference measurement (cuts and dips, cadence, textures and transitions, on a
 synthetic reference with known answers) have pixel- or value-level unit tests.
 

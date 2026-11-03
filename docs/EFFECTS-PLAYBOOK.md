@@ -427,9 +427,14 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
   0.25–0.8 of the cap height.
 - **OpenKatana:** `local_turbulent_displace`, the After Effects Turbulent Displace for
   plates, graphics and type (TIMELINE.md):
-  - `displacement` turbulent, bulge, twist, horizontal, vertical or cross; `amount` in
-    px at 1080 (keyframes `[[seconds, px], ...]` for a burst on a hit), `size`,
-    `complexity` (octaves) and `evolution` with `speed`.
+  - `displacement` turbulent, bulge or twist (each also `_smoother`), horizontal,
+    vertical or cross; `amount` in px at 1080, `size`, `complexity` (octaves, 1-10) and
+    `evolution` with `speed`. Amount, size, complexity, evolution and offset take
+    keyframes with eases (`ease` is Easy Ease, `hold`, or a cubic-bezier), e.g.
+    `[[0, 0, "ease"], [.25, 70], [1, 10]]` for a burst on a hit.
+  - A seamless loop: `cycle` 1 with `speed` 0.5 repeats every 2 s (Cycle Evolution).
+  - Big moves: a `_smoother` mode and `quality` `"high"` (antialiased); `pin`
+    `"all_locked"` keeps the frame edges and never pulls pixels from beyond them.
   - A wavy line: `horizontal` or `vertical`, 3-22 px, `size` about the cap height.
   - A word in rippling liquid: `region` around the word with a `feather`, `speed` 1-2.
   - A boiling, hand-drawn edge: `complexity` 3-4, small `size`, `every` 2-3.
@@ -439,8 +444,10 @@ OpenKatana is an environment like After Effects. Edits in this style are built f
 - **Displacement by real footage:** `local_displacement_map` bends the picture by
   another clip's channels (After Effects' Displacement Map): a heat-haze, glass, water
   or ripple plate as the map, `x`/`y` channels (luma for a grey plate), `amount` in px
-  at 1080 and `smooth` to soften a noisy map. For a plate shot on black (static, dust),
-  set `neutral` to `"mean"` so it scatters pixels instead of shifting the picture.
+  at 1080 (`amount_x`/`amount_y` per axis) and `smooth` to soften a noisy map. `fit`
+  stretches, centres or tiles the map; `edges` `"wrap"` is Wrap Pixels Around. For a
+  plate shot on black (static, dust), set `neutral` to `"mean"` so it scatters pixels
+  instead of shifting the picture.
 
 ### 22. Slash cuts, glitch slices and smears on type
 

@@ -2,13 +2,18 @@
 
 ## Effects
 
-- **`local_turbulent_displace`**: After Effects-style Turbulent Displace for plates,
-  graphics and type. Turbulent, bulge, twist, horizontal, vertical and cross
-  displacement; amount (with keyframes), size, complexity, evolution, drift, a stepped
-  boil, edge pinning and a feathered region for one word.
+- **`local_turbulent_displace`**: After Effects' Turbulent Displace for plates,
+  graphics and type, with its controls: turbulent, bulge and twist (each with a
+  smoother mode), horizontal, vertical and cross displacement; amount, size,
+  complexity (fractional, 1-10), evolution and offset with keyframes and eases (Easy
+  Ease, hold, cubic-bezier); Cycle Evolution for seamless loops; pinning including the
+  locked pins; antialiased high quality; edge reflect, clamp or wrap. Beyond After
+  Effects: a stepped boil, drift and a feathered region for one word.
 - **`local_displacement_map`**: After Effects' Displacement Map. Another clip's red,
-  green, blue, alpha or luma channel moves the picture, so real heat-haze, glass and
-  water plates bend the footage.
+  green, blue, alpha, luminance, hue, lightness or saturation (or full / half / off)
+  moves the picture, with separate horizontal and vertical amounts, stretch, centre or
+  tile fit and wrap-around edges, so real heat-haze, glass and water plates bend the
+  footage.
 - **Timeline `overlays`**: texture plates (dust, scratches, light leaks) with 13 blend
   modes, keyframed opacity, their own picture rate (24p on a 60-fps canvas), black
   floor, tint and fit; and **adjustment layers** that grade everything beneath them at
