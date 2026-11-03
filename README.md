@@ -115,8 +115,8 @@ one project ID feeds Open Studio, your video, music and photo uploads, Make edit
 Render to video, a 3D starter and any of the 75 tools. Run it from App mode and
 Studio opens in its own window.
 
-OpenKatana includes six saved Apps: **Full workflow**, plus **Open Studio**, **All tools**, **Make a 3D scene**, **Background job**
-and **Video to edit**. The integration offers 88 nodes for its tools plus project,
+OpenKatana includes seven saved Apps: **Full workflow**, plus **Open Studio**, **All tools**, **Make a 3D scene**, **Background job**,
+**Video to edit** and **Preview an effect**. The integration offers 88 nodes for its tools plus project,
 job and media helpers.
 
 Connect a local model's image frames or video output to **Import media → Make edit
