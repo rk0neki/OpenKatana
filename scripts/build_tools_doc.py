@@ -50,7 +50,7 @@ NEW_IN = '0.1.3'
 NEW_TOOLS = ['preview_effect']
 NEW_NOTES = [
     'Distort pack, set in the timeline ([Timeline](TIMELINE.md)): `local_wave_warp`, `local_ripple`, `local_shockwave`, '
-    '`local_twirl`, `local_bulge`, `local_polar`, `local_kaleidoscope` and `local_mirror`, with After Effects\' parameter '
+    '`local_twirl`, `local_bulge`, `local_polar`, `local_kaleidoscope` and `local_mirror`, with the standard parameter '
     'names, eased keyframes, edges and high quality.',
     'Light pack: `local_deep_glow`, `local_lens_flare`, `local_light_rays` and `local_light_sweep`.',
     'Time pack: `local_echo`, `local_time_displacement`, `local_posterize_time` and `local_frame_blend`; each reads other '

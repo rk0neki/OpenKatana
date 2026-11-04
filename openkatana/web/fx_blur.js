@@ -1,4 +1,4 @@
-// After Effects' Blur & Sharpen effects as an OpenKatana effect pack (Gaussian, Directional, Radial and Camera Lens Blur, Unsharp Mask, Channel Blur, Tilt-Shift); orders 50-57. Parameters and defaults are
+// Blur & Sharpen effects as an OpenKatana effect pack (Gaussian, Directional, Radial and Camera Lens Blur, Unsharp Mask, Channel Blur, Tilt-Shift); orders 50-57. Parameters and defaults are
 // documented in docs/TIMELINE.md; validation is in openkatana/fx_blur.py. Shared helpers: OpenKatanaLocal.util.
 // Blurs run on canvases: a gaussian over both axes is the canvas blur filter (on a downscaled copy when it is wide); a
 // one-axis gaussian, the directional and the radial blur are built by repeated halving: the running result is drawn over
@@ -120,9 +120,9 @@
   }
   const DIMS = {both: [1, 1], horizontal: [1, 0], vertical: [0, 1]};
 
-  // local_gaussian_blur: After Effects' Gaussian Blur. `blurriness` (px at 1080; sigma = blurriness / 2) over
+  // local_gaussian_blur: Gaussian Blur. `blurriness` (px at 1080; sigma = blurriness / 2) over
   // `dimensions` both / horizontal / vertical; `repeat_edge_pixels` (true) mirrors the picture past its edges so the
-  // border stays bright (false: black comes in, as AE without it over black). region / feather confine it.
+  // border stays bright (false: black comes in from past the edges). region / feather confine it.
   register('local_gaussian_blur', {order: 50, draw(ctx, p, s) {
     const t = clock(p, s); if (t === null) return;
     const sg = Math.max(0, keyedT(p.blurriness, t, 20)) * s.H / 1080 / 2;
@@ -131,8 +131,8 @@
     finish(ctx, gaussian(copy(ctx), s.W, s.H, sg * dx, sg * dy, p.repeat_edge_pixels ?? true), p, s);
   }});
 
-  // local_directional_blur: After Effects' Directional Blur. Each pixel is spread evenly `blur_length` px (at 1080) both
-  // ways along `direction` (degrees clockwise from up, as AE: 0 smears vertically, 90 horizontally). Edges mirror.
+  // local_directional_blur: Directional Blur. Each pixel is spread evenly `blur_length` px (at 1080) both
+  // ways along `direction` (degrees clockwise from up: 0 smears vertically, 90 horizontally). Edges mirror.
   register('local_directional_blur', {order: 51, draw(ctx, p, s) {
     const t = clock(p, s); if (t === null) return;
     const L = Math.max(0, keyedT(p.blur_length, t, 30)) * s.H / 1080;
@@ -144,8 +144,8 @@
     finish(ctx, out, p, s);
   }});
 
-  // local_radial_blur: After Effects' Radial Blur around `center` ([x, y] 0..1). spin: copies turned evenly over
-  // `amount` degrees (half each way); zoom: as After Effects, each pixel averages the picture along its ray toward the
+  // local_radial_blur: Radial Blur around `center` ([x, y] 0..1). spin: copies turned evenly over
+  // `amount` degrees (half each way); zoom: each pixel averages the picture along its ray toward the
   // centre, over copies scaled about the centre from 1x to (1 + amount / 200)x, evenly in ratio (bright shapes streak
   // outward; nothing is read from outside the frame). `quality` low spaces copies up to 2 px apart at the far corner,
   // high .5 px. amount and center take keyframes.
@@ -184,7 +184,7 @@
     finish(ctx, out, p, s);
   }});
 
-  // local_channel_blur: After Effects' Channel Blur. red / green / blue_blurriness (px at 1080, sigma = value / 2) blur
+  // local_channel_blur: Channel Blur. red / green / blue_blurriness (px at 1080, sigma = value / 2) blur
   // each channel on its own; `dimensions` and `repeat_edge_pixels` as Gaussian Blur. All 0 (the default) is identity.
   register('local_channel_blur', {order: 53, draw(ctx, p, s) {
     const t = clock(p, s); if (t === null) return;
@@ -202,7 +202,7 @@
     finish(ctx, out, p, s);
   }});
 
-  // local_unsharp_mask: After Effects' Unsharp Mask. out = in + amount% x (in - gaussian(in, sigma = radius px at
+  // local_unsharp_mask: Unsharp Mask. out = in + amount% x (in - gaussian(in, sigma = radius px at
   // 1080)), per channel, where the difference is above `threshold` (0..255). amount and radius take keyframes.
   register('local_unsharp_mask', {order: 56, draw(ctx, p, s) {
     const t = clock(p, s); if (t === null) return;
@@ -247,9 +247,9 @@
     ctx.putImageData(im, 0, 0);
   }});
 
-  // local_camera_lens_blur: After Effects' Camera Lens Blur. Each pixel becomes the iris shape (`iris_shape` polygon,
+  // local_camera_lens_blur: Camera Lens Blur. Each pixel becomes the iris shape (`iris_shape` polygon,
   // `iris_rotation` degrees, `iris_roundness` 0..100 % toward a circle) of radius `blur_radius` px at 1080, averaged in
-  // the working (gamma) space as After Effects at 8/16 bpc, so the average brightness stays. Bright points bloom into
+  // the working (gamma) space, as 8/16-bit compositing does, so the average brightness stays. Bright points bloom into
   // shaped bokeh through the highlights: pixels with luma above `highlight_threshold` (0..255) are boosted up to
   // 1 + highlight_gain x .4 times before the blur (gain 0..100). A blur map sets the radius per pixel:
   // `map` horizontal / vertical (black at the left / top) / radial (black at `center`) / clip (`clip`'s luma; src /

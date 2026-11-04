@@ -47,7 +47,7 @@ def templates():
             'a recipe for each: docs/EFFECTS-PLAYBOOK.md. Empty params use the effect defaults.')}
 
 
-# 07's starting look: After Effects' Twirl, eased in and out over 1.5 s. A key's ease shapes the move to the
+# 06's starting look: a twirl, eased in and out over 1.5 s. A key's ease shapes the move to the
 # next key, so the ease goes on the first key.
 PREVIEW_PARAMS = {'angle': [[0, 0, 'inout3'], [1.5, 540]], 'radius': 0.6}
 

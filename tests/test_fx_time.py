@@ -1,4 +1,4 @@
-"""The Time effect pack (web/fx_time.js): After Effects' Echo, Time Displacement, Posterize Time and frame blending,
+"""The Time effect pack (web/fx_time.js): Echo, Time Displacement, Posterize Time and frame blending,
 each reading other frames of its own shot."""
 import json
 import shutil

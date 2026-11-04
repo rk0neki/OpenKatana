@@ -1,4 +1,4 @@
-"""After Effects' Generate effects (web/fx_generate.js): validation of the pack's timeline fields."""
+"""Generate effects (web/fx_generate.js): validation of the pack's timeline fields."""
 from .contracts import ContractError, number
 
 _COMMON = 'blend opacity at'

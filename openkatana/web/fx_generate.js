@@ -1,4 +1,4 @@
-// After Effects' Generate effects as an OpenKatana effect pack (Fractal Noise, Cell Pattern, Gradient Ramp, 4-Color
+// Generate effects as an OpenKatana effect pack (Fractal Noise, Cell Pattern, Gradient Ramp, 4-Color
 // Gradient, Grid, Radio Waves, Advanced Lightning); orders 70-76. Parameters and defaults are documented in
 // docs/TIMELINE.md; validation is in openkatana/fx_generate.py. Shared helpers: OpenKatanaLocal.util.
 // Every generator renders onto a layer of its own and lays it over the picture with `blend` (normal, add, screen,
@@ -35,7 +35,7 @@
     const sc = Math.min(1, 480 / s.W);
     return {w: Math.max(1, Math.round(s.W * sc)), h: Math.max(1, Math.round(s.H * sc)), sc};
   }
-  // AE's Overflow: clip, soft clamp (a tanh curve of slope 1 at mid grey) or wrap back (values fold back at 0 and 1)
+  // Overflow: clip, soft clamp (a tanh curve of slope 1 at mid grey) or wrap back (values fold back at 0 and 1)
   const OVERFLOW = {clip: v => clamp(v), soft_clamp: v => .5 + .5 * Math.tanh(2 * (v - .5)),
     wrap: v => { v = ((v % 2) + 2) % 2; return v > 1 ? 2 - v : v; }};
   // seeded lattice hash -> -1..1
@@ -75,7 +75,7 @@
   }
   const seedHash = seed => Math.imul((seed | 0) ^ 0x5bd1e995, 0x01000193) ^ 0x3c6ef372;
 
-  // local_fractal_noise: After Effects' Fractal Noise. Octaves of noise (`complexity`, a fraction weighs in the last one),
+  // local_fractal_noise: Fractal Noise. Octaves of noise (`complexity`, a fraction weighs in the last one),
   // each `sub_scaling` % the size of the one before, `sub_influence` % as strong and turned `sub_rotation` degrees more.
   // fractal_type basic (signed noise round mid grey), turbulent_sharp (|noise|: sharp dark creases) or turbulent_smooth
   // (a rounded |noise|: soft billows, soft creases); noise_type block, linear, soft_linear (value noise) or spline (gradient noise).
@@ -132,7 +132,7 @@
     lay(ctx, s, layer, p, o);
   }});
 
-  // local_cell_pattern: After Effects' Cell Pattern. One feature point per `size` px cell (at 1080), scattered by
+  // local_cell_pattern: Cell Pattern. One feature point per `size` px cell (at 1080), scattered by
   // `disperse` (0 a square grid, 1 fully random); each point circles its place once per revolution of `evolution`
   // (plus `speed` revolutions a second), so the pattern loops every revolution. cell_pattern bubbles (round bright cells),
   // crystals (bright cells, dark seams), plates (a flat grey per cell) or tubular (bright seams). invert, contrast,
@@ -172,7 +172,7 @@
     lay(ctx, s, layer, p, o);
   }});
 
-  // grain for gradients (AE's ramp scatter / jitter): a fixed seeded per-pixel noise of +-amount x 24 levels
+  // grain for gradients (ramp scatter / jitter): a fixed seeded per-pixel noise of +-amount x 24 levels
   function scatter(c, amount, seed) {
     if (!(amount > 0)) return;
     const g = c.getContext('2d'), img = g.getImageData(0, 0, c.width, c.height), d = img.data, r = rng(seed), A = amount * 24;
@@ -183,7 +183,7 @@
     g.putImageData(img, 0, 0);
   }
 
-  // local_gradient_ramp: After Effects' Gradient Ramp. start_color at `start`, end_color at `end` ([x, y] fractions,
+  // local_gradient_ramp: Gradient Ramp. start_color at `start`, end_color at `end` ([x, y] fractions,
   // keyframable), linear (constant along lines across start-end, held beyond both) or radial (rings round start out to
   // the distance to end). ramp_scatter 0..1 dithers it (breaks up banding).
   register('local_gradient_ramp', {order: 72, draw(ctx, p, s) {
@@ -201,8 +201,8 @@
     lay(ctx, s, layer, p, o);
   }});
 
-  // local_four_color_gradient: After Effects' 4-Color Gradient. Four colours at four points ([x, y] fractions,
-  // keyframable), mixed by inverse distance: blend_amount (AE's Blend, 100) sets the falloff (lower: each colour holds
+  // local_four_color_gradient: 4-Color Gradient. Four colours at four points ([x, y] fractions,
+  // keyframable), mixed by inverse distance: blend_amount (100) sets the falloff (lower: each colour holds
   // its own region with sharper seams; higher: softer, toward one average). jitter 0..1 dithers it.
   const FOUR = [['point_1', [.1, .1], 'color_1', '#ffff00'], ['point_2', [.9, .1], 'color_2', '#00ff00'],
     ['point_3', [.1, .9], 'color_3', '#ff00ff'], ['point_4', [.9, .9], 'color_4', '#0000ff']];
@@ -233,7 +233,7 @@
     lay(ctx, s, out, p, o);
   }});
 
-  // local_grid: After Effects' Grid. Lines `border` px wide (at 1080) every `width` x `height` px (height defaults to
+  // local_grid: Grid. Lines `border` px wide (at 1080) every `width` x `height` px (height defaults to
   // width), one crossing at `anchor` ([x, y] fractions, keyframable); `feather` px softens them, `invert` fills the
   // cells instead, `color` colours them.
   register('local_grid', {order: 74, draw(ctx, p, s) {
@@ -256,7 +256,7 @@
     lay(ctx, s, layer, p, o);
   }});
 
-  // local_radio_waves: After Effects' Radio Waves. Waves are born at `producer` ([x, y] fractions, keyframable: each
+  // local_radio_waves: Radio Waves. Waves are born at `producer` ([x, y] fractions, keyframable: each
   // wave keeps the place it was born at) `frequency` times a second from `at`, grow `expansion` px a second (at 1080) and
   // live `lifespan` seconds; a stroke `start_width` px at birth to `end_width` px at death in `stroke_color`, fading in
   // over `fade_in` and out over the last `fade_out` seconds. shape circle, square or polygon (`sides`, a vertex up).
@@ -284,7 +284,7 @@
     if (drew) lay(ctx, s, layer, p, o);
   }});
 
-  // local_lightning: After Effects' Advanced Lightning. A fractal bolt from `origin` toward `direction` ([x, y]
+  // local_lightning: Advanced Lightning. A fractal bolt from `origin` toward `direction` ([x, y]
   // fractions, keyframable): lightning_type strike (origin to the direction point), breaking (three bolts fanning
   // toward it), bouncy (wide swinging bends), omni (bolts all round the origin, as long as origin-direction) or anywhere
   // (to a point that wanders the frame as conductivity changes). `conductivity` evolves the path smoothly (keyframe it);

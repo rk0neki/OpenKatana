@@ -159,7 +159,7 @@ window.OpenKatanaLocal = (() => {
       return ((ay * s + by) * s + cy) * s;
     };
   }
-  const EASY = bezier(.33, 0, .67, 1), beziers = new Map();   // After Effects' Easy Ease (33% influence both sides)
+  const EASY = bezier(.33, 0, .67, 1), beziers = new Map();   // easy ease: 33% influence on both sides
   function shape(u, e) {
     if (Array.isArray(e)) { const key = e.join(); if (!beziers.has(key)) beziers.set(key, bezier(...e)); return beziers.get(key)(u); }
     if (e === 'in2') return u * u;
@@ -222,7 +222,7 @@ window.OpenKatanaLocal = (() => {
     const inside = (v, a, b) => fe > 0 ? clamp(1 - Math.max(a - v, v - b, 0) / fe) : (v >= a && v <= b ? 1 : 0);
     return {weight: (x, y) => inside(x, rx0, rx1) * inside(y, ry0, ry1), still: (x, y) => x < rx0 - fe || x > rx1 + fe || y < ry0 - fe || y > ry1 + fe};
   };
-  // local_turbulent_displace: After Effects' Turbulent Displace. A fractal-noise field (complexity = octaves; a fraction
+  // local_turbulent_displace: Turbulent Displace. A fractal-noise field (complexity = octaves; a fraction
   // weighs in the last one) moves every pixel by up to `amount` px (at 1080): turbulent (both axes), horizontal,
   // vertical, cross (both by one field), bulge (along the noise slope: highs swell) or twist (across it: swirls). The
   // "_smoother" modes compute the field twice as finely and interpolate it cubically: smoother bends, slower. `size` is
@@ -303,7 +303,7 @@ window.OpenKatanaLocal = (() => {
     // pixels outside the region and its feather keep their place (the grid would otherwise bleed one cell past it)
     remap(ctx, w, h, at, D, {still: box ? box.still : null, edges: locked ? 'clamp' : p.edges, quality: p.quality});
   }
-  // local_displacement_map: After Effects' Displacement Map. A frame of another clip (`s.map`, loaded by the engine)
+  // local_displacement_map: Displacement Map. A frame of another clip (`s.map`, loaded by the engine)
   // moves each pixel by (channel - 128) / 127 x `amount` px at 1080 (`amount_x` / `amount_y` set one axis): `x` and `y`
   // pick each axis's channel (red, green, blue, alpha, luma, hue, lightness, saturation; full moves by the whole amount,
   // half and none not at all), so mid grey keeps a pixel in place (`neutral` sets that level, or "mean" for the map

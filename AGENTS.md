@@ -41,7 +41,7 @@ Effects' controls: `local_turbulent_displace` (Turbulent Displace) and
 and `local_curve` transitions (docs/TIMELINE.md, docs/EFFECTS-PLAYBOOK.md).
 
 Version 0.1.3 adds `preview_effect`, for 75 tools in all (docs/TOOLS.md lists them),
-and six effect packs with After Effects' controls: Distort (Wave Warp, Ripple,
+and six effect packs with familiar compositing controls: Distort (Wave Warp, Ripple,
 Shockwave, Twirl, Bulge, Polar Coordinates, Kaleidoscope, Mirror), Light (Deep Glow,
 Lens Flare, Light Rays, Light Sweep), Time (Echo, Time Displacement, Posterize Time,
 frame blending), Blur & Sharpen, Stylize (RGB split, Motion Tile, Mosaic and more) and

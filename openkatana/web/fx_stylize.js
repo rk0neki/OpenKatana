@@ -1,4 +1,4 @@
-// After Effects' Stylize effects as an OpenKatana effect pack (RGB Split, Motion Tile, Find Edges, Emboss, Mosaic, Scatter); orders 60-67. Parameters and defaults are
+// Stylize effects as an OpenKatana effect pack (RGB Split, Motion Tile, Find Edges, Emboss, Mosaic, Scatter); orders 60-67. Parameters and defaults are
 // documented in docs/TIMELINE.md; validation is in openkatana/fx_stylize.py. Shared helpers: OpenKatanaLocal.util.
 // Every effect starts at `at` (seconds into the shot) and can be confined to `region` [x0, y0, x1, y1] (0..1) with a
 // `feather` (a fraction of the height, .02 by default); an amount of zero leaves the frame bit-identical.
@@ -66,7 +66,7 @@
     ctx.putImageData(new ImageData(out, w, h), 0, 0);
   }});
 
-  // local_motion_tile: After Effects' Motion Tile. The frame shrinks to tiles `tile_width` x `tile_height` (% of the
+  // local_motion_tile: Motion Tile. The frame shrinks to tiles `tile_width` x `tile_height` (% of the
   // frame) repeated in every direction from the tile centred at `tile_center`; the result fills a centred output area
   // `output_width` x `output_height` (% of the frame: below 100 the rest is transparent, above 100 changes nothing on a
   // full frame). `mirror_edges` flips every other tile so the seams match; `phase` (degrees) offsets every other column
@@ -109,7 +109,7 @@
     });
   }});
 
-  // local_find_edges: After Effects' Find Edges. Each colour channel's Sobel gradient (a full 0-to-255 step reads 255)
+  // local_find_edges: Find Edges. Each colour channel's Sobel gradient (a full 0-to-255 step reads 255)
   // drawn as dark lines on white, like a pencil drawing; `invert` draws bright lines on black. `blend_with_original`
   // (0..1, keyframable) mixes the original back in (1 leaves it untouched). Alpha is kept.
   register('local_find_edges', {order: 62, draw(ctx, p, s) {
@@ -136,9 +136,9 @@
     });
   }});
 
-  // local_emboss: After Effects' Emboss. Reads the picture's luma as height and lights it from `direction` (degrees
+  // local_emboss: Emboss. Reads the picture's luma as height and lights it from `direction` (degrees
   // clockwise from up; 45 is the top right): mid grey where flat, light on slopes facing the light, dark on the others.
-  // `relief` (px at 1080) is how far apart the two height samples are, `contrast` (100 = AE's default) scales the
+  // `relief` (px at 1080) is how far apart the two height samples are, `contrast` (100 by default) scales the
   // difference; `blend_with_original` (0..1) mixes the original back in. All four take keyframes. Alpha is kept.
   register('local_emboss', {order: 63, draw(ctx, p, s) {
     const t = clock(p, s); if (t === null) return;
@@ -162,7 +162,7 @@
     });
   }});
 
-  // local_mosaic: After Effects' Mosaic. horizontal_blocks x vertical_blocks (keyframable; rounded, at least 1) solid
+  // local_mosaic: Mosaic. horizontal_blocks x vertical_blocks (keyframable; rounded, at least 1) solid
   // blocks, each the average of the pixels under it, or with `sharp_colors` the colour at its centre. Block i spans
   // floor(i W / n) to floor((i + 1) W / n), so the blocks tile the frame exactly.
   register('local_mosaic', {order: 64, draw(ctx, p, s) {
@@ -197,7 +197,7 @@
     });
   }});
 
-  // local_scatter: After Effects' Scatter. Every pixel shows a random pixel up to `scatter_amount` px (at 1080,
+  // local_scatter: Scatter. Every pixel shows a random pixel up to `scatter_amount` px (at 1080,
   // keyframable) away: grain "both", "horizontal" or "vertical". The pattern is fixed by `seed` unless
   // `randomize_every_frame` (then it boils). Edge pixels draw from inside the frame.
   const mixHash = a => { a = Math.imul(a ^ (a >>> 16), 0x7feb352d); a = Math.imul(a ^ (a >>> 15), 0x846ca68b); return (a ^ (a >>> 16)) >>> 0; };

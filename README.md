@@ -50,9 +50,9 @@ A 24-second product film with procedural 3D objects, choreographed cameras, anim
 
 ## New in 0.1.3: six effect packs for distortion, light, time, blur, stylize and generators
 
-[![Twirl, Polar Coordinates, Kaleidoscope, Lens Flare, Light Rays, Echo, RGB Split and Advanced Lightning, rendered by OpenKatana](docs/assets/ae-packs.gif)](docs/assets/ae-packs.mp4)
+[![Twirl, Polar Coordinates, Kaleidoscope, Lens Flare, Light Rays, Echo, RGB Split and Advanced Lightning, rendered by OpenKatana](docs/assets/effect-packs.gif)](docs/assets/effect-packs.mp4)
 
-**[Watch all 37 effects](docs/assets/ae-packs.mp4)** or browse the **[effects gallery](docs/EFFECTS-GALLERY.md)**:
+**[Watch all 37 effects](docs/assets/effect-packs.mp4)** or browse the **[effects gallery](docs/EFFECTS-GALLERY.md)**:
 Distort (Wave Warp, Ripple, Shockwave, Twirl, Bulge, Polar Coordinates, Kaleidoscope, Mirror), Light (Deep Glow, Lens
 Flare, Light Rays, Light Sweep), Time (Echo, Time Displacement, Posterize Time, frame blending), Blur & Sharpen
 (Gaussian, Directional, Radial and Camera Lens Blur, Unsharp Mask, Channel Blur, Tilt-Shift), Stylize (RGB Split,

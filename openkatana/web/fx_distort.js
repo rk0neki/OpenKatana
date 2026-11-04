@@ -1,4 +1,4 @@
-// After Effects' Distort effects as an OpenKatana effect pack (Wave Warp, Ripple, Shockwave, Twirl, Bulge, Polar Coordinates, Kaleidoscope, Mirror). Parameters and defaults are documented in
+// Distort effects as an OpenKatana effect pack (Wave Warp, Ripple, Shockwave, Twirl, Bulge, Polar Coordinates, Kaleidoscope, Mirror). Parameters and defaults are documented in
 // docs/TIMELINE.md; validation is in openkatana/fx_distort.py. Shared helpers: OpenKatanaLocal.util.
 (() => {
   const {register, util} = OpenKatanaLocal;
@@ -23,7 +23,7 @@
   // a keyframable [x, y] (0..1) in pixel-index coordinates (pixel i covers i..i+1, so a fraction c sits at c * w - .5)
   const point = (v, t, d, w, h) => { const c = keyedT(v, t, d); return [c[0] * w - .5, c[1] * h - .5]; };
 
-  // local_wave_warp: After Effects' Wave Warp. Waves travel along `direction` (degrees clockwise from up: 90 travels
+  // local_wave_warp: Wave Warp. Waves travel along `direction` (degrees clockwise from up: 90 travels
   // right) and move pixels across it by up to `wave_height` px (at 1080); `wave_width` is the wavelength (px at 1080),
   // `wave_speed` cycles a second, `phase` degrees. `pinning` holds edges still with a smooth fade over a quarter of the
   // smaller side (center holds the middle). wave_height and wave_width take keyframes.
@@ -60,10 +60,10 @@
     });
   }});
 
-  // local_ripple: After Effects' Ripple. Circular waves from `center` (wavelength px at 1080) move pixels by up to
+  // local_ripple: Ripple. Circular waves from `center` (wavelength px at 1080) move pixels by up to
   // `amplitude` px (at 1080), fading out at `radius` (a fraction of the frame diagonal). wave_speed: waves a second
   // (positive travel outward); phase in degrees. conversion "symmetric" moves pixels radially (refraction-like),
-  // "asymmetric" (After Effects' default) moves them along one diagonal. amplitude and center take keyframes.
+  // "asymmetric" (the default) moves them along one diagonal. amplitude and center take keyframes.
   register('local_ripple', {order: 41, draw(ctx, p, s) {
     const t = clock(p, s); if (t === null) return;
     const {W: w, H: h} = s, k = h / 1080, A = keyedT(p.amplitude, t, 20) * k;
@@ -78,7 +78,7 @@
     }, (x, y) => (x - cx) ** 2 + (y - cy) ** 2 >= R * R);
   }});
 
-  // local_shockwave: a beat-drop ring (closest in After Effects: CC Ripple Pulse). From `center`, starting at `at`, a
+  // local_shockwave: a beat-drop ring. From `center`, starting at `at`, a
   // ring `width` px (at 1080) wide grows over `d` seconds from radius 0 to `max_radius` (a fraction of the diagonal)
   // along `ease` (out3 by default) and pushes the picture outward by up to `amount` px (at 1080; negative pulls inward),
   // fading as it grows. `split` px offsets red and blue along the push (a chromatic fringe). amount takes keyframes.
@@ -109,7 +109,7 @@
     ctx.putImageData(out, 0, 0);
   }});
 
-  // local_twirl: After Effects' Twirl. Rotates the picture round `center` by `angle` degrees (positive clockwise) at
+  // local_twirl: Twirl. Rotates the picture round `center` by `angle` degrees (positive clockwise) at
   // the centre, easing to none at `radius` (a fraction of the smaller side). angle and center take keyframes.
   register('local_twirl', {order: 43, draw(ctx, p, s) {
     const t = clock(p, s); if (t === null) return;
@@ -124,7 +124,7 @@
     }, (x, y) => (x - cx) ** 2 + (y - cy) ** 2 >= R * R);
   }});
 
-  // local_bulge: After Effects' Bulge. Magnifies an ellipse (horizontal_radius x vertical_radius px at 1080) round
+  // local_bulge: Bulge. Magnifies an ellipse (horizontal_radius x vertical_radius px at 1080) round
   // `center` by `height` (-4..4: 1 doubles the middle, negative pinches); `taper` (0..1) softens its edge; `pin` holds
   // the frame edges still. height and center take keyframes. A bulge samples the radius rho (0..1 across the ellipse) from
   // G(rho) = rho / (1 + height (1 - rho^2)^(1 + 2 taper)), which only grows, so it never folds; a pinch is its exact
@@ -158,7 +158,7 @@
     }, (x, y) => ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 >= 1);
   }});
 
-  // local_polar: After Effects' Polar Coordinates. rect_to_polar wraps the picture round the frame centre (its top row
+  // local_polar: Polar Coordinates. rect_to_polar wraps the picture round the frame centre (its top row
   // at the centre, its left edge at 12 o'clock, clockwise); polar_to_rect unrolls a circle into rows. `interpolation`
   // (0..1, keyframable) mixes from the untouched picture (0) to the full conversion (1).
   register('local_polar', {order: 45, draw(ctx, p, s) {
@@ -199,7 +199,7 @@
     });
   }});
 
-  // local_mirror: After Effects' Mirror. Reflects the picture across the line through `reflection_center` at
+  // local_mirror: Mirror. Reflects the picture across the line through `reflection_center` at
   // `reflection_angle` degrees: 0 keeps the left side and mirrors it onto the right; 90 mirrors the top onto the bottom
   // (the angle turns the line clockwise). reflection_angle and reflection_center take keyframes.
   register('local_mirror', {order: 47, draw(ctx, p, s) {
