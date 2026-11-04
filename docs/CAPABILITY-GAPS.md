@@ -29,8 +29,9 @@ text and model-workflow integration. The following limits remain explicit:
 - **Usability:** Studio offers all tools through its library, but advanced
   scene/composition authoring still uses an agent or CLI. It is a loopback-only,
   single-user app, with no cloud account, sync service or bundled general AI.
-- **Platforms:** Windows is locally tested. Consult the actual CI result before
-  claiming a Windows/Linux release passes. A clean operating-system install and
+- **Platforms:** Windows is locally tested, and CI runs the release checks on
+  Windows, macOS and Linux. Consult the actual CI result for a release commit before
+  claiming it passes on a platform. A clean operating-system install and
   broad real-world media corpus remain separate validation tasks.
 
 Use [the capability table](CAPABILITY-MATRIX.md) to select the correct route.

@@ -32,7 +32,11 @@ jobs:
         env:
           HOMEBREW_NO_AUTO_UPDATE: '1'
           HOMEBREW_NO_INSTALL_CLEANUP: '1'
-        run: brew install ffmpeg
+        # Homebrew's plain ffmpeg has no zscale (libzimg), which HDR export needs; ffmpeg-full is keg-only.
+        run: |
+          brew install ffmpeg-full
+          echo "$(brew --prefix ffmpeg-full)/bin" >> "$GITHUB_PATH"
+          "$(brew --prefix ffmpeg-full)/bin/ffmpeg" -hide_banner -filters | grep -w zscale
       - name: Install package and test dependencies
         run: python -m pip install '.[vision,mcp,text,hosted]' build
       - name: Explicit test-browser installation
