@@ -46,8 +46,11 @@ sudo apt install ffmpeg        # Debian/Ubuntu
 above include it. On macOS it comes with Homebrew's `ffmpeg-full`, which CI uses: run
 `brew install ffmpeg-full` and put `$(brew --prefix ffmpeg-full)/bin` first on your `PATH`.
 
-An installed Chrome, Chromium or Edge is found automatically. Without one, install
-Playwright's Chromium into the OpenKatana environment; OpenKatana finds it too:
+OpenKatana finds Chrome and Edge in their default install folders on Windows and macOS,
+Chromium in `/Applications` on macOS, and `google-chrome`, `google-chrome-stable`,
+`chromium`, `chromium-browser` or `msedge` on your `PATH`. For any other browser, set
+`OPENKATANA_CHROME`. Or install Playwright's Chromium into the OpenKatana environment;
+OpenKatana finds it too:
 
 ```sh
 .venv/bin/python -m playwright install chromium           # macOS/Linux
