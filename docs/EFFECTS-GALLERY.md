@@ -1,6 +1,6 @@
 # Effects gallery
 
-Every After Effects-style effect OpenKatana renders, one frame from each, with the timeline JSON that made it.
+Every compositing effect OpenKatana renders (distortion, light, time, blur, stylize and generators), one frame from each, with the timeline JSON that made it.
 The frames come from [the effects reel](assets/ae-packs.mp4) (one second per effect, on an original test plate),
 which `python examples/effects_reel.py` reproduces. Parameters and defaults are in [TIMELINE.md](TIMELINE.md); recipes
 are in the [effects playbook](EFFECTS-PLAYBOOK.md). Try any effect on your own media with `preview_effect`, or in

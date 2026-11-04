@@ -123,7 +123,7 @@ to see or rewire the whole workflow. The six single-purpose Apps:
    project ID, an effect name and its fields as JSON in `params`; Run renders a
    short video of the moving test card with only that effect, shown in the
    preview area, and a 6-frame contact sheet whose path is in the result JSON.
-   It starts with an After Effects Twirl, eased in and out
+   It starts with a Twirl, eased in and out
    (`local_twirl`); try `local_deep_glow`, `local_lens_flare`, `local_echo` or any
    shot effect in [the timeline guide](TIMELINE.md), with a recipe for each in the
    [effects playbook](EFFECTS-PLAYBOOK.md). Leave `params` empty for the effect's

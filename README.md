@@ -40,13 +40,15 @@ A 24-second product film with procedural 3D objects, choreographed cameras, anim
   checks, so you and your agent can take turns on the same edit.
 - **Match a reference edit.** `analyze_reference` measures a reference at 60 fps (cuts versus flashes, picture cadence,
   the look of each shot, texture speed and the shape of each transition) and turns it into timeline settings.
-- **After Effects-grade effects, written as code.** Turbulent Displace, Displacement Map and six effect packs
-  (Distort, Light, Time, Blur & Sharpen, Stylize and Generate: Wave Warp, Twirl, Deep Glow, Lens Flare, Echo, Time
-  Displacement, RGB split, Fractal Noise, Advanced Lightning and more) take keyframes, eases and antialiasing, each as
-  a few lines of [timeline JSON](docs/TIMELINE.md).
+- **Compositing effects, written as code.** Displacement (turbulent noise warps and map-driven heat haze, glass and
+  water), distortion (wave warps, ripples, shockwaves, twirls, bulges, polar wraps, kaleidoscopes and mirrors), light
+  (glows, lens flares, light rays and sweeps), time (echo trails, slit-scan time displacement, stepped frame rates and
+  frame blending), blur and sharpen, stylize (RGB split, tiling, edge detection, emboss, mosaic and scatter) and
+  generators (fractal noise, lightning, radio waves, cell patterns, gradients and grids). Every effect takes keyframes,
+  eases and antialiasing, each as a few lines of [timeline JSON](docs/TIMELINE.md).
 - **Open and local.** Apache-2.0, runs on your machine, no account. Models are optional and installed separately.
 
-## New in 0.1.3: six After Effects effect packs
+## New in 0.1.3: six effect packs for distortion, light, time, blur, stylize and generators
 
 [![Twirl, Polar Coordinates, Kaleidoscope, Lens Flare, Light Rays, Echo, RGB Split and Advanced Lightning, rendered by OpenKatana](docs/assets/ae-packs.gif)](docs/assets/ae-packs.mp4)
 
@@ -186,7 +188,7 @@ flowchart LR
 
 Every entry point calls the same AgentAPI, so an agent, a ComfyUI App and Studio edit one project with revision
 checks. A timeline is plain JSON, validated against strict contracts (unknown fields are rejected). The engine draws
-each frame in headless Chrome, where effects such as the After Effects packs register from `web/fx_*.js`, and FFmpeg
+each frame in headless Chrome, where the effect packs (distortion, light, time, blur, stylize and generators) register from `web/fx_*.js`, and FFmpeg
 encodes the result. The ComfyUI integration is built on the official Comfy SDK; model jobs run through ComfyUI.
 
 ## Documentation and compatibility
