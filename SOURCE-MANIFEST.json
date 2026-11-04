@@ -8,7 +8,7 @@
     ".comfyignore": "38a59fc68fe8909754ff172c6c0c31f9a31127d280613b421d8e3b6a1fd3fd5e",
     ".dockerignore": "74f9e71b07b9b20776d0371db3f7cece2d2e45aa1197b8114fc9fa221f54384b",
     ".gitattributes": "309a564a0cdded2363d9e17e1742d1cc0f24cbe86f83353fa5ee634ca8e9847f",
-    ".github/workflows/ci.yml": "6c66b2717ca2cf9599aa1bd2cd1801a9b7b1cd879d5571d4434dd4cba3a37c84",
+    ".github/workflows/ci.yml": "4adfd4ef330205ceb916369e294b3d5287206322ed41591a05610f9b4cd4f600",
     ".github/workflows/hosting.yml": "efda7461bea276d1f12cfcd79d936b6c7987f4de402c95ed5a1de5f770064b0b",
     ".github/workflows/publish-registry.yml": "338ccf074648b46dfc6ec19659dae875472c6c1f2e352e8b54a9bbf17d68abfe",
     ".gitignore": "0400922815a58a1c27bbdfb21ec8765cef538937ec4df74fffc1e68723a1cd91",
