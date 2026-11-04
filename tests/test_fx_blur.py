@@ -1,4 +1,4 @@
-"""The Blur & Sharpen pack (web/fx_blur.js): After Effects' Gaussian, Directional, Radial and Camera Lens Blur, Channel
+"""The Blur & Sharpen pack (web/fx_blur.js): Gaussian, Directional, Radial and Camera Lens Blur, Channel
 Blur, Unsharp Mask and a tilt-shift focus band."""
 import json
 import shutil
@@ -185,7 +185,7 @@ class BlurPackTests(unittest.TestCase):
         r = np.hypot(xx + .5 - 96, yy + .5 - 54)
         self.assertGreater(yy.max() - yy.min(), 20)              # spread along the arc
         self.assertGreater(r.min(), 37); self.assertLess(r.max(), 46)   # but on its radius (the dot spans 40..44)
-        # zoom streaks it outward along its ray from the centre (as After Effects: each pixel reads toward the centre,
+        # zoom streaks it outward along its ray from the centre (each pixel reads toward the centre,
         # copies 1x to 1.3x), never inward and never around
         f = self.render('local_radial_blur', {'amount': 60, 'type': 'zoom', 'quality': 'high'})[0].sum(axis=2)
         xs = np.nonzero(f[54] > 3)[0]

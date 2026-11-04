@@ -1,4 +1,4 @@
-"""After Effects' Blur & Sharpen effects (web/fx_blur.js): validation of the pack's timeline fields."""
+"""Blur & Sharpen effects (web/fx_blur.js): validation of the pack's timeline fields."""
 from .contracts import ContractError, number
 
 _REGION = 'region feather at'

@@ -1,4 +1,4 @@
-// After Effects' Time effects as an OpenKatana effect pack (Echo, Time Displacement, Posterize Time, frame blending).
+// Time effects as an OpenKatana effect pack (Echo, Time Displacement, Posterize Time, frame blending).
 // Parameters and defaults are documented in docs/TIMELINE.md; validation is in openkatana/fx_time.py. Shared helpers:
 // OpenKatanaLocal.util. Each effect reads other frames of its own shot through s.shotAt(frame): the shot rendered at
 // that frame up to (not including) this effect, so an echo holds exactly what the effect sees on its own frame.
@@ -12,7 +12,7 @@
   // the picture `offset` frames away (0: the picture as it stands, no nested render)
   const frameAt = (s, here, offset) => (offset === 0 ? here : s.shotAt(s.frame + offset));
 
-  // local_echo: After Effects' Echo. Image k (k = 0 the frame itself, 1..number_of_echoes the frames echo_time seconds
+  // local_echo: Echo. Image k (k = 0 the frame itself, 1..number_of_echoes the frames echo_time seconds
   // apart; negative looks back) has intensity starting_intensity x decay^k, and the images are combined by `operator`:
   // add, maximum, minimum, screen, blend (intensity-weighted mean), composite_back (echoes behind the frame, the newest
   // on top) or composite_front (echoes over it, the oldest on top), over black. Echo times outside the edit, or where the
@@ -53,7 +53,7 @@
     ctx.putImageData(im, 0, 0);
   }
 
-  // local_posterize_time: After Effects' Posterize Time. The shot shows frames held at `fps`: each frame shows the frame
+  // local_posterize_time: Posterize Time. The shot shows frames held at `fps`: each frame shows the frame
   // at the start of its step (steps counted from the shot start, or `at`).
   async function posterizeTime(ctx, p, s) {
     const t = s.elapsed - (p.at ?? 0), r = p.fps ?? 12;
@@ -65,7 +65,7 @@
     ctx.globalCompositeOperation = 'source-over';
   }
 
-  // local_time_displacement: After Effects' Time Displacement. A map's brightness picks, pixel by pixel, the time shown:
+  // local_time_displacement: Time Displacement. A map's brightness picks, pixel by pixel, the time shown:
   // white max_displacement seconds ahead, black as far back, mid grey now (`invert` swaps them). The span is cut into
   // `levels` time slices (whole frames) and each pixel blends the two nearest. map: horizontal / vertical (gradients,
   // black at the left / top), radial (black at `center`, white at the farthest corner), self (the picture's own luma) or
@@ -108,7 +108,7 @@
     ctx.putImageData(im, 0, 0);
   }
 
-  // local_frame_blend: frame blending looking back (CC Wide Time's backward steps, with sub-frame spacing). `samples`
+  // local_frame_blend: frame blending looking back over earlier frames, with sub-frame spacing. `samples`
   // images spread evenly over the last shutter x (samples - 1) frames are averaged (a sample between two frames mixes
   // them), smearing motion into a trail the way a longer shutter would; shutter 0 leaves the frame alone.
   async function frameBlend(ctx, p, s) {
@@ -133,7 +133,7 @@
     ctx.putImageData(im, 0, 0);
   }
 
-  // post-phase orders 1..4: time effects come first in a stack, as in After Effects
+  // post-phase orders 1..4: time effects come first in a stack
   register('local_posterize_time', {order: 1, time: true, draw: posterizeTime});
   register('local_time_displacement', {order: 2, time: true, draw: timeDisplace});
   register('local_frame_blend', {order: 3, time: true, draw: frameBlend});

@@ -1,4 +1,4 @@
-"""local_turbulent_displace and local_displacement_map: After Effects-style displacement by fractal noise or by another
+"""local_turbulent_displace and local_displacement_map: displacement by fractal noise or by another
 clip's channels."""
 import json
 import shutil
@@ -132,7 +132,7 @@ class TurbulentDisplaceTests(unittest.TestCase):
 
 
 class DisplacementMapTests(unittest.TestCase):
-    """local_displacement_map: another clip's channels move the pixels (After Effects' Displacement Map)."""
+    """local_displacement_map: another clip's channels move the pixels (a displacement map)."""
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory(); self.addCleanup(self.tmp.cleanup); self.root = Path(self.tmp.name)
         (self.root / 'f').mkdir(); (self.root / 'm').mkdir()

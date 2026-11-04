@@ -10,7 +10,7 @@ guide with details and limits. Parameters ending in `?` are optional.
 ## New in 0.1.3
 
 - `preview_effect`: See ONE timeline effect before using it: a short mp4 and a 6-frame contact sheet of a shot with only that effect.
-- Distort pack, set in the timeline ([Timeline](TIMELINE.md)): `local_wave_warp`, `local_ripple`, `local_shockwave`, `local_twirl`, `local_bulge`, `local_polar`, `local_kaleidoscope` and `local_mirror`, with After Effects' parameter names, eased keyframes, edges and high quality.
+- Distort pack, set in the timeline ([Timeline](TIMELINE.md)): `local_wave_warp`, `local_ripple`, `local_shockwave`, `local_twirl`, `local_bulge`, `local_polar`, `local_kaleidoscope` and `local_mirror`, with the standard parameter names, eased keyframes, edges and high quality.
 - Light pack: `local_deep_glow`, `local_lens_flare`, `local_light_rays` and `local_light_sweep`.
 - Time pack: `local_echo`, `local_time_displacement`, `local_posterize_time` and `local_frame_blend`; each reads other frames of its own shot.
 - Blur & Sharpen pack: `local_gaussian_blur`, `local_directional_blur`, `local_radial_blur`, `local_camera_lens_blur`, `local_unsharp_mask`, `local_channel_blur`, `local_tilt_shift`.

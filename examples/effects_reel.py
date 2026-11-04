@@ -1,10 +1,10 @@
-"""Reproduce the README reel of the After Effects packs (docs/assets/ae-packs.mp4 and .gif).
+"""Reproduce the README reel of the effect packs (docs/assets/effect-packs.mp4 and .gif).
 
 Each entry of the spec (effects_reel.json beside this script) is one labelled segment: an original test plate with that
-entry's shot fx, rendered by OpenKatana and encoded as ae-packs.mp4 and ae-packs.gif. Frames are deleted segment by
+entry's shot fx, rendered by OpenKatana and encoded as effect-packs.mp4 and effect-packs.gif. Frames are deleted segment by
 segment, so the disk never holds more than one segment plus the labelled frames. No service, model or footage.
 
-    python examples/effects_reel.py                      # writes work/effects-reel/ae-packs.mp4 and ae-packs.gif
+    python examples/effects_reel.py                      # writes work/effects-reel/effect-packs.mp4 and effect-packs.gif
     python examples/effects_reel.py --spec my.json --out reel --width 1280 --height 720
 
 A spec is a JSON list of {"label": "Twirl", "fx": {"local_twirl": {...}}}: any shot fx of docs/TIMELINE.md.
@@ -136,7 +136,7 @@ def main(argv=None):
             n += 1
         shutil.rmtree(work / 'o', ignore_errors=True)
         print(f'{e["label"]}: done', flush=True)
-    mp4, gif = out / 'ae-packs.mp4', out / 'ae-packs.gif'
+    mp4, gif = out / 'effect-packs.mp4', out / 'effect-packs.gif'
     subprocess.run(['ffmpeg', '-v', 'error', '-nostdin', '-y', '-framerate', str(fps), '-i', str(work / 'r%05d.png'),
                     '-c:v', 'libx264', '-crf', '20', '-pix_fmt', 'yuv420p', str(mp4)], check=True)
     subprocess.run(['ffmpeg', '-v', 'error', '-nostdin', '-y', '-i', str(mp4), '-vf',

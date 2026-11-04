@@ -1,4 +1,4 @@
-"""After Effects' Stylize effects (web/fx_stylize.js): validation of the pack's timeline fields."""
+"""Stylize effects (web/fx_stylize.js): validation of the pack's timeline fields."""
 from .contracts import ContractError, number
 
 _COMMON = 'region feather at'

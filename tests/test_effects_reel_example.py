@@ -1,4 +1,4 @@
-"""examples/effects_reel.py: the one-command reproduction of the README reel (docs/assets/ae-packs.mp4)."""
+"""examples/effects_reel.py: the one-command reproduction of the README reel (docs/assets/effect-packs.mp4)."""
 import contextlib
 import importlib.util
 import io
@@ -73,7 +73,7 @@ class EffectsReelExampleTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             mp4, gif = reel.main(['--spec', str(self.root / 'two.json'), '--out', str(out),
                                   '--width', '96', '--height', '54', '--frames', '3'])
-        self.assertEqual(sorted(p.name for p in out.iterdir()), ['ae-packs.gif', 'ae-packs.mp4'])   # work files removed
+        self.assertEqual(sorted(p.name for p in out.iterdir()), ['effect-packs.gif', 'effect-packs.mp4'])   # work files removed
         from openkatana.render import probe
         video = next(s for s in probe(mp4)['streams'] if s['codec_type'] == 'video')
         self.assertEqual((int(video['nb_read_frames']), video['width'], video['height']), (6, 96, 54))

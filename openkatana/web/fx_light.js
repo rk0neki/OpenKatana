@@ -1,4 +1,4 @@
-// After Effects' light effects as an OpenKatana effect pack (Deep Glow, Lens Flare, Light Rays, Light Sweep). Parameters
+// Light effects as an OpenKatana effect pack (Deep Glow, Lens Flare, Light Rays, Light Sweep). Parameters
 // and defaults are documented in docs/TIMELINE.md; validation is in openkatana/fx_light.py. Shared helpers:
 // OpenKatanaLocal.util. Each effect builds its light on a small float buffer (or with gradients) and adds it over the
 // frame (lighter or screen), so a frame with nothing bright enough, or an amount of 0, comes out bit-identical.
@@ -87,10 +87,10 @@
     ctx.globalCompositeOperation = 'source-over';
   }
 
-  // local_deep_glow: Deep Glow / a good After Effects Glow. Parts brighter than `threshold` (luma 0..1, soft above it)
+  // local_deep_glow: a deep, layered glow. Parts brighter than `threshold` (luma 0..1, soft above it)
   // (squared above it, so parts just over the threshold glow faintly) are blurred `layers` times with radii doubling up to
   // `radius` (px at 1080) and summed with weights growing by sqrt 2 per layer and adding up to 1: exposure 1 adds the
-  // thresholded picture once over a flat area (After Effects' Glow at intensity 1), and a point of light falls off about
+  // thresholded picture once over a flat area (a standard glow at intensity 1), and a point of light falls off about
   // as r^-1.5, a tight core and a wide tail. `exposure` scales the sum; `tint` colours it, `saturation` scales its
   // colourfulness; `blend` add (default) or screen. Built at most 540 px high.
   register('local_deep_glow', {order: 80, draw(ctx, p, s) {
@@ -119,7 +119,7 @@
     lay(ctx, s, acc, w, h, E, tintOf(p.tint), keyedT(p.saturation, t, 1), p.blend);
   }});
 
-  // local_lens_flare: After Effects' Lens Flare (and an Optical Flares look), drawn with gradients. A hot core at
+  // local_lens_flare: a lens flare, drawn with gradients. A hot core at
   // `position` ([x, y] fractions, may sit off frame), a halo, a faint rainbow ring and a lens's own set of ghosts along
   // the line from the light through the frame centre (t 1 = the centre, 2 = the mirror point). `lens` picks the set:
   // 50_300mm_zoom (many small hexagonal ghosts), 35mm_prime (big soft ghosts and star rays), 105mm_prime (a tight core,
@@ -205,7 +205,7 @@
     ctx.restore();
   }});
 
-  // local_light_rays: CC Light Rays / volumetric rays. Parts brighter than `threshold` streak away from `center` ([x, y]
+  // local_light_rays: volumetric rays. Parts brighter than `threshold` streak away from `center` ([x, y]
   // fractions, keyframable): every pixel averages the bright picture along the line back toward the centre over
   // `length` (0..1) of the way, nearer samples weighing more, so rays fade out. `intensity` scales them, `tint` colours
   // them, `blend` add (default) or screen. Built at most 270 px high.
@@ -245,7 +245,7 @@
     lay(ctx, s, out, w, h, I * 2, tintOf(p.tint), 1, p.blend);
   }});
 
-  // local_light_sweep: CC Light Sweep, a shine passing over a logo or text. A band `width` px (at 1080) wide, tilted
+  // local_light_sweep: a shine passing over a logo or text. A band `width` px (at 1080) wide, tilted
   // `angle` degrees from vertical (0: an upright band moving left to right; 30 leans it like "/"), with `softness` 0..1
   // of it fading at the edges, `intensity` and `color`. Without `position` it crosses the whole frame over `d` seconds
   // from `at` (eased by `ease`, inout by default), entering and leaving clean; `position` (0..1, keyframable) instead

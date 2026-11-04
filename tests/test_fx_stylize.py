@@ -1,4 +1,4 @@
-"""The Stylize effect pack (web/fx_stylize.js): an RGB split and After Effects' Motion Tile, Find Edges, Emboss, Mosaic
+"""The Stylize effect pack (web/fx_stylize.js): an RGB split and Motion Tile, Find Edges, Emboss, Mosaic
 and Scatter."""
 import json
 import shutil
