@@ -113,8 +113,8 @@ class LightPackTests(unittest.TestCase):
 
     @unittest.skipUnless(_chrome(), 'needs Chrome and ffmpeg')
     def test_glow_defaults_do_not_wash_out_bright_plates(self):
-        # a flat area above the threshold gets its thresholded self added about once (exposure 1 = 1x, After Effects'
-        # Glow at intensity 1): luma .78 with threshold .6 -> ((.78 - .6) / .4) ** 2 = .21 of 200 added
+        # a flat area above the threshold gets its thresholded self added about once (exposure 1 = 1x, a standard
+        # glow at intensity 1): luma .78 with threshold .6 -> ((.78 - .6) / .4) ** 2 = .21 of 200 added
         self.plate(np.full((H, W, 3), 200, np.uint8))
         f = self.render('local_deep_glow', {})[0]
         self.assertLess(abs(f[54, 96].mean() - 242), 6)

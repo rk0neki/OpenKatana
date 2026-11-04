@@ -1,4 +1,4 @@
-"""After Effects' Distort effects (web/fx_distort.js): validation of the pack's timeline fields."""
+"""Distort effects (web/fx_distort.js): validation of the pack's timeline fields."""
 from .contracts import ContractError, number
 
 _COMMON = 'edges quality region feather at'

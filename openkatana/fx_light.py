@@ -1,4 +1,4 @@
-"""After Effects' light effects (web/fx_light.js): validation of the pack's timeline fields."""
+"""Light effects (web/fx_light.js): validation of the pack's timeline fields."""
 from .contracts import ContractError, color, number
 
 # effect name -> its fields, space separated (unknown fields are rejected before validate runs)
