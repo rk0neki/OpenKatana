@@ -22,7 +22,7 @@ inputs and no paid services. Live Comfy/model tests are separate explicit script
 Select a browser with `OPENKATANA_CHROME` and optional Blender with
 `OPENKATANA_BLENDER`. Trusted authoring scripts execute local code.
 
-GitHub Actions defines Windows/Linux build/test jobs. Check the actual results
+GitHub Actions defines Windows, macOS and Linux build/test jobs. Check the actual results
 for your commit; a workflow file alone is not a successful cross-platform test.
 See docs/VALIDATION.md for the tested scope.
 

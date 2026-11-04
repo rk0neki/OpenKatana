@@ -5,13 +5,16 @@ OpenKatana does not authenticate an agent, open an OAuth login or start a model.
 
 ## From GitHub
 
-Install Python 3.11+ and Git, then run:
+OpenKatana runs on Windows, macOS and Linux. Install Python 3.11+ and Git, then run:
 
 ```sh
 git clone https://github.com/rk0neki/OpenKatana.git
 cd OpenKatana
 python scripts/setup.py
 ```
+
+On macOS (Apple silicon), `brew install python@3.12 git ffmpeg` installs Python, Git and FFmpeg;
+then run `python3.12 scripts/setup.py` instead.
 
 Use `python3` where that is your Python 3.11+ command. The script creates `.venv`,
 installs this checkout with its text/vision dependencies, creates
@@ -28,11 +31,37 @@ are rejected rather than overwritten.
 Setup installs Python dependencies. It does **not** install browsers, FFmpeg,
 Blender or model weights, submit generation jobs, upload files or publish work.
 
+## Install FFmpeg and a browser
+
+CI runs on every push and pull request, on Windows, macOS (Apple silicon) and Linux with
+Python 3.11 and 3.12. On each platform, install FFmpeg (with ffprobe) from its package manager:
+
+```sh
+brew install ffmpeg            # macOS (Homebrew)
+winget install Gyan.FFmpeg     # Windows
+sudo apt install ffmpeg        # Debian/Ubuntu
+```
+
+[HDR export](HDR.md) also needs FFmpeg's `zscale` filter. The Windows and Linux packages
+above include it. On macOS it comes with Homebrew's `ffmpeg-full`, which CI uses: run
+`brew install ffmpeg-full` and put `$(brew --prefix ffmpeg-full)/bin` first on your `PATH`.
+
+OpenKatana finds a system-wide Chrome or Edge on Windows; Chrome, Chromium or Edge in
+`/Applications` on macOS; and `google-chrome`, `google-chrome-stable`, `chromium`,
+`chromium-browser` or `msedge` on your `PATH` on any platform. For any other browser (for
+example Edge on Linux, or a per-user Chrome on Windows), set `OPENKATANA_CHROME`. Or install Playwright's Chromium into the OpenKatana environment;
+OpenKatana finds it too:
+
+```sh
+.venv/bin/python -m playwright install --with-deps chromium   # Linux (adds system libraries; uses sudo)
+.venv/bin/python -m playwright install chromium               # macOS
+.venv\Scripts\python.exe -m playwright install chromium       # Windows
+```
+
 ## Check the runtime
 
-Install FFmpeg/ffprobe and Chrome/Chromium separately. If needed, point
-`OPENKATANA_CHROME` at your browser executable. Blender is optional and can be
-selected with `OPENKATANA_BLENDER`. Activate the created environment:
+If needed, point `OPENKATANA_CHROME` at your browser executable. Blender is optional
+and can be selected with `OPENKATANA_BLENDER`. Activate the created environment:
 
 ```powershell
 # Windows PowerShell

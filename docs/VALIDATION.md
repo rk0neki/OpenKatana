@@ -58,8 +58,8 @@ dependencies and receipts; do not call a missing integration a pass.
 
 Build an allowlisted source bundle with `scripts/release_bundle.py`, build a wheel
 from that source, install it separately, and verify bundled guides, skill,
-licenses, browser assets and a local render. CI configuration covers Windows
-and Linux, but only completed CI runs establish results for a release commit.
+licenses, browser assets and a local render. CI covers Windows,
+macOS and Linux, but only completed CI runs establish results for a release commit.
 
 Technical passes do not establish human approval, legal clearance, general
 model fidelity or quality on arbitrary creative briefs.

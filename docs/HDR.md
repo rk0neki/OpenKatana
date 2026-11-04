@@ -7,7 +7,9 @@ and float32 linear BT.2020 compositing, with 1.0 representing 100 nits. They do
 not route HDR pictures through the 8-bit Canvas renderer.
 
 Requires separately installed FFmpeg with `zscale`, `tonemap`, `libx265`, `ffv1`
-and `libx264`. No additional Python dependencies, downloaded models or services.
+and `libx264`. On macOS that is Homebrew's `ffmpeg-full` (the plain `ffmpeg` formula
+has no `zscale`); see [setup](SETUP.md#install-ffmpeg-and-a-browser). No additional
+Python dependencies, downloaded models or services.
 
 ```json
 {

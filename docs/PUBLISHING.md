@@ -24,10 +24,10 @@ python scripts/test_wheel_install.py --wheel dist/openkatana-0.1.3-py3-none-any.
 
 Choose a new output directory on each run. Dependencies are downloaded; FFmpeg
 and a browser must already be installed. Inspect `result.json` and the logs in
-that output directory. The same check runs on the Windows/Linux CI matrix.
+that output directory. The same check runs on the Windows/macOS/Linux CI matrix.
 
 Keep model inference results separate from synthetic transport tests. Verify the
-Windows/Linux CI results for the exact release commit. The current manifest is
+Windows, macOS and Linux CI results for the exact release commit. The current manifest is
 regenerated with `python scripts/release_bundle.py --manifest-only`.
 
 ## GitHub
