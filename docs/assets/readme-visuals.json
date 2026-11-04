@@ -48,7 +48,7 @@
   },
   "demo": {
     "file": "demo-comfyui.gif",
-    "source": "The user's final #OpenSourceHiggsfield demo export (screen recorded with Capptivo, cut in Premiere Pro), 9.0-27.7 s: the 00 Full workflow in ComfyUI, App mode, Run, Studio opening. Linked to the full demo video.",
+    "source": "The user's final #OpenSourceHiggsfield demo export (screen recorded with Capptivo, then edited), 9.0-27.7 s: the 00 Full workflow in ComfyUI, App mode, Run, Studio opening. Linked to the full demo video.",
     "preview_settings": "Played 1.5x faster; 900 px wide, 10 fps, 128-color GIF with burned-in captions; silent.",
     "content": "OpenKatana and ComfyUI interface only. No generated, stock or third-party footage.",
     "sha256": "bda969bc155ef452bde5f18723e7a5b348492cbbed4d4d1f5692989ce7fa699b"
@@ -81,7 +81,7 @@
     "scope": "Source animation retains its own license; OpenKatana software licensing does not relicense it.",
     "music": "Made with Suno, from the OpenKatana launch film soundtrack."
   },
-  "ae_packs": {
+  "effect_packs": {
     "file": "effect-packs.mp4",
     "source": "Rendered by OpenKatana 0.1.3 (scratch reel script) from an original test plate: a procedural gradient and grid, the OpenKatana logo and a drawn light spot. Labels drawn with PIL after rendering.",
     "content": "No generated, stock or third-party footage. Each one-second segment is one effect with keyframed parameters (all six effect packs plus Turbulent Displace); the Time segments add a camera zoom so there is motion to echo.",

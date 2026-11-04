@@ -35,8 +35,8 @@ compulsory.
 
 Version 0.1.2 added two tools, `shot_sheet` (one numbered picture per shot of a render
 or reference) and `eye_sheet` (eye crops across a take). It also added `analyze_reference` `measure` and
-`compare_reference` side-by-side and look reports, and timeline effects with After
-Effects' controls: `local_turbulent_displace` (Turbulent Displace) and
+`compare_reference` side-by-side and look reports, and timeline effects with familiar compositing
+controls: `local_turbulent_displace` (Turbulent Displace) and
 `local_displacement_map` (Displacement Map), texture `overlays`, adjustment layers
 and `local_curve` transitions (docs/TIMELINE.md, docs/EFFECTS-PLAYBOOK.md).
 

@@ -205,7 +205,7 @@
     ctx.restore();
   }});
 
-  // local_light_rays: CC Light Rays / volumetric rays. Parts brighter than `threshold` streak away from `center` ([x, y]
+  // local_light_rays: volumetric rays. Parts brighter than `threshold` streak away from `center` ([x, y]
   // fractions, keyframable): every pixel averages the bright picture along the line back toward the centre over
   // `length` (0..1) of the way, nearer samples weighing more, so rays fade out. `intensity` scales them, `tint` colours
   // them, `blend` add (default) or screen. Built at most 270 px high.
@@ -245,7 +245,7 @@
     lay(ctx, s, out, w, h, I * 2, tintOf(p.tint), 1, p.blend);
   }});
 
-  // local_light_sweep: CC Light Sweep, a shine passing over a logo or text. A band `width` px (at 1080) wide, tilted
+  // local_light_sweep: a shine passing over a logo or text. A band `width` px (at 1080) wide, tilted
   // `angle` degrees from vertical (0: an upright band moving left to right; 30 leans it like "/"), with `softness` 0..1
   // of it fading at the edges, `intensity` and `color`. Without `position` it crosses the whole frame over `d` seconds
   // from `at` (eased by `ease`, inout by default), entering and leaving clean; `position` (0..1, keyframable) instead

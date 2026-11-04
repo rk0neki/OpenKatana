@@ -6,14 +6,14 @@ effects), a ComfyUI node and App to preview any effect, and a reel of them all. 
 
 ## Effects
 
-- **Distort pack**: Wave Warp, Ripple, Shockwave, Twirl, Bulge, Polar Coordinates, Kaleidoscope (CC Kaleida) and
+- **Distort pack**: Wave Warp, Ripple, Shockwave, Twirl, Bulge, Polar Coordinates, Kaleidoscope and
   Mirror (`local_wave_warp` ... `local_mirror`), with familiar compositing parameter names, eased keyframes on the main
   amounts, region and feather, reflect/clamp/wrap edges and antialiased high quality. A pinch (negative bulge) never
   folds the picture.
 - **Light pack**: `local_deep_glow` (a multi-layer, energy-conserving bloom above a threshold, with tint and
   saturation), `local_lens_flare` (procedural flares with the 50-300mm zoom, 35mm and 105mm prime ghost sets, halo,
-  rainbow ring, anamorphic streak and flicker), `local_light_rays` (CC Light Rays-style rays from bright areas) and
-  `local_light_sweep` (a CC Light Sweep shine). Nothing changes where nothing is bright enough.
+  rainbow ring, anamorphic streak and flicker), `local_light_rays` (rays streaming from bright areas) and
+  `local_light_sweep` (a shine passing over logos and text). Nothing changes where nothing is bright enough.
 - **Time pack**: Echo (all seven operators), Time Displacement (horizontal, vertical, radial, self or
   clip maps, for slit-scan and time-ripple looks), Posterize Time and frame blending. Each reads other frames of its
   own shot through a nested render that stops at the effect, so text and grades placed later are drawn once, on top;
@@ -57,8 +57,8 @@ Compositing-grade displacement, texture overlays and frame-level reference match
   smoother mode), horizontal, vertical and cross displacement; amount, size,
   complexity (fractional, 1-10), evolution and offset with keyframes and eases (Easy
   Ease, hold, cubic-bezier); Cycle Evolution for seamless loops; pinning including the
-  locked pins; antialiased high quality; edge reflect, clamp or wrap. Beyond After
-  Effects: a stepped boil, drift and a feathered region for one word.
+  locked pins; antialiased high quality; edge reflect, clamp or wrap. Extras: a
+  stepped boil, drift and a feathered region for one word.
 - **`local_displacement_map`**: Displacement Map. Another clip's red,
   green, blue, alpha, luminance, hue, lightness or saturation (or full / half / off)
   moves the picture, with separate horizontal and vertical amounts, stretch, centre or

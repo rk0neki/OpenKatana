@@ -108,7 +108,7 @@
     ctx.putImageData(im, 0, 0);
   }
 
-  // local_frame_blend: frame blending looking back (CC Wide Time's backward steps, with sub-frame spacing). `samples`
+  // local_frame_blend: frame blending looking back over earlier frames, with sub-frame spacing. `samples`
   // images spread evenly over the last shutter x (samples - 1) frames are averaged (a sample between two frames mixes
   // them), smearing motion into a trail the way a longer shutter would; shutter 0 leaves the frame alone.
   async function frameBlend(ctx, p, s) {

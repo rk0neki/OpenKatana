@@ -180,7 +180,7 @@
     });
   }});
 
-  // local_kaleidoscope: CC Kaleida. Folds the picture round `center` into `segments` wedges (mirroring "on" flips every
+  // local_kaleidoscope: a kaleidoscope. Folds the picture round `center` into `segments` wedges (mirroring "on" flips every
   // other wedge so the seams match - with an odd count one seam, at the start of wedge 0, cannot match; "off" repeats one) and folds the radius every `size` px (at 1080: the cell size), so
   // the disc `size` round the centre is what is seen, tiled outward in rings. `rotation` (degrees) turns the wedge
   // that is sampled, as turning a kaleidoscope. rotation and center take keyframes.

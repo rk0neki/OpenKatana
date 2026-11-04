@@ -1,5 +1,5 @@
 """The Distort effect pack (web/fx_distort.js): Wave Warp, Ripple, Twirl, Bulge, Polar Coordinates,
-Mirror, CC Kaleida and a shockwave ring, each a coordinate map over the shared resampler."""
+Mirror, Kaleidoscope and a shockwave ring, each a coordinate map over the shared resampler."""
 import json
 import shutil
 import tempfile
