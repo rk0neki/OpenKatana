@@ -13,7 +13,7 @@ cd OpenKatana
 python scripts/setup.py
 ```
 
-On macOS, `brew install python@3.12 git ffmpeg` installs Python, Git and FFmpeg;
+On macOS (Apple silicon), `brew install python@3.12 git ffmpeg` installs Python, Git and FFmpeg;
 then run `python3.12 scripts/setup.py` instead.
 
 Use `python3` where that is your Python 3.11+ command. The script creates `.venv`,
@@ -33,8 +33,8 @@ Blender or model weights, submit generation jobs, upload files or publish work.
 
 ## Install FFmpeg and a browser
 
-CI tests every commit on Windows, macOS and Linux with Python 3.11 and 3.12. On each,
-install FFmpeg (with ffprobe) from the platform's package manager:
+CI runs on every push and pull request, on Windows, macOS (Apple silicon) and Linux with
+Python 3.11 and 3.12. On each platform, install FFmpeg (with ffprobe) from its package manager:
 
 ```sh
 brew install ffmpeg            # macOS (Homebrew)
@@ -46,15 +46,16 @@ sudo apt install ffmpeg        # Debian/Ubuntu
 above include it. On macOS it comes with Homebrew's `ffmpeg-full`, which CI uses: run
 `brew install ffmpeg-full` and put `$(brew --prefix ffmpeg-full)/bin` first on your `PATH`.
 
-OpenKatana finds Chrome and Edge in their default install folders on Windows and macOS,
-Chromium in `/Applications` on macOS, and `google-chrome`, `google-chrome-stable`,
-`chromium`, `chromium-browser` or `msedge` on your `PATH`. For any other browser, set
-`OPENKATANA_CHROME`. Or install Playwright's Chromium into the OpenKatana environment;
+OpenKatana finds a system-wide Chrome or Edge on Windows; Chrome, Chromium or Edge in
+`/Applications` on macOS; and `google-chrome`, `google-chrome-stable`, `chromium`,
+`chromium-browser` or `msedge` on your `PATH` on any platform. For any other browser (for
+example Edge on Linux, or a per-user Chrome on Windows), set `OPENKATANA_CHROME`. Or install Playwright's Chromium into the OpenKatana environment;
 OpenKatana finds it too:
 
 ```sh
-.venv/bin/python -m playwright install chromium           # macOS/Linux
-.venv\Scripts\python.exe -m playwright install chromium    # Windows
+.venv/bin/python -m playwright install --with-deps chromium   # Linux (adds system libraries; uses sudo)
+.venv/bin/python -m playwright install chromium               # macOS
+.venv\Scripts\python.exe -m playwright install chromium       # Windows
 ```
 
 ## Check the runtime

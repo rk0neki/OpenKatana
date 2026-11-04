@@ -10,7 +10,7 @@ OpenKatana is an independent, open-source **editing engine your AI agent drives:
 [![Release v0.1.3](https://img.shields.io/badge/release-v0.1.3-blue)](https://github.com/rk0neki/OpenKatana/releases/tag/v0.1.3)
 [![75 tools](https://img.shields.io/badge/tools-75-6f42c1)](docs/TOOLS.md)
 [![CI](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml)
-[![Tested on Windows, macOS and Linux](https://img.shields.io/badge/tested_on-Windows_%7C_macOS_%7C_Linux-2ea44f)](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml)
+[![Tested on Windows, macOS and Linux](https://img.shields.io/badge/tested_on-Windows_%7C_macOS_%7C_Linux-blue)](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml)
 [![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](docs/SETUP.md)
 [![Demo](https://img.shields.io/badge/%E2%96%B6-Demo-red)](https://youtu.be/sZys4qLAprw)
@@ -202,10 +202,11 @@ encodes the result. The ComfyUI integration is built on the official Comfy SDK; 
 - [Capabilities](docs/CAPABILITY-MATRIX.md) · [Limits](docs/CAPABILITY-GAPS.md) · [Validation](docs/VALIDATION.md)
 - [Contributing](CONTRIBUTING.md) · [Skill](skills/openkatana-video/SKILL.md) · [Release notes](docs/RELEASE-NOTES.md)
 
-[CI](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml) tests every commit on Windows, macOS and Linux with Python 3.11
-and 3.12: the regression suite, the bundled photo/video and ComfyUI LTX edits, the Studio
-browser workflow and a wheel installed outside the checkout. Check the completed runs for
-the commit you install. FFmpeg, Chromium, optional Blender and generative weights are
+[CI](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml) runs on every push and pull request, on Windows, macOS (Apple
+silicon) and Linux with Python 3.11 and 3.12: the regression suite, the bundled photo/video
+edit, an edit of the bundled LTX-2.5 clip (no ComfyUI or model run), the Studio browser
+workflow and a wheel installed outside the checkout. Check the completed runs for the
+commit you install. FFmpeg, Chromium, optional Blender and generative weights are
 separate installations. Studio is not a full graphical 3D scene editor. There is no
 hosting bill for the local app.
 
